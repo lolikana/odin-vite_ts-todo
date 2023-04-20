@@ -7,7 +7,15 @@
     "start": "NODE_ENV=production ts-node src/server/main.ts",
     "build": "vite build",
     "lint": "eslint --fix -f table './**/*.ts'",
+    "lint-staged": "lint-staged",
     "prettier-format": "prettier --config .prettierrc './**/*.{ts,css,scss,json}' --write"
+  },
+  "lint-staged": {
+    "./**/*.ts": [
+      "prettier --write",
+      "eslint --fix -f table"
+    ],
+    "./**/*.{css,json}": "prettier --write"
   },
   "devDependencies": {
     "@types/express": "^4.17.15",
