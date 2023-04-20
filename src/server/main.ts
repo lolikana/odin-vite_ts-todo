@@ -48,7 +48,6 @@ app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));
 });
 
-// Start http server
 ViteExpress.listen(app, +port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
