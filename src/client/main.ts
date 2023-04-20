@@ -266,7 +266,6 @@ const editDeleteLabel = async (e: Event) => {
 
 fetchLabels()
   .then(res => {
-    console.log(res.fetchedLabels);
     if (res.fetchedLabels.length === 0) {
       labelsList.textContent = 'No Label';
       return;
