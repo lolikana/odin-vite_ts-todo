@@ -11,7 +11,7 @@ import { mongoConnection } from './utils/mongodb';
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
-const port = process.env.PORT || 3001;
+const port = process.env.VITE_PORT || 3001;
 
 export const mongoDBUri: string = isProduction
   ? (process.env.VITE_MONGODB_URI as string)

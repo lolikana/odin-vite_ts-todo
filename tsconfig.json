@@ -114,5 +114,8 @@
   },
   "exclude": ["./node_modules"],
   /* Specifies an array of filenames or patterns that should be skipped when resolving include. */
-  "include": ["src"] /* specifies the files to be included in the TypeScript project. */
+  "include": [
+    "src",
+    "vite.config.js"
+  ] /* specifies the files to be included in the TypeScript project. */
 }
