@@ -5,7 +5,7 @@ import './scripts/burger';
 import { labelsData } from '../libs/data';
 import { TLabel } from '../libs/types';
 import { labelSchema } from '../libs/validations';
-import { createLabel, fetchLabels } from './api/api';
+import { createLabel, deleteLabel, fetchLabels, updateLabel } from './api';
 import {
   createDivLabelsElement,
   createListElement,
@@ -169,14 +169,115 @@ addLabelBtn?.addEventListener('click', () => {
   }
 });
 /** Add label END **/
+/** Delete / Edit label START **/
+const editDeleteLabel = async (e: Event) => {
+  const target = e.target as HTMLButtonElement;
+  const label = target.dataset.label as string;
 
+  if (target.ariaDisabled === 'true' || !label) return;
+
+  const item = target.closest('.labels--list-item') as HTMLLIElement;
+  const listItem = target.closest('.labels--list-item') as HTMLLIElement;
+  const listItemContainer = listItem.firstChild as HTMLDivElement;
+  const listItemBtn = listItemContainer.firstChild as HTMLButtonElement;
+  const editBtn = querySelector(`.btn-edit[data-label='${label}']`) as HTMLButtonElement;
+  const deleteBtn = querySelector(
+    `.btn-delete[data-label='${label}']`
+  ) as HTMLButtonElement;
+
+  const isDeleteBtn =
+    target.classList.contains('btn-delete') && target.dataset.label === label;
+  const isEditBtn =
+    target.classList.contains('btn-edit') && target.dataset.label === label;
+
+  if (!isDeleteBtn && !isEditBtn) return;
+
+  if (isDeleteBtn) {
+    labelsData.forEach((labelData, i) => {
+      if (labelData.name === label) labelsData.splice(i, 1);
+    });
+    item.remove();
+    await deleteLabel(label);
+
+    deleteEmptyLabelsList('No Label');
+    return;
+  }
+
+  if (isEditBtn) {
+    const removeInput = () => {
+      removeLabelInputElement();
+      listItemContainer.style.display = 'inline-flex';
+      isDisabledEditBtns(false);
+    };
+
+    labelsData.forEach((existingLabel, i) => {
+      isDisabledEditBtns(true);
+      if (existingLabel.name === label) {
+        listItemContainer.style.display = 'none';
+
+        const { form, pError, cancelLabelBtn } = createLabelFormElement(
+          'PUT',
+          listItem,
+          label
+        );
+
+        form.addEventListener('submit', async (e: SubmitEvent) => {
+          e.preventDefault();
+          const enteredLabel = labelFormSubmit(form, pError) as TLabel;
+
+          if (!enteredLabel || enteredLabel.name === label) {
+            removeInput();
+            return;
+          }
+
+          const isLabelExist = labelsData.some(
+            label =>
+              label.name.toLocaleLowerCase() === enteredLabel.name.toLocaleLowerCase()
+          );
+
+          if (isLabelExist) {
+            pError.textContent = 'This label already exist';
+            return;
+          }
+
+          labelsData[i] = enteredLabel;
+          listItemBtn.textContent = enteredLabel.name;
+          listItemBtn.dataset.label = enteredLabel.name;
+          deleteBtn.dataset.label = enteredLabel.name;
+          editBtn.dataset.label = enteredLabel.name;
+          await updateLabel(existingLabel, enteredLabel);
+          removeInput();
+        });
+
+        addEventListener('keydown', (e: KeyboardEvent) => {
+          if (e.key !== 'Escape') return;
+          removeInput();
+        });
+
+        cancelLabelBtn.addEventListener('click', () => {
+          removeInput();
+        });
+      }
+    });
+  }
+};
+/** Delete / Edit label END **/
 /* Navbar END */
 
 fetchLabels()
   .then(res => {
     console.log(res.fetchedLabels);
+    if (res.fetchedLabels.length === 0) {
+      labelsList.textContent = 'No Label';
+      return;
+    }
+
     res.fetchedLabels.map(label => labelsData.push(label));
     createListLabelsElement(labelsList, labelsData);
+
+    labelsList.addEventListener('click', async (e: Event) => {
+      await editDeleteLabel(e);
+    });
   })
   .catch(err => {
     console.log(err);
