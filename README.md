@@ -24,6 +24,7 @@ The project uses the following technologies:
 - [ ] User can delete a task
 
 ## Getting Started
+### Locally
 To run this app locally, follow these steps:
 
 1. Clone this repository to your local machine:
@@ -44,13 +45,45 @@ npm install
 npm run dev
 ```
 
-4. In a different terminal, start the local Vite development app:
+4. In a different terminal, start the Vite development app:
 
 ```
 npm run vite
 ```
 
-5.Navigate to http://localhost:3000 in your browser.
+5. Navigate to http://localhost:3000 in your browser.
+
+### Production
+1. Clone this repository to your local machine:
+
+```
+git clone https://github.com/lolikana/odin-vite_ts-todo.git
+```
+
+2. Install dependencies:
+
+```
+npm install
+```
+
+3. Create ```.env``` file  in the root of folder ./:
+
+```
+VITE_MONGODB_URI='mongodb+srv://<username>:<password>@cluster0.5yj73eu.mongodb.net/<collection>?retryWrites=true&w=majority'
+VITE_MONGODB_DB=<collection>
+
+VITE_PORT=<port !== 3000>
+VITE_PATH='http://localhost:'
+VITE_API_LABELS="/api/labels"
+```
+
+4. Build and Start the production mode:
+
+```
+npm run preview
+```
+
+5. Navigate to http://localhost: ```<port>``` in your browser.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
