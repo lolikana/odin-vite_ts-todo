@@ -1,5 +1,6 @@
 import './style.css';
 
+import { TLabel } from '../libs/types';
 import { setupCounter } from './counter';
 import typescriptLogo from './typescript.svg';
 
@@ -20,5 +21,19 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </p>
   </div>
 `;
+
+const fetchLabels = async (): Promise<{ fetchedLabels: TLabel[] }> => {
+  const res = await fetch('/api/labels');
+  if (!res.ok) {
+    throw new Error('Failed to retrieve labels from server');
+  }
+
+  return res.json() as unknown as { fetchedLabels: TLabel[] };
+};
+fetchLabels()
+  .then(res => console.log(res.fetchedLabels))
+  .catch(err => {
+    console.log(err);
+  });
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
