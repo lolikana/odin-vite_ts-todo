@@ -1,0 +1,111 @@
+@media only screen and (max-width: 699px) {
+  .nav {
+    width: $__full__width;
+    height: 0;
+    overflow: hidden;
+    position: relative;
+    top: -2rem;
+
+    &[data-visible='true'] {
+      height: fit-content;
+      top: 0rem;
+    }
+  }
+}
+
+.nav {
+  width: $__full__width;
+  background-color: $__grey300;
+  color: $__main;
+  font-weight: $__bold;
+  padding: 2rem 1rem 0;
+
+  @include mq(custom700) {
+    width: 15rem;
+    min-height: 100%;
+  }
+}
+
+.tabs--list .tabs--list-item,
+.labels--list .labels--list-item {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.tabs--list .tabs--list-item,
+.labels--list .labels--list-item .labels--list-container,
+.label--add {
+  border-radius: 5px;
+  border: 1px solid transparent;
+  &:hover {
+    background-color: rgba(189, 189, 189, 0.5);
+    border: 1px solid $__grey500;
+    @include transition(all 200ms ease);
+
+    &.orange {
+      background-color: rgba(236, 79, 31, 0.3);
+    }
+  }
+}
+
+.tabs--list .tabs--list-item[aria-selected='true'],
+.labels--list .labels--list-item[aria-selected='true'] .labels--list-container {
+  background-color: rgba(236, 79, 31, 0.3);
+  border: 1px solid $__grey500;
+}
+
+.labels--list .tabs--list-item,
+.labels--list-container {
+  @include width-height($__full__width, $__full__height);
+  @extend %display-flex;
+  @extend %align-items-center;
+}
+
+.labels--list .labels--list-item .labels--list-container .label--actions {
+  @extend %display-flex;
+  @extend %align-items-center;
+}
+
+.labels--list .labels--list-item .labels--list-container .label--actions .actions-btn {
+  margin-right: 0.25rem;
+  opacity: 0.6;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.nav--labels {
+  .label--title,
+  .label--add {
+    margin: 1rem 0;
+  }
+
+  .label--add-btn,
+  .btn-edit {
+    &[aria-disabled='true'] {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.label--add-form {
+  width: $__full__width;
+  .label--add-input {
+    background-color: $__grey200;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    max-width: 10rem;
+  }
+
+  label {
+    @extend %flex-center;
+  }
+}
+
+.input-label-error {
+  font-size: 0.75rem;
+  color: $__error;
+}

@@ -4,10 +4,81 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>TOP - OOP Project (Vite & TS) - TODO</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header class="header">
+      <div class="header--logo">
+        <img src="/images/todoist-icon.svg" alt="logo todoist" class="header--logo-img" />
+        <p class="header--logo-title">Todo List</p>
+      </div>
+      <div class="menu--toggler">
+        <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
+      </div>
+    </header>
+    <main id="main" class="main">
+      <nav id="nav" class="nav" data-visible="false"></nav>
+      <!-- <section id="app">
+        <h1 data-tab="inbox" class="section--title">Inbox</h1>
+        <table class="section--table">
+          <thead class="section--table-head">
+            <tr>
+              <th></th>
+              <th>Task</th>
+              <th class="table--head-actions">Actions</th>
+              <th class="table--head-fav"></th>
+            </tr>
+          </thead>
+          <tbody class="section--table-body">
+            <tr>
+              <td class="table--body-check">
+                <input type="checkbox" name="check-todo2" id="check-todo2" />
+                <label for="check-todo2"></label>
+              </td>
+              <td class="table--body-task">
+                <span class="task--text"
+                  >Do some workout, Do some workout, Do some workout, Do some workout, Do
+                  some workout</span
+                >
+                <div class="task--tags">
+                  <span class="task--tags-tag tag-label"><small>Gym</small></span>
+                  <span class="task--tags-tag tag-date"><small>01-04-2023</small></span>
+                </div>
+              </td>
+              <td class="table--body-actions">
+                <button class="actions-btn btn-show"></button>
+                <span> / </span>
+                <button class="actions-btn btn-edit"></button>
+                <span> / </span>
+                <button class="actions-btn btn-delete"></button>
+              </td>
+              <td class="table--body-fav">
+                <label class="fav-label" for="fav-todo1">
+                  <input
+                    class="fav-input"
+                    type="checkbox"
+                    name="fav-todo1"
+                    id="fav-todo1"
+                  />
+                  <span class="fav-star fill"></span>
+                  <span class="fav-star empty"></span>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="task--add orange">
+          <button class="task--add-btn">Add Task</button>
+        </div>
+      </section> -->
+      <!--app-html-->
+    </main>
+    <footer class="footer">
+      <p>
+        Copyright &copy; <time class="copyright-time"></time>
+        <a href="https://github.com/lolikana">lolikana</a>
+      </p>
+    </footer>
     <script type="module" src="/src/client/main.ts"></script>
   </body>
 </html>

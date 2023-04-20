@@ -1,22 +1,21 @@
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
-import express from 'express';
+import express, { Router } from 'express';
 import path from 'path';
 import ViteExpress from 'vite-express';
 
+import { router as labelsRoutes } from './routes/labels-routes';
 import ExpressError from './utils/expressError';
 import { mongoConnection } from './utils/mongodb';
 
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
-const port = process.env.PORT || 3001;
+const port = process.env.VITE_PORT || 3001;
 
 export const mongoDBUri: string = isProduction
   ? (process.env.VITE_MONGODB_URI as string)
   : `mongodb://localhost:27017/${process.env.VITE_MONGODB_DB as string}`;
-
-console.log(isProduction);
 
 const app = express();
 
@@ -41,11 +40,12 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.use('/api/labels', labelsRoutes as Router);
+
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));
 });
 
-// Start http server
 ViteExpress.listen(app, +port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
