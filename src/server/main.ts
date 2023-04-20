@@ -16,7 +16,6 @@ export const mongoDBUri: string = isProduction
   ? (process.env.VITE_MONGODB_URI as string)
   : `mongodb://localhost:27017/${process.env.VITE_MONGODB_DB as string}`;
 
-console.log(mongoDBUri);
 console.log(isProduction);
 
 const app = express();
