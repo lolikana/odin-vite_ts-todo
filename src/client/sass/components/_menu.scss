@@ -9,7 +9,6 @@
     &[data-visible='true'] {
       height: fit-content;
       top: 0rem;
-      padding: 2rem 1rem 0 2rem;
     }
   }
 }
@@ -19,7 +18,7 @@
   background-color: $__grey300;
   color: $__main;
   font-weight: $__bold;
-  padding: 2rem 1rem 0 2rem;
+  padding: 2rem 1rem 0;
 
   @include mq(custom700) {
     width: 15rem;
@@ -27,7 +26,8 @@
   }
 }
 
-.tab--list-item {
+.tabs--list .tabs--list-item,
+.labels--list .labels--list-item {
   margin-bottom: 1rem;
 
   &:last-child {
@@ -35,7 +35,8 @@
   }
 }
 
-.tab--list-item,
+.tabs--list .tabs--list-item,
+.labels--list .labels--list-item .labels--list-container,
 .label--add {
   border-radius: 5px;
   border: 1px solid transparent;
@@ -50,92 +51,61 @@
   }
 }
 
-.tab--list-item[aria-selected='active'] {
-  background-color: rgba(189, 189, 189, 0.5);
+.tabs--list .tabs--list-item[aria-selected='true'],
+.labels--list .labels--list-item[aria-selected='true'] .labels--list-container {
+  background-color: rgba(236, 79, 31, 0.3);
   border: 1px solid $__grey500;
 }
 
-.nav--label {
+.labels--list .tabs--list-item,
+.labels--list-container {
+  @include width-height($__full__width, $__full__height);
+  @extend %display-flex;
+  @extend %align-items-center;
+}
+
+.labels--list .labels--list-item .labels--list-container .label--actions {
+  @extend %display-flex;
+  @extend %align-items-center;
+}
+
+.labels--list .labels--list-item .labels--list-container .label--actions .actions-btn {
+  margin-right: 0.25rem;
+  opacity: 0.6;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.nav--labels {
   .label--title,
   .label--add {
     margin: 1rem 0;
   }
-}
 
-.tab--list-btn[data-tab],
-.tab--list-btn[data-label],
-.label--add-btn {
-  height: 2rem;
-  text-align: start;
-  padding: 0.25rem 0.5rem;
-
-  @extend %display-flex;
-  @extend %align-items-center;
-
-  @include width-height($__full__width, $__full__height);
-  @include transition(all 200ms ease);
-
-  &::before {
-    content: '';
-    display: inline-flex;
-    background-size: 1.5rem;
-    height: 1.5rem;
-    width: 1.5rem;
-    margin-right: 0.25rem;
-    opacity: 0.6;
-  }
-}
-
-.tab--list-btn[data-tab='inbox']::before {
-  background-image: url('/icons/inventory_2_FILL0_wght700_GRAD0_opsz48.svg');
-}
-.tab--list-btn[data-tab='today']::before {
-  background-image: url('/icons/today_FILL0_wght700_GRAD0_opsz48.svg');
-}
-.tab--list-btn[data-tab='upcoming']::before {
-  background-image: url('/icons/date_range_FILL0_wght700_GRAD0_opsz48.svg');
-}
-.tab--list-btn[data-label]::before {
-  background-image: url('/icons/label_FILL0_wght700_GRAD0_opsz48.svg');
-}
-.label--add-btn {
-  &::before {
-    background-image: url('/icons/add_FILL0_wght700_GRAD0_opsz48.svg');
-    @include transition(transform 300ms ease);
-  }
-  &:hover {
-    &::before {
-      @include transform(rotate(90deg));
-      @include transition(transform 300ms ease);
+  .label--add-btn,
+  .btn-edit {
+    &[aria-disabled='true'] {
+      cursor: not-allowed;
     }
   }
 }
 
-.label--list-item {
-  @include width-height($__full__width, $__full__height);
-  @extend %display-flex;
-  @extend %align-items-center;
+.label--add-form {
+  width: $__full__width;
+  .label--add-input {
+    background-color: $__grey200;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    max-width: 10rem;
+  }
+
+  label {
+    @extend %flex-center;
+  }
 }
 
-.label--list-delete {
-  @extend %display-flex;
-  @extend %align-items-center;
-  &::after {
-    content: '';
-    display: inline-flex;
-    background-size: 1.5rem;
-    background-size: 1rem;
-    height: 1rem;
-    width: 1rem;
-    margin-right: 0.25rem;
-    opacity: 0.6;
-  }
-}
-.label--list-delete {
-  &::after {
-    background-image: url('/icons/delete_FILL0_wght500_GRAD0_opsz48.svg');
-  }
-  &:hover::after {
-    background-image: url('/icons/delete_FILLred_wght500_GRAD0_opsz48.svg');
-  }
+.input-label-error {
+  font-size: 0.75rem;
+  color: $__error;
 }

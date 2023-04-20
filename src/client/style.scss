@@ -16,5 +16,9 @@
 
 /** Components - UI **/
 @import './sass/components/ui/burger';
+@import './sass/components/ui/buttons';
+@import './sass/components/ui/check';
+@import './sass/components/ui/star';
 
 /** Pages **/
+@import './sass/pages/sectionTodo';

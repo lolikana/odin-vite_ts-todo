@@ -19,24 +19,26 @@
     <main id="app">
       <nav class="nav" data-visible="false">
         <div class="nav--show">
-          <ul class="tab--list">
-            <li class="tab--list-item" aria-selected="active">
-              <button class="tab--list-btn" data-tab="inbox">Inbox</button>
+          <ul class="tabs--list">
+            <li class="tabs--list-item" aria-selected="active">
+              <button class="tabs--list-btn" data-tab="inbox">Inbox</button>
             </li>
-            <li class="tab--list-item">
-              <button class="tab--list-btn" data-tab="today">Today</button>
+            <li class="tabs--list-item">
+              <button class="tabs--list-btn" data-tab="today">Today</button>
             </li>
-            <li class="tab--list-item">
-              <button class="tab--list-btn" data-tab="upcoming">Upcoming</button>
+            <li class="tabs--list-item">
+              <button class="tabs--list-btn" data-tab="upcoming">Upcoming</button>
             </li>
           </ul>
         </div>
         <div class="nav--label">
           <h2 class="label--title">Label</h2>
-          <ul class="label--list">
-            <li class="tab--list-item label--list-item">
-              <button class="tab--list-btn label--list-btn" data-label="gym">Gym</button>
-              <button class="label--list-delete" data-label-delete="gym"></button>
+          <ul class="labels--list">
+            <li class="tabs--list-item labels--list-item">
+              <button class="tabs--list-btn labels--list-btn" data-label="gym">
+                Gym
+              </button>
+              <button class="labels--list-delete" data-label-delete="gym"></button>
             </li>
           </ul>
           <div class="label--add orange">
@@ -44,6 +46,59 @@
           </div>
         </div>
       </nav>
+      <section id="app">
+        <h1 data-tab="inbox" class="section--title">Inbox</h1>
+        <table class="section--table">
+          <thead class="section--table-head">
+            <tr>
+              <th></th>
+              <th>Task</th>
+              <th class="table--head-actions">Actions</th>
+              <th class="table--head-fav"></th>
+            </tr>
+          </thead>
+          <tbody class="section--table-body">
+            <tr>
+              <td class="table--body-check">
+                <input type="checkbox" name="check-todo2" id="check-todo2" />
+                <label for="check-todo2"></label>
+              </td>
+              <td class="table--body-task">
+                <span class="task--text"
+                  >Do some workout, Do some workout, Do some workout, Do some workout, Do
+                  some workout</span
+                >
+                <div class="task--tags">
+                  <span class="task--tags-tag tag-label"><small>Gym</small></span>
+                  <span class="task--tags-tag tag-date"><small>01-04-2023</small></span>
+                </div>
+              </td>
+              <td class="table--body-actions">
+                <button class="actions-btn btn-show"></button>
+                <span> / </span>
+                <button class="actions-btn btn-edit"></button>
+                <span> / </span>
+                <button class="actions-btn btn-delete"></button>
+              </td>
+              <td class="table--body-fav">
+                <label class="fav-label" for="fav-todo1">
+                  <input
+                    class="fav-input"
+                    type="checkbox"
+                    name="fav-todo1"
+                    id="fav-todo1"
+                  />
+                  <span class="fav-star fill"></span>
+                  <span class="fav-star empty"></span>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="task--add orange">
+          <button class="task--add-btn">Add Task</button>
+        </div>
+      </section>
     </main>
     <footer class="footer">
       <p>
