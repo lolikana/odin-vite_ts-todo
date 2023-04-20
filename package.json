@@ -35,5 +35,8 @@
     "typescript": "^5.0.4",
     "ts-node": "^10.9.1",
     "vite-express": "^0.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
