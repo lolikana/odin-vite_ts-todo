@@ -1,0 +1,20 @@
+/** Utils **/
+@import './sass/utils/variables';
+@import './sass/utils/mixins';
+
+/** Config **/
+@import './sass/config/reset';
+@import './sass/config/color';
+@import './sass/config/typography';
+
+@import './sass/base';
+
+/** Components **/
+@import './sass/components/header';
+@import './sass/components/footer';
+@import './sass/components/menu';
+
+/** Components - UI **/
+@import './sass/components/ui/burger';
+
+/** Pages **/

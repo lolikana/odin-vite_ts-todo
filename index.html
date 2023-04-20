@@ -4,10 +4,53 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>TOP - OOP Project (Vite & TS) - TODO</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header class="header">
+      <div class="header--logo">
+        <img src="/images/todoist-icon.svg" alt="logo todoist" class="header--logo-img" />
+        <p class="header--logo-title">Todo List</p>
+      </div>
+      <div class="menu--toggler">
+        <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
+      </div>
+    </header>
+    <main id="app">
+      <nav class="nav" data-visible="false">
+        <div class="nav--show">
+          <ul class="tab--list">
+            <li class="tab--list-item" aria-selected="active">
+              <button class="tab--list-btn" data-tab="inbox">Inbox</button>
+            </li>
+            <li class="tab--list-item">
+              <button class="tab--list-btn" data-tab="today">Today</button>
+            </li>
+            <li class="tab--list-item">
+              <button class="tab--list-btn" data-tab="upcoming">Upcoming</button>
+            </li>
+          </ul>
+        </div>
+        <div class="nav--label">
+          <h2 class="label--title">Label</h2>
+          <ul class="label--list">
+            <li class="tab--list-item label--list-item">
+              <button class="tab--list-btn label--list-btn" data-label="gym">Gym</button>
+              <button class="label--list-delete" data-label-delete="gym"></button>
+            </li>
+          </ul>
+          <div class="label--add orange">
+            <button class="label--add-btn">Add Label</button>
+          </div>
+        </div>
+      </nav>
+    </main>
+    <footer class="footer">
+      <p>
+        Copyright &copy; <time class="copyright-time"></time>
+        <a href="https://github.com/lolikana">lolikana</a>
+      </p>
+    </footer>
     <script type="module" src="/src/client/main.ts"></script>
   </body>
 </html>
