@@ -1,4 +1,5 @@
-import { querySelector } from '../../helpers';
+import { querySelector } from '@/client/scripts/helpers';
+
 import { createLabelInputElement } from './inputLabel';
 
 export const createLabelFormElement = (

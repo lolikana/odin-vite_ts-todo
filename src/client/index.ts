@@ -2,24 +2,22 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData } from '../libs/data';
-import { TLabel } from '../libs/types';
-import { labelSchema } from '../libs/validations';
-import { createLabel, deleteLabel, fetchLabels, updateLabel } from './api';
-import {
-  createDivLabelsElement,
-  createListElement,
-  createListLabelsElement,
-  createNavElement
-} from './scripts/components';
+import { createDivLabelsElement, createNavElement } from '@/client/scripts/components';
 import {
   createLabelFormElement,
   deleteLabelInputElement
-} from './scripts/components/label';
-import { firstCapitalLetter, querySelector, querySelectorAll } from './scripts/helpers';
+} from '@/client/scripts/components/label';
+import {
+  firstCapitalLetter,
+  querySelector,
+  querySelectorAll
+} from '@/client/scripts/helpers';
+import { Label } from '@/client/scripts/models';
+import { labelsData } from '~/libs/data';
+import { labelSchema } from '~/libs/validations';
 
-const main = document.getElementById('main') as HTMLElement;
-const nav = document.getElementById('nav') as HTMLElement;
+const main = querySelector('#main') as HTMLElement;
+const nav = querySelector('#nav') as HTMLElement;
 
 main.append(createNavElement(nav));
 nav.append(createDivLabelsElement());
@@ -33,8 +31,8 @@ const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
-/* Navbar START */
-/** Selected tab **/
+/* ------ Navbar START ------ */
+/** ------ Selected tab START ------ **/
 const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
   const target = e.target as HTMLElement;
   let selectedTab;
@@ -81,8 +79,31 @@ labelsList.addEventListener('click', (e: Event) => {
   const labelsListItems = querySelectorAll('.labels--list-item');
   selectTab(e, labelsListItems);
 });
+/** ------ Selected tab END ------ **/
+/** ------ Label START ------ **/
+const isDisabledEditBtns = (boolean: boolean) => {
+  const editBtns = querySelectorAll('.btn-edit');
+  if (boolean === true) editBtns.forEach(btn => (btn.ariaDisabled = 'true'));
+  if (boolean === false) editBtns.forEach(btn => (btn.ariaDisabled = 'false'));
+};
 
-/** Add label START **/
+const removeLabelInputElement = () => {
+  deleteLabelInputElement();
+  addLabelBtn.ariaDisabled = 'false';
+  return;
+};
+
+const removeInput = (el?: HTMLElement) => {
+  removeLabelInputElement();
+  if (el) el.style.display = 'inline-flex';
+  isDisabledEditBtns(false);
+};
+
+export const deleteEmptyLabelsList = (content?: string) => {
+  if (labelsData.length === 0) {
+    labelsList.textContent = content ? content : '';
+  }
+};
 
 const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElement) => {
   const formData = new FormData(form);
@@ -94,35 +115,11 @@ const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElement) =>
     return;
   }
 
-  const enteredLabel = firstCapitalLetter(validatationData.data.inputLabel);
+  const enteredLabel = validatationData.data.inputLabel;
 
   return { name: enteredLabel };
 };
-
-const deleteEmptyLabelsList = (content?: string) => {
-  if (labelsData.length === 0) {
-    labelsList.textContent = content ? content : '';
-  }
-};
-
-const removeLabelInputElement = () => {
-  deleteLabelInputElement();
-  addLabelBtn.ariaDisabled = 'false';
-  return;
-};
-
-const addLabelElement = (label: TLabel) => {
-  deleteEmptyLabelsList();
-  labelsData.push(label);
-  labelsList.appendChild(createListElement('labels', label.name));
-};
-
-const isDisabledEditBtns = (boolean: boolean) => {
-  const editBtns = querySelectorAll('.btn-edit');
-  if (boolean === true) editBtns.forEach(btn => (btn.ariaDisabled = 'true'));
-  if (boolean === false) editBtns.forEach(btn => (btn.ariaDisabled = 'false'));
-};
-
+/*** ------ Add Label START ------ ***/
 addLabelBtn?.addEventListener('click', () => {
   deleteEmptyLabelsList();
 
@@ -131,29 +128,21 @@ addLabelBtn?.addEventListener('click', () => {
   if (addLabelBtn?.ariaDisabled === 'false') {
     isDisabledEditBtns(true);
 
-    const removeInput = () => {
-      removeLabelInputElement();
-      isDisabledEditBtns(false);
-    };
-
     const { form, pError, cancelLabelBtn } = createLabelFormElement('POST', labelsList);
 
-    form.addEventListener('submit', async (e: SubmitEvent) => {
+    form.addEventListener('submit', (e: SubmitEvent) => {
       e.preventDefault();
-      const enteredLabel = labelFormSubmit(form, pError) as TLabel;
+      const enteredLabel: { name: string } | undefined = labelFormSubmit(form, pError);
       if (!enteredLabel) return;
 
-      const isLabelExist = labelsData.some(
-        label => label.name.toLocaleLowerCase() === enteredLabel.name.toLocaleLowerCase()
-      );
+      const isLabelExist = labelsData.some(label => label.name === enteredLabel.name);
 
       if (isLabelExist) {
         pError.textContent = 'This label already exist';
         return;
       }
 
-      await createLabel(enteredLabel).catch((err: unknown) => console.log('test:', err));
-      addLabelElement(enteredLabel);
+      Label.save(labelsList, enteredLabel).catch(err => console.log(err));
       removeInput();
     });
 
@@ -168,18 +157,19 @@ addLabelBtn?.addEventListener('click', () => {
     });
   }
 });
-/** Add label END **/
-/** Delete / Edit label START **/
-const editDeleteLabel = async (e: Event) => {
+/*** ------ Add Label END ------ ***/
+/*** ------ Delete / Edit label START ------ ***/
+export const editDeleteLabel = async (e: Event) => {
   const target = e.target as HTMLButtonElement;
-  const label = target.dataset.label as string;
+  const targetedLabel = target.dataset.label as string;
 
-  if (target.ariaDisabled === 'true' || !label) return;
-
+  if (target.ariaDisabled === 'true' || !targetedLabel) return;
+  const label = targetedLabel.toLocaleLowerCase();
   const item = target.closest('.labels--list-item') as HTMLLIElement;
   const listItem = target.closest('.labels--list-item') as HTMLLIElement;
   const listItemContainer = listItem.firstChild as HTMLDivElement;
   const listItemBtn = listItemContainer.firstChild as HTMLButtonElement;
+
   const editBtn = querySelector(`.btn-edit[data-label='${label}']`) as HTMLButtonElement;
   const deleteBtn = querySelector(
     `.btn-delete[data-label='${label}']`
@@ -196,19 +186,18 @@ const editDeleteLabel = async (e: Event) => {
     labelsData.forEach((labelData, i) => {
       if (labelData.name === label) labelsData.splice(i, 1);
     });
+
+    const deletedLabel = await Label.delete(label).catch(err => console.log(err));
+
+    if (!deletedLabel) return;
     item.remove();
-    await deleteLabel(label);
 
     deleteEmptyLabelsList('No Label');
     return;
   }
 
   if (isEditBtn) {
-    const removeInput = () => {
-      removeLabelInputElement();
-      listItemContainer.style.display = 'inline-flex';
-      isDisabledEditBtns(false);
-    };
+    removeInput(listItemContainer);
 
     labelsData.forEach((existingLabel, i) => {
       isDisabledEditBtns(true);
@@ -223,61 +212,47 @@ const editDeleteLabel = async (e: Event) => {
 
         form.addEventListener('submit', async (e: SubmitEvent) => {
           e.preventDefault();
-          const enteredLabel = labelFormSubmit(form, pError) as TLabel;
+          const input: { name: string } | undefined = labelFormSubmit(form, pError);
 
-          if (!enteredLabel || enteredLabel.name === label) {
+          const enteredLabel = input?.name.toLocaleLowerCase();
+
+          if (!enteredLabel || enteredLabel === label) {
             removeInput();
             return;
           }
 
-          const isLabelExist = labelsData.some(
-            label =>
-              label.name.toLocaleLowerCase() === enteredLabel.name.toLocaleLowerCase()
-          );
+          const isLabelExist = labelsData.some(label => label.name === enteredLabel);
 
           if (isLabelExist) {
             pError.textContent = 'This label already exist';
             return;
           }
 
-          labelsData[i] = enteredLabel;
-          listItemBtn.textContent = enteredLabel.name;
-          listItemBtn.dataset.label = enteredLabel.name;
-          deleteBtn.dataset.label = enteredLabel.name;
-          editBtn.dataset.label = enteredLabel.name;
-          await updateLabel(existingLabel, enteredLabel);
-          removeInput();
+          const updateLabel = await Label.update(existingLabel.name, enteredLabel);
+
+          if (!updateLabel) return;
+
+          labelsData[i] = { name: enteredLabel };
+          listItemBtn.textContent = firstCapitalLetter(enteredLabel);
+          listItemBtn.dataset.label = enteredLabel;
+          deleteBtn.dataset.label = enteredLabel;
+          editBtn.dataset.label = enteredLabel;
+          removeInput(listItemContainer);
         });
 
         addEventListener('keydown', (e: KeyboardEvent) => {
           if (e.key !== 'Escape') return;
-          removeInput();
+          removeInput(listItemContainer);
         });
 
         cancelLabelBtn.addEventListener('click', () => {
-          removeInput();
+          removeInput(listItemContainer);
         });
       }
     });
   }
 };
-/** Delete / Edit label END **/
-/* Navbar END */
-
-fetchLabels()
-  .then(res => {
-    if (res.fetchedLabels.length === 0) {
-      labelsList.textContent = 'No Label';
-      return;
-    }
-
-    res.fetchedLabels.map(label => labelsData.push(label));
-    createListLabelsElement(labelsList, labelsData);
-
-    labelsList.addEventListener('click', async (e: Event) => {
-      await editDeleteLabel(e);
-    });
-  })
-  .catch(err => {
-    console.log(err);
-  });
+/*** ------ Delete / Edit label END ------ ***/
+Label.findAllLabels(labelsList).catch(err => console.log(err));
+/** ------ Label START ------ **/
+/* ------ Navbar END ------ */

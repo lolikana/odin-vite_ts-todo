@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "scripts": {
     "vite": "vite",
-    "dev": "nodemon src/server/main.ts -w src/server",
-    "start": "NODE_ENV=production ts-node src/server/main.ts",
+    "dev": "nodemon src/server/index.ts -w src/server",
+    "start": "NODE_ENV=production ts-node src/server/index.ts",
     "build": "vite build",
-    "preview": "vite build && NODE_ENV=production ts-node src/server/main.ts",
+    "preview": "vite build && NODE_ENV=production ts-node src/server/index.ts",
     "lint": "eslint --fix -f table './**/*.ts'",
     "lint-staged": "lint-staged",
     "prettier-format": "prettier --config .prettierrc './**/*.{ts,css,scss,json}' --write"
@@ -38,6 +38,7 @@
     "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
     "vite": "^4.2.2",
+    "vite-tsconfig-paths": "^4.2.0",
     "zod": "^3.21.4"
   },
   "dependencies": {

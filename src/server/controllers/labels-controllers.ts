@@ -14,13 +14,13 @@ export default {
       return;
     }
 
-    res.json({ fetchedLabels: labels.map(label => label.toObject({ getters: true })) });
+    res.json(labels.map(label => label.toObject({ getters: true })));
   }) as RequestHandler,
 
   get: (async (req, res, next): Promise<void> => {
     const { name } = req.params;
     const label: TLabel | null = await LabelModel.findOne({
-      name: name.toLocaleLowerCase()
+      name: name
     });
 
     if (!label || label === null) {
@@ -38,8 +38,9 @@ export default {
       const error = new ExpressError('Invalid / Empty label, please try again', 422);
       next(error);
     }
+
     const labelAlreadyExist = await LabelModel.find({
-      name: label.name.toLocaleLowerCase()
+      name: label.name
     });
 
     if (labelAlreadyExist.length !== 0) {
@@ -49,42 +50,64 @@ export default {
 
     const { name } = label;
 
-    const newLabel = new LabelModel({ name: name.toLocaleLowerCase() });
+    const newLabel = new LabelModel({ name: name });
 
     await newLabel.save();
     res.status(201).json(label);
   }) as RequestHandler,
 
   update: (async (req, res, next): Promise<void> => {
-    const { name } = req.params;
+    try {
+      const { name } = req.params;
 
-    if (!name) console.log('No params were defined');
+      if (!name) console.log('No params were defined');
 
-    const label = req.body as TLabel;
+      const label = req.body as TLabel;
 
-    if (!label) {
-      const error = new ExpressError('Invalid / Empty label, please try again', 422);
-      next(error);
+      if (!label) {
+        const error = new ExpressError('Empty label, please try again', 422);
+        next(error);
+      }
+
+      const isParamsExist = await LabelModel.findOne({ name: name });
+
+      if (isParamsExist === null) {
+        const error = new ExpressError('Invalid path, please try again', 422);
+        next(error);
+      }
+
+      const updatedLabel = await LabelModel.findOneAndUpdate(
+        { name: name },
+        { ...label, name: label.name },
+        { new: true }
+      );
+
+      res.status(201).json(updatedLabel);
+    } catch (err) {
+      console.log((err as Error).message);
     }
-
-    const updatedLabel = await LabelModel.findOneAndUpdate(
-      { name: name.toLocaleLowerCase() },
-      { ...label, name: label.name.toLocaleLowerCase() },
-      { new: true }
-    );
-
-    res.status(201).json(updatedLabel);
   }) as RequestHandler<{ name: string }>,
 
-  delete: (async (req, res): Promise<void> => {
-    const { name } = req.params;
+  delete: (async (req, res, next): Promise<void> => {
+    try {
+      const { name } = req.params;
 
-    if (!name) console.log('No params were defined');
+      if (!name) console.log('No params were defined');
 
-    await LabelModel.findOneAndDelete({
-      name: name.toLocaleLowerCase()
-    });
+      const isParamsExist = await LabelModel.findOne({ name: name });
 
-    res.status(201).json('Label successfully deleted');
+      if (isParamsExist === null) {
+        const error = new ExpressError('Invalid path, please try again', 422);
+        next(error);
+      }
+
+      await LabelModel.findOneAndDelete({
+        name: name
+      });
+
+      res.status(201).json('Label successfully deleted');
+    } catch (err) {
+      console.log((err as Error).message);
+    }
   }) as RequestHandler<{ name: string }>
 };

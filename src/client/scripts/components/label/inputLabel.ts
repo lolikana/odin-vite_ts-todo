@@ -1,4 +1,4 @@
-import { create } from '../../helpers';
+import { create } from '@/client/scripts/helpers';
 
 export const createLabelInputElement = (method: 'POST' | 'PUT', placeholder?: string) => {
   const form = create('form') as HTMLFormElement;
@@ -10,7 +10,7 @@ export const createLabelInputElement = (method: 'POST' | 'PUT', placeholder?: st
 
   let placeholderLabel;
   if (placeholder) {
-    placeholderLabel = placeholder.toLocaleLowerCase();
+    placeholderLabel = placeholder;
   }
   form.classList.add('label--add-form');
   form.method = 'POST';
