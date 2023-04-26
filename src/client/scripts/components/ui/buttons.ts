@@ -1,4 +1,4 @@
-import { create } from '@/client/scripts/helpers';
+import { create } from '../../helpers';
 
 export const createAddLabelBtn = () => {
   const div = create('div');

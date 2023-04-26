@@ -1,5 +1,5 @@
-import { tabs } from '~/libs/data';
-
+import { tabs } from '../../../libs/data';
+import { TLabel } from '../../../libs/types';
 import { create, firstCapitalLetter } from '../helpers';
 import { createAddLabelBtn } from './ui/buttons';
 
@@ -92,7 +92,7 @@ export const createDivLabelsElement = () => {
 
 export const createListLabelsElement = (
   ul: HTMLUListElement,
-  labels: { name: string }[] | null
+  labels: TLabel[] | null
 ) => {
   labels?.map(label => {
     ul.append(createListElement('labels', label.name));

@@ -16,9 +16,8 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
     "tsconfigRootDir": "./",
-    "project": ["./tsconfig.json", "./src/client/tsconfig.json"]
+    "project": "tsconfig.json"
   },
-  "ignorePatterns": ["**/*.test.ts"],
   "plugins": ["@typescript-eslint", "import", "simple-import-sort", "prettier"],
   "rules": {
     "indent": [2, 2, { "SwitchCase": 1 }],

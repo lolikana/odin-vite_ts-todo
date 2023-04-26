@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { mongoDBUri } from '..';
+import { mongoDBUri } from '../main';
 
 // Set `strictQuery: false` to globally opt into filtering by properties that aren't in the schema
 // Included because it removes preparatory warnings for Mongoose 7.

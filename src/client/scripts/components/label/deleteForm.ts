@@ -1,4 +1,4 @@
-import { querySelector } from '@/client/scripts/helpers';
+import { querySelector } from '../../helpers';
 
 export const deleteLabelInputElement = () => {
   const form = querySelector('.label--add-form');
