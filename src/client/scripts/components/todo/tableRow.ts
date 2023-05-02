@@ -1,6 +1,7 @@
-export function createTodoItem() {
+export function createTodoItemElement() {
   const tr = document.createElement('tr');
 
+  // create check input
   const td1 = document.createElement('td');
   td1.className = 'table--body-check';
 
@@ -12,9 +13,9 @@ export function createTodoItem() {
   const label = document.createElement('label');
   label.htmlFor = 'check-todo2';
 
-  td1.appendChild(input);
-  td1.appendChild(label);
+  td1.append(input, label);
 
+  // create Todo Text
   const td2 = document.createElement('td');
   td2.className = 'table--body-task';
 
@@ -23,6 +24,7 @@ export function createTodoItem() {
   span.textContent =
     'Do some workout, Do some workout, Do some workout, Do some workout, Do some workout';
 
+  // create tags Label and dueDate
   const div = document.createElement('div');
   div.className = 'task--tags';
 
@@ -38,12 +40,11 @@ export function createTodoItem() {
   small2.textContent = '01-04-2023';
   spanTag2.appendChild(small2);
 
-  div.appendChild(spanTag1);
-  div.appendChild(spanTag2);
+  div.append(spanTag1, spanTag2);
 
-  td2.appendChild(span);
-  td2.appendChild(div);
+  td2.append(span, div);
 
+  // create Buttons actions
   const td3 = document.createElement('td');
   td3.className = 'table--body-actions';
 
@@ -62,12 +63,9 @@ export function createTodoItem() {
   const btnDelete = document.createElement('button');
   btnDelete.className = 'actions-btn btn-delete';
 
-  td3.appendChild(btnShow);
-  td3.appendChild(span1);
-  td3.appendChild(btnEdit);
-  td3.appendChild(span2);
-  td3.appendChild(btnDelete);
+  td3.append(btnShow, span1, btnEdit, span2, btnDelete);
 
+  // create Favorites input
   const td4 = document.createElement('td');
   td4.className = 'table--body-fav';
 
@@ -87,16 +85,11 @@ export function createTodoItem() {
   const favStarEmpty = document.createElement('span');
   favStarEmpty.className = 'fav-star empty';
 
-  favLabel.appendChild(favInput);
-  favLabel.appendChild(favStarFill);
-  favLabel.appendChild(favStarEmpty);
+  favLabel.append(favInput, favStarFill, favStarEmpty);
 
   td4.appendChild(favLabel);
 
-  tr.appendChild(td1);
-  tr.appendChild(td2);
-  tr.appendChild(td3);
-  tr.appendChild(td4);
+  tr.append(td1, td2, td3, td4);
 
   return tr;
 }

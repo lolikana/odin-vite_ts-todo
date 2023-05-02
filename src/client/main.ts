@@ -13,6 +13,7 @@ import {
   labelFormSubmit,
   removeLabelInput
 } from './scripts/models/label-class';
+import { Todo } from './scripts/models/todo-class';
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
@@ -129,3 +130,7 @@ addLabelBtn?.addEventListener('click', () => {
 Label.prototype.getAll(labelsList);
 /** Fetch Labels END **/
 /* Navbar END */
+/* Todo START */
+const tbody = querySelector('.section--table-body') as HTMLTableElement;
+tbody?.appendChild(Todo.prototype.createElement);
+/* Todo END */
