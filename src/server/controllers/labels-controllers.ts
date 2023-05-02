@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 
-import { TLabel } from '../../libs/types';
+import { Label } from '../../client/scripts/models/label-class';
 import { LabelModel } from '../models';
 import ExpressError from '../utils/expressError';
 
@@ -14,13 +14,13 @@ export default {
       return;
     }
 
-    res.json({ fetchedLabels: labels.map(label => label.toObject({ getters: true })) });
+    res.json(labels.map(label => label.toObject({ getters: true })));
   }) as RequestHandler,
 
   get: (async (req, res, next): Promise<void> => {
     const { name } = req.params;
-    const label: TLabel | null = await LabelModel.findOne({
-      name: name.toLocaleLowerCase()
+    const label: Label | null = await LabelModel.findOne({
+      name: name
     });
 
     if (!label || label === null) {
@@ -32,14 +32,14 @@ export default {
   }) as RequestHandler,
 
   create: (async (req, res, next): Promise<void> => {
-    const label = (await req.body) as TLabel;
+    const label = (await req.body) as Label;
 
     if (!label) {
       const error = new ExpressError('Invalid / Empty label, please try again', 422);
       next(error);
     }
     const labelAlreadyExist = await LabelModel.find({
-      name: label.name.toLocaleLowerCase()
+      name: label.name
     });
 
     if (labelAlreadyExist.length !== 0) {
@@ -49,7 +49,7 @@ export default {
 
     const { name } = label;
 
-    const newLabel = new LabelModel({ name: name.toLocaleLowerCase() });
+    const newLabel = new LabelModel({ name: name });
 
     await newLabel.save();
     res.status(201).json(label);
@@ -60,7 +60,7 @@ export default {
 
     if (!name) console.log('No params were defined');
 
-    const label = req.body as TLabel;
+    const label = req.body as Label;
 
     if (!label) {
       const error = new ExpressError('Invalid / Empty label, please try again', 422);
@@ -68,8 +68,8 @@ export default {
     }
 
     const updatedLabel = await LabelModel.findOneAndUpdate(
-      { name: name.toLocaleLowerCase() },
-      { ...label, name: label.name.toLocaleLowerCase() },
+      { name: name },
+      { ...label, name: label.name, id: label.id },
       { new: true }
     );
 
@@ -82,7 +82,7 @@ export default {
     if (!name) console.log('No params were defined');
 
     await LabelModel.findOneAndDelete({
-      name: name.toLocaleLowerCase()
+      name: name
     });
 
     res.status(201).json('Label successfully deleted');
