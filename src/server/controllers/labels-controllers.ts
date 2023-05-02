@@ -18,9 +18,9 @@ export default {
   }) as RequestHandler,
 
   get: (async (req, res, next): Promise<void> => {
-    const { name } = req.params;
+    const { labelId } = req.params;
     const label: Label | null = await LabelModel.findOne({
-      name: name
+      labelId: labelId
     });
 
     if (!label || label === null) {
@@ -39,7 +39,7 @@ export default {
       next(error);
     }
     const labelAlreadyExist = await LabelModel.find({
-      name: label.name
+      labelId: label.labelId
     });
 
     if (labelAlreadyExist.length !== 0) {
@@ -47,18 +47,18 @@ export default {
       next(error);
     }
 
-    const { name } = label;
+    const { name, labelId } = label;
 
-    const newLabel = new LabelModel({ name: name });
+    const newLabel = new LabelModel({ name: name, labelId: labelId });
 
     await newLabel.save();
     res.status(201).json(label);
   }) as RequestHandler,
 
   update: (async (req, res, next): Promise<void> => {
-    const { name } = req.params;
+    const { labelId } = req.params;
 
-    if (!name) console.log('No params were defined');
+    if (!labelId) console.log('No params were defined');
 
     const label = req.body as Label;
 
@@ -68,23 +68,23 @@ export default {
     }
 
     const updatedLabel = await LabelModel.findOneAndUpdate(
-      { name: name },
-      { ...label, name: label.name, id: label.id },
+      { labelId: labelId },
+      { ...label, name: label.name, labelId: label.labelId },
       { new: true }
     );
 
     res.status(201).json(updatedLabel);
-  }) as RequestHandler<{ name: string }>,
+  }) as RequestHandler<{ labelId: string }>,
 
   delete: (async (req, res): Promise<void> => {
-    const { name } = req.params;
+    const { labelId } = req.params;
 
-    if (!name) console.log('No params were defined');
+    if (!labelId) console.log('No params were defined');
 
     await LabelModel.findOneAndDelete({
-      name: name
+      labelId: labelId
     });
 
     res.status(201).json('Label successfully deleted');
-  }) as RequestHandler<{ name: string }>
+  }) as RequestHandler<{ labelId: string }>
 };

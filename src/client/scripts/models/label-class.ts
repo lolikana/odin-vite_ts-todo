@@ -8,13 +8,13 @@ import { createLabelFormElement, deleteLabelInputElement } from '../components/l
 import { firstCapitalLetter, querySelector, querySelectorAll } from '../helpers';
 
 export class Label {
-  id: string;
+  labelId: string;
   _id?: Types.ObjectId;
   name: string;
   constructor(name: string, _id?: Types.ObjectId) {
     this.name = name;
     this._id = _id;
-    this.id = name;
+    this.labelId = name;
   }
 
   get label() {
