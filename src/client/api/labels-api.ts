@@ -1,18 +1,18 @@
-import { TLabel } from '../../libs/types';
+import { labelsData } from '../../libs/data';
+import { Label } from '../scripts/models/label-class';
 
 const isProduction = import.meta.env.MODE === 'production';
 const path = import.meta.env.VITE_PATH + import.meta.env.VITE_PORT;
 
-export const fetchLabels = async (): Promise<{ fetchedLabels: TLabel[] }> => {
+export const fetchLabels = async (): Promise<Label[]> => {
   const res = await fetch(`${!isProduction ? path : ''}/api/labels`);
   if (!res.ok) {
     throw new Error('Failed to retrieve labels from server');
   }
-
-  return res.json() as unknown as { fetchedLabels: TLabel[] };
+  return res.json() as unknown as Label[];
 };
 
-export const createLabel = async (label: TLabel) => {
+export const createLabel = async (label: Label) => {
   try {
     const res = await fetch(`${!isProduction ? path : ''}/api/labels`, {
       method: 'POST',
@@ -21,17 +21,15 @@ export const createLabel = async (label: TLabel) => {
     });
 
     if (!res.ok) throw new Error('Failed to create label');
-
-    await fetchLabels();
   } catch (err: unknown) {
     console.log(err);
   }
 };
 
-export const updateLabel = async (existingLabel: TLabel, enteredLabel: TLabel) => {
+export const updateLabel = async (existingLabel: Label, enteredLabel: Label) => {
   try {
     const res = await fetch(
-      `${!isProduction ? path : ''}/api/labels/${existingLabel.name.toLocaleLowerCase()}`,
+      `${!isProduction ? path : ''}/api/labels/${existingLabel.name.toLowerCase()}`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -46,12 +44,9 @@ export const updateLabel = async (existingLabel: TLabel, enteredLabel: TLabel) =
 
 export const deleteLabel = async (existingLabel: string) => {
   try {
-    const res = await fetch(
-      `${!isProduction ? path : ''}/api/labels/${existingLabel.toLocaleLowerCase()}`,
-      {
-        method: 'DELETE'
-      }
-    );
+    const res = await fetch(`${!isProduction ? path : ''}/api/labels/${existingLabel}`, {
+      method: 'DELETE'
+    });
     if (!res.ok) throw new Error('Failed to delete label');
   } catch (err: unknown) {
     console.log(err);
