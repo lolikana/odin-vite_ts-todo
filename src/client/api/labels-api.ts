@@ -1,4 +1,3 @@
-import { labelsData } from '../../libs/data';
 import { Label } from '../scripts/models/label-class';
 
 const isProduction = import.meta.env.MODE === 'production';
