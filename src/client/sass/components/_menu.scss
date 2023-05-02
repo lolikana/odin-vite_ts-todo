@@ -3,8 +3,8 @@
     width: $__full__width;
     height: 0;
     overflow: hidden;
-    position: relative;
     top: -2rem;
+    position: absolute;
 
     &[data-visible='true'] {
       height: fit-content;

@@ -3,7 +3,6 @@ import './scripts/components/footer';
 import './scripts/burger';
 
 import { labelsData } from '../libs/data';
-import { labelSchema } from '../libs/validations';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
 import { querySelector, querySelectorAll } from './scripts/helpers';
