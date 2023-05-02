@@ -27,9 +27,24 @@ footer {
 
 main {
   height: 100%;
+  position: relative;
+
+  nav {
+    position: absolute;
+  }
 
   @include mq(custom700) {
     display: flex;
+    flex-direction: row;
+
+    nav {
+      order: 1;
+      position: inherit;
+    }
+
+    section {
+      order: 2;
+    }
   }
 }
 
