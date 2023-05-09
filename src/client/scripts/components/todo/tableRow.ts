@@ -1,4 +1,6 @@
-export function createTodoItemElement() {
+import { TTodo } from '../../../../libs/types';
+
+export function createTodoItemElement(todo: TTodo) {
   const tr = document.createElement('tr');
 
   // create check input
@@ -9,6 +11,7 @@ export function createTodoItemElement() {
   input.type = 'checkbox';
   input.name = 'check-todo2';
   input.id = 'check-todo2';
+  input.checked = todo.done;
 
   const label = document.createElement('label');
   label.htmlFor = 'check-todo2';
@@ -21,8 +24,7 @@ export function createTodoItemElement() {
 
   const span = document.createElement('span');
   span.className = 'task--text';
-  span.textContent =
-    'Do some workout, Do some workout, Do some workout, Do some workout, Do some workout';
+  span.textContent = todo.text;
 
   // create tags Label and dueDate
   const div = document.createElement('div');
@@ -31,13 +33,13 @@ export function createTodoItemElement() {
   const spanTag1 = document.createElement('span');
   spanTag1.className = 'task--tags-tag tag-label';
   const small1 = document.createElement('small');
-  small1.textContent = 'Gym';
+  small1.textContent = todo.tag.label;
   spanTag1.appendChild(small1);
 
   const spanTag2 = document.createElement('span');
   spanTag2.className = 'task--tags-tag tag-date';
   const small2 = document.createElement('small');
-  small2.textContent = '01-04-2023';
+  small2.textContent = todo.tag.dueDate.toDateString();
   spanTag2.appendChild(small2);
 
   div.append(spanTag1, spanTag2);
@@ -78,6 +80,7 @@ export function createTodoItemElement() {
   favInput.type = 'checkbox';
   favInput.name = 'fav-todo1';
   favInput.id = 'fav-todo1';
+  favInput.checked = todo.favorite;
 
   const favStarFill = document.createElement('span');
   favStarFill.className = 'fav-star fill';

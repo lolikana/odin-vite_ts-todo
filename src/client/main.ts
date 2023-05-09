@@ -2,7 +2,7 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData } from '../libs/data';
+import { labelsData, TodosData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
 import { querySelector, querySelectorAll } from './scripts/helpers';
@@ -131,6 +131,6 @@ Label.prototype.getAll(labelsList);
 /** Fetch Labels END **/
 /* Navbar END */
 /* Todo START */
-const tbody = querySelector('.section--table-body') as HTMLTableElement;
-tbody?.appendChild(Todo.prototype.createElement);
+const tbody = querySelector('.section--table-body');
+TodosData.map(todo => tbody?.append(Todo.prototype.createElement(todo)));
 /* Todo END */

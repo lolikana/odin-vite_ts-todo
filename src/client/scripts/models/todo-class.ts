@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 
+import { TTodo } from '../../../libs/types';
 import { createTodoItemElement } from '../components/todo/tableRow';
 
 export class Todo {
@@ -32,7 +33,7 @@ export class Todo {
     this._id = _id;
   }
 
-  get createElement() {
-    return createTodoItemElement();
+  createElement(todo: TTodo) {
+    return createTodoItemElement(todo);
   }
 }

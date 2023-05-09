@@ -6,7 +6,7 @@ export type TLabel = {
 };
 
 export type TTodo = {
-  _id: Types.ObjectId;
+  _id?: Types.ObjectId;
   createdAt: Date;
   done: boolean;
   text: string;
