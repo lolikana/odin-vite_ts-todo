@@ -59,7 +59,7 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
     selectedTabBtn.dataset.tab !== inboxBtn.dataset.tab
   ) {
     selectedTab.ariaSelected = 'false';
-    if (!selectedTab.classList.contains('labels--list-container')) {
+    if (!selectedTab.classList.contains('labels--list-item')) {
       inboxTab.ariaSelected = 'true';
     }
     return;
