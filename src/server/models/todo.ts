@@ -8,7 +8,7 @@ const TodoSchema = new mongoose.Schema<Todo>({
   text: { type: String, required: [true, 'Cannot be empty'] },
   tag: {
     label: String,
-    dueDate: { type: Date, required: [true, 'Please add a due date'] }
+    dueDate: { type: String, required: [true, 'Please add a due date'] }
   },
   favorite: Boolean
 });

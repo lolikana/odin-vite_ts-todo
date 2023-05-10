@@ -1,7 +1,5 @@
 import { Label } from '../scripts/models/label-class';
-
-const isProduction = import.meta.env.MODE === 'production';
-const path = import.meta.env.VITE_PATH + import.meta.env.VITE_PORT;
+import { isProduction, path } from '.';
 
 export const fetchLabels = async (): Promise<Label[]> => {
   const res = await fetch(`${!isProduction ? path : ''}/api/labels`);

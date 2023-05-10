@@ -5,6 +5,7 @@ import path from 'path';
 import ViteExpress from 'vite-express';
 
 import { router as labelsRoutes } from './routes/labels-routes';
+import { router as todosRoutes } from './routes/todos-routes';
 import ExpressError from './utils/expressError';
 import { mongoConnection } from './utils/mongodb';
 
@@ -41,6 +42,7 @@ app.use((_req, res, next) => {
 });
 
 app.use('/api/labels', labelsRoutes as Router);
+app.use('/api/todos', todosRoutes as Router);
 
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));

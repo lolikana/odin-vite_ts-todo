@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 
-import { TTodo } from '../../../libs/types';
+import { TodosData } from '../../../libs/data';
+import { fetchTodos } from '../../api';
 import { createTodoItemElement } from '../components/todo/tableRow';
 
 export class Todo {
@@ -9,7 +10,7 @@ export class Todo {
   text: string;
   tag: {
     label: string;
-    dueDate: Date;
+    dueDate: string;
   };
   favorite: boolean;
   _id?: Types.ObjectId;
@@ -20,7 +21,7 @@ export class Todo {
     text: string,
     tag: {
       label: string;
-      dueDate: Date;
+      dueDate: string;
     },
     favorite: boolean,
     _id?: Types.ObjectId
@@ -33,7 +34,30 @@ export class Todo {
     this._id = _id;
   }
 
-  createElement(todo: TTodo) {
+  getAll(tbody: HTMLElement) {
+    fetchTodos()
+      .then(res => {
+        // if (res.length === 0) {
+        //   list.textContent = 'No Label';
+        //   return;
+        // }
+
+        res.map(todo => {
+          TodosData.push(todo);
+        });
+        console.log(TodosData);
+        TodosData.map(todo => tbody.append(this.createElement(todo)));
+        // Allow to click on edit btn right after create new label
+        // list.addEventListener('click', (e: Event) => {
+        //   editDeleteLabel(e);
+        // });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  createElement(todo: Todo) {
     return createTodoItemElement(todo);
   }
 }

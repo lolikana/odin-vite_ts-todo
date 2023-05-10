@@ -1,6 +1,6 @@
-import { TTodo } from '../../../../libs/types';
+import { Todo } from '../../models/todo-class';
 
-export function createTodoItemElement(todo: TTodo) {
+export function createTodoItemElement(todo: Todo) {
   const tr = document.createElement('tr');
 
   // create check input
@@ -39,7 +39,7 @@ export function createTodoItemElement(todo: TTodo) {
   const spanTag2 = document.createElement('span');
   spanTag2.className = 'task--tags-tag tag-date';
   const small2 = document.createElement('small');
-  small2.textContent = todo.tag.dueDate.toDateString();
+  small2.textContent = todo.tag.dueDate;
   spanTag2.appendChild(small2);
 
   div.append(spanTag1, spanTag2);

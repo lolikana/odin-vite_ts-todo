@@ -12,7 +12,7 @@ export type TTodo = {
   text: string;
   tag: {
     label: string;
-    dueDate: Date;
+    dueDate: string;
   };
   favorite: boolean;
 };

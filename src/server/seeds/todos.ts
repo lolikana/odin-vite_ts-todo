@@ -5,7 +5,7 @@ export const todosSeed = [
     text: 'Do some workout, Do some workout, Do some workout, Do some workout, Do some workout',
     tag: {
       label: 'Gym',
-      dueDate: new Date('01-05-2023')
+      dueDate: new Date('01-05-2023').toDateString()
     },
     favorite: true
   },
@@ -15,7 +15,7 @@ export const todosSeed = [
     text: 'Learn Vite and MongoDB',
     tag: {
       label: 'Study',
-      dueDate: new Date('05-30-2023')
+      dueDate: new Date('05-30-2023').toDateString()
     },
     favorite: true
   }

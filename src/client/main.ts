@@ -131,6 +131,6 @@ Label.prototype.getAll(labelsList);
 /** Fetch Labels END **/
 /* Navbar END */
 /* Todo START */
-const tbody = querySelector('.section--table-body');
-TodosData.map(todo => tbody?.append(Todo.prototype.createElement(todo)));
+const tbody = querySelector('.section--table-body') as HTMLElement;
+Todo.prototype.getAll(tbody);
 /* Todo END */
