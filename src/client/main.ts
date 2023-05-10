@@ -2,7 +2,7 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData, TodosData } from '../libs/data';
+import { labelsData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
 import { querySelector, querySelectorAll } from './scripts/helpers';
@@ -29,6 +29,8 @@ const inboxBtn = querySelector('.inbox-btn') as HTMLButtonElement;
 const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
+
+const tbody = querySelector('.section--table-body') as HTMLElement;
 
 /* Navbar START */
 /** Selected tab **/
@@ -131,6 +133,5 @@ Label.prototype.getAll(labelsList);
 /** Fetch Labels END **/
 /* Navbar END */
 /* Todo START */
-const tbody = querySelector('.section--table-body') as HTMLElement;
 Todo.prototype.getAll(tbody);
 /* Todo END */
