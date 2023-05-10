@@ -13,7 +13,8 @@ export class Todo {
     dueDate: string;
   };
   favorite: boolean;
-  _id?: Types.ObjectId;
+  id: string;
+  _id: Types.ObjectId;
 
   constructor(
     createdAt: Date,
@@ -24,13 +25,15 @@ export class Todo {
       dueDate: string;
     },
     favorite: boolean,
-    _id?: Types.ObjectId
+    id: string,
+    _id: Types.ObjectId
   ) {
     this.createdAt = createdAt;
     this.done = done;
     this.text = text;
     this.tag = tag;
     this.favorite = favorite;
+    this.id = id;
     this._id = _id;
   }
 

@@ -9,12 +9,12 @@ export function createTodoItemElement(todo: Todo) {
 
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.name = 'check-todo2';
-  input.id = 'check-todo2';
+  input.name = `done-${todo.id}`;
+  input.id = `done-${todo.id}`;
   input.checked = todo.done;
 
   const label = document.createElement('label');
-  label.htmlFor = 'check-todo2';
+  label.htmlFor = `done-${todo.id}`;
 
   td1.append(input, label);
 
@@ -52,18 +52,21 @@ export function createTodoItemElement(todo: Todo) {
 
   const btnShow = document.createElement('button');
   btnShow.className = 'actions-btn btn-show';
+  btnShow.id = `show-${todo.id}`;
 
   const span1 = document.createElement('span');
   span1.textContent = ' / ';
 
   const btnEdit = document.createElement('button');
   btnEdit.className = 'actions-btn btn-edit';
+  btnEdit.id = `edit-${todo.id}`;
 
   const span2 = document.createElement('span');
   span2.textContent = ' / ';
 
   const btnDelete = document.createElement('button');
   btnDelete.className = 'actions-btn btn-delete';
+  btnDelete.id = `delete-${todo.id}`;
 
   td3.append(btnShow, span1, btnEdit, span2, btnDelete);
 
@@ -73,13 +76,13 @@ export function createTodoItemElement(todo: Todo) {
 
   const favLabel = document.createElement('label');
   favLabel.className = 'fav-label';
-  favLabel.htmlFor = 'fav-todo1';
+  favLabel.htmlFor = `fav-${todo.id}`;
 
   const favInput = document.createElement('input');
   favInput.className = 'fav-input';
   favInput.type = 'checkbox';
-  favInput.name = 'fav-todo1';
-  favInput.id = 'fav-todo1';
+  favInput.name = `fav-${todo.id}`;
+  favInput.id = `fav-${todo.id}`;
   favInput.checked = todo.favorite;
 
   const favStarFill = document.createElement('span');
