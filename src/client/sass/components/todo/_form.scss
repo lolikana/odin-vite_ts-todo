@@ -3,7 +3,7 @@
   width: 70%;
   max-width: 700px;
   background-color: $__grey300;
-  padding: 2rem;
+  padding: 3rem 2rem 2rem;
   border-radius: 5px;
 }
 
@@ -85,7 +85,7 @@
   }
 }
 
-.btn--close-todo {
+.button--close-modal{
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
