@@ -144,7 +144,8 @@ maxCharacters.textContent = String(textarea.maxLength);
 textarea.addEventListener('keyup', (): boolean | void => {
   const value = textarea.value;
 
-  if (countCharacters > maxCharacters) {
+  if (value.length > textarea.maxLength) {
+    textarea.value = value.slice(0, textarea.maxLength); // Trim the excess characters
     return false;
   }
 
