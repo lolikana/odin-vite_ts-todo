@@ -1,0 +1,92 @@
+.todo-form-container {
+  position: relative;
+  width: 70%;
+  max-width: 700px;
+  background-color: $__grey300;
+  padding: 2rem;
+  border-radius: 5px;
+}
+
+.todo-form {
+  container-type: inline-size;
+  container-name: todoForm;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  label {
+    font-weight: $__bold;
+    text-transform: uppercase;
+  }
+
+  textarea,
+  select,
+  input {
+    border-radius: 5px;
+    background-color: $__grey100;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions.top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+
+    @container todoForm (min-width: 500px) {
+      flex-direction: row;
+    }
+
+    .action {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    label {
+      width: 5rem;
+      text-align: end;
+    }
+
+    select,
+    input {
+      width: 9rem;
+    }
+  }
+
+  .actions.text {
+    padding: 2rem 0;
+    .action {
+			position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    textarea {
+      width: 100%;
+      resize: none;
+    }
+
+    .count-container {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.5rem;
+    }
+  }
+
+  .actions.checks {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.btn--close-todo {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+}

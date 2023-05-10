@@ -48,7 +48,6 @@ export class Todo {
         res.map(todo => {
           TodosData.push(todo);
         });
-        console.log(TodosData);
         TodosData.map(todo => tbody.append(this.createElement(todo)));
         // Allow to click on edit btn right after create new label
         // list.addEventListener('click', (e: Event) => {

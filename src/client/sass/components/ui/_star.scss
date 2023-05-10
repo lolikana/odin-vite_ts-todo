@@ -5,11 +5,26 @@
   @extend %flex-center;
 }
 
-.table--body-fav .fav-label .fav-input {
-  display: none;
+.table--body-fav,
+.todo-form {
+  .fav-label .fav-input {
+    display: none;
+  }
+}
+
+.todo-form .fav-label {
+	position: relative;
+	width: fit-content;
+  display: flex;
+	
+	.fav-star {
+		right: -2.5rem;
+		top: -0.5rem;
+	}
 }
 
 .fav-star {
+	cursor: pointer;
   position: absolute;
   &::after {
     content: '';
@@ -26,8 +41,11 @@
   }
 }
 
-.table--body-fav .fav-label .fav-input:checked ~ .fav-star.fill {
-  &::after {
-    background-image: url('/icons/star_FILL1_wght200_GRAD0_opsz48.svg');
+.table--body-fav,
+.todo-form {
+  .fav-label .fav-input:checked ~ .fav-star.fill {
+    &::after {
+      background-image: url('/icons/star_FILL1_wght200_GRAD0_opsz48.svg');
+    }
   }
 }

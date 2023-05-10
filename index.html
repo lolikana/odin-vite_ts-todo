@@ -17,6 +17,58 @@
       </div>
     </header>
     <main id="main" class="main">
+      <div id="modal" aria-hidden="false">
+        <div class="todo-form-container">
+          <button class="button--close btn--close-todo"></button>
+          <form class="todo-form" action="">
+            <div class="actions top">
+              <div class="action">
+                <label for="todo-label">label</label>
+                <select name="todo[label]" id="todo-label">
+                  <option value="gym">Gym</option>
+                  <option value="study">Study</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="action">
+                <label for="todo-dueDate">due Date</label>
+                <input type="date" name="todo[dueDate]" id="todo-dueDate" />
+              </div>
+            </div>
+            <div class="actions text">
+              <div class="action">
+                <label for="todo-text">Todo</label>
+                <textarea name="todo[text]" id="todo-text" rows="5" maxlength="100"></textarea>
+                <div class="count-container">
+                  <span class="count-characters">0</span>
+                  <span>/</span>
+                  <span class="max-characters"></span>
+                </div>
+              </div>
+            </div>
+            <div class="actions checks">
+              <div class="action">
+                <label for="todo-fav" class="fav-label">
+                  favorite
+                  <input
+                    type="checkbox"
+                    class="fav-input"
+                    name="todo[fav]"
+                    id="todo-fav"
+                  />
+                  <span class="fav-star fill"></span>
+                  <span class="fav-star empty"></span>
+                </label>
+              </div>
+              <div class="action check">
+                <input type="checkbox" name="todo[done]" id="todo-done" />
+                <label for="todo-done" class="todo-done">done</label>
+              </div>
+            </div>
+            <button type="submit" class="button--border orange">submit</button>
+          </form>
+        </div>
+      </div>
       <nav id="nav" class="nav" data-visible="false"><!-- CREATE NAV --></nav>
       <section id="app">
         <h1 data-tab="inbox" class="section--title">Inbox</h1>

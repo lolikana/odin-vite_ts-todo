@@ -117,3 +117,50 @@
     background-image: url('/icons/done_FILL0green_wght700_GRAD0_opsz48.svg');
   }
 }
+
+.button--border {
+  color: $__sub;
+  position: relative;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: $__bold;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  margin: 1rem 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 25px;
+  }
+
+  &.orange {
+    background: $__primary;
+    &:hover {
+      &:after {
+        border: $__primary 2px solid;
+      }
+    }
+  }
+}
+
+.button--close {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+  &::after {
+    content: '';
+    border-radius: 5px;
+    display: inline-block;
+    background-size: 1.5rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    background-color: red;
+    background-image: url('/icons/close_FILL0_wght700_GRAD0_opsz48.svg');
+  }
+}

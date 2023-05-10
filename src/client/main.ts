@@ -134,4 +134,20 @@ Label.prototype.getAll(labelsList);
 /* Navbar END */
 /* Todo START */
 Todo.prototype.getAll(tbody);
+
+const textarea = document.querySelector('#todo-text') as HTMLTextAreaElement;
+const countCharacters = document.querySelector('.count-characters') as HTMLSpanElement;
+const maxCharacters = document.querySelector('.max-characters') as HTMLSpanElement;
+
+maxCharacters.textContent = String(textarea.maxLength);
+
+textarea.addEventListener('keyup', (): boolean | void => {
+  const value = textarea.value;
+
+  if (countCharacters > maxCharacters) {
+    return false;
+  }
+
+  countCharacters.textContent = String(value.length);
+});
 /* Todo END */
