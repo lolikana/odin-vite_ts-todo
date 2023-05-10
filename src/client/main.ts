@@ -132,12 +132,25 @@ addLabelBtn?.addEventListener('click', () => {
 Label.prototype.getAll(labelsList);
 /** Fetch Labels END **/
 /* Navbar END */
+
 /* Todo START */
 Todo.prototype.getAll(tbody);
 
-const textarea = document.querySelector('#todo-text') as HTMLTextAreaElement;
-const countCharacters = document.querySelector('.count-characters') as HTMLSpanElement;
-const maxCharacters = document.querySelector('.max-characters') as HTMLSpanElement;
+const modal = querySelector('#modal') as HTMLDivElement;
+const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;
+const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
+
+addTodoBtn.addEventListener('click', () => {
+  modal.ariaHidden = 'false';
+});
+
+closeModalBtn.addEventListener('click', () => {
+  modal.ariaHidden = 'true';
+});
+
+const textarea = querySelector('#todo-text') as HTMLTextAreaElement;
+const countCharacters = querySelector('.count-characters') as HTMLSpanElement;
+const maxCharacters = querySelector('.max-characters') as HTMLSpanElement;
 
 maxCharacters.textContent = String(textarea.maxLength);
 
