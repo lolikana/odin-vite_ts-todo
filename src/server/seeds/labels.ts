@@ -1,13 +1,14 @@
-import { TLabel } from '../../client/ts/libs/type';
-
-export const labelsSeed: Omit<TLabel, '_id'>[] = [
+export const labelsSeed = [
   {
-    name: 'gym'
+    name: 'gym',
+    labelId: 'gym'
   },
   {
-    name: 'study'
+    name: 'study',
+    labelId: 'study'
   },
   {
-    name: 'other'
+    name: 'other',
+    labelId: 'other'
   }
 ];
