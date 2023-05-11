@@ -134,7 +134,7 @@ export function createTodoForm() {
   favLabel.appendChild(favStar2);
 
   const doneAction = document.createElement('div');
-  doneAction.classList.add('action', 'check');
+  doneAction.classList.add('action', 'check-right');
   checksActions.appendChild(doneAction);
 
   const doneInput = document.createElement('input');
