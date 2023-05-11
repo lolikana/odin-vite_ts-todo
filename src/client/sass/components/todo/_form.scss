@@ -61,6 +61,7 @@
   }
 
   .action {
+		position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
@@ -71,6 +72,13 @@
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
+}
+
+.error-message {
+	position: absolute;
+	font-size: .75rem;
+	color: $__error;
+	bottom: -1.15rem;
 }
 
 @container todoForm (min-width: 500px) {
@@ -103,4 +111,7 @@
       margin: 0 auto;
     }
   }
+	.error-message {
+		right: 0.5rem;
+	}
 }

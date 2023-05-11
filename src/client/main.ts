@@ -5,7 +5,7 @@ import './scripts/burger';
 import { labelsData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
-import { createTodoForm } from './scripts/components/todo/newForm';
+import { createTodoForm } from './scripts/components/todo/formTodo';
 import {
   closeModal,
   countTypedCharacters,
@@ -19,7 +19,7 @@ import {
   labelFormSubmit,
   removeLabelInput
 } from './scripts/models/label-class';
-import { Todo } from './scripts/models/todo-class';
+import { Todo, todoFormSubmit } from './scripts/models/todo-class';
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
@@ -146,11 +146,23 @@ Todo.prototype.getAll(tbody);
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
 addTodoBtn.addEventListener('click', (): void => {
+  const { container, form } = createTodoForm('POST');
   modal.ariaHidden = 'false';
   modal.textContent = '';
-  modal.append(createTodoForm());
+  modal.append(container);
   countTypedCharacters();
   closeModal();
+
+  form.addEventListener('submit', async (e: SubmitEvent) => {
+    e.preventDefault();
+    const enteredTodo = todoFormSubmit();
+
+    if (!enteredTodo) return;
+
+    await enteredTodo.create();
+
+    Todo.prototype.getAll(tbody);
+  });
 });
 
 /* Todo END */

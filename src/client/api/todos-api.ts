@@ -8,3 +8,17 @@ export const fetchTodos = async (): Promise<Todo[]> => {
   }
   return res.json() as unknown as Todo[];
 };
+
+export const createTodo = async (todo: Todo) => {
+  try {
+    const res = await fetch(`${!isProduction ? path : ''}/api/todos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(todo)
+    });
+
+    if (!res.ok) throw new Error('Failed to create todo');
+  } catch (err: unknown) {
+    console.log(err);
+  }
+};

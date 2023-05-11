@@ -12,3 +12,28 @@ export const labelSchema = z.object({
       message: 'Cannot not be empty'
     })
 });
+
+export const todoSchema = z.object({
+  createdAt: z.date(),
+  text: z
+    .string({
+      required_error: 'Text is required'
+    })
+    .min(5, { message: 'at least 5 characters' })
+    .max(300, { message: 'No more than 300 characters' })
+    .nonempty({
+      message: 'Cannot not be empty'
+    }),
+  label: z.string({
+    required_error: 'Label is required'
+  }),
+  dueDate: z
+    .string({
+      required_error: 'Date is required'
+    })
+    .nonempty({
+      message: 'Cannot not be empty'
+    }),
+  favorite: z.string().optional(),
+  done: z.string().optional()
+});

@@ -1,4 +1,4 @@
-export function createTodoForm() {
+export function createTodoForm(method: 'POST' | 'PUT') {
   // Create container
   const container = document.createElement('div');
   container.classList.add('todo-form-container');
@@ -11,12 +11,21 @@ export function createTodoForm() {
   // Create form
   const form = document.createElement('form');
   form.classList.add('todo-form');
+  form.method = 'POST';
+  form.action = method === 'POST' ? (import.meta.env.VITE_API_TODOS as string) : '';
+
   container.appendChild(form);
 
   // Create top actions
   const topActions = document.createElement('div');
   topActions.classList.add('actions', 'top');
   form.appendChild(topActions);
+
+  //create paragraph error
+  const pErrorDueDate = document.createElement('p');
+  pErrorDueDate.classList.add('error-message');
+  const pErrorText = document.createElement('p');
+  pErrorText.classList.add('error-message');
 
   // Create label action
   const labelAction = document.createElement('div');
@@ -29,7 +38,7 @@ export function createTodoForm() {
   labelAction.appendChild(labelInputLabel);
 
   const labelSelect = document.createElement('select');
-  labelSelect.setAttribute('name', 'todo[label]');
+  labelSelect.setAttribute('name', 'label');
   labelSelect.setAttribute('id', 'todo-label');
   labelAction.appendChild(labelSelect);
 
@@ -60,9 +69,9 @@ export function createTodoForm() {
 
   const dueDateInput = document.createElement('input');
   dueDateInput.setAttribute('type', 'date');
-  dueDateInput.setAttribute('name', 'todo[dueDate]');
+  dueDateInput.setAttribute('name', 'dueDate');
   dueDateInput.setAttribute('id', 'todo-dueDate');
-  dueDateAction.appendChild(dueDateInput);
+  dueDateAction.append(dueDateInput, pErrorDueDate);
 
   // Create text actions
   const textActions = document.createElement('div');
@@ -79,7 +88,7 @@ export function createTodoForm() {
   textAction.appendChild(textInputLabel);
 
   const textTextarea = document.createElement('textarea');
-  textTextarea.setAttribute('name', 'todo[text]');
+  textTextarea.setAttribute('name', 'text');
   textTextarea.setAttribute('id', 'todo-text');
   textTextarea.setAttribute('rows', '5');
   textTextarea.setAttribute('maxlength', '100');
@@ -87,7 +96,7 @@ export function createTodoForm() {
 
   const countContainer = document.createElement('div');
   countContainer.classList.add('count-container');
-  textAction.appendChild(countContainer);
+  textAction.append(countContainer, pErrorText);
 
   const countCharacters = document.createElement('span');
   countCharacters.classList.add('count-characters');
@@ -121,7 +130,7 @@ export function createTodoForm() {
   const favInput = document.createElement('input');
   favInput.setAttribute('type', 'checkbox');
   favInput.setAttribute('class', 'fav-input');
-  favInput.setAttribute('name', 'todo[fav]');
+  favInput.setAttribute('name', 'favorite');
   favInput.setAttribute('id', 'todo-fav');
   favLabel.appendChild(favInput);
 
@@ -139,7 +148,7 @@ export function createTodoForm() {
 
   const doneInput = document.createElement('input');
   doneInput.setAttribute('type', 'checkbox');
-  doneInput.setAttribute('name', 'todo[done]');
+  doneInput.setAttribute('name', 'done');
   doneInput.setAttribute('id', 'todo-done');
   doneAction.appendChild(doneInput);
 
@@ -156,5 +165,5 @@ export function createTodoForm() {
   submitButton.textContent = 'submit';
   form.appendChild(submitButton);
 
-  return container;
+  return { container, form };
 }

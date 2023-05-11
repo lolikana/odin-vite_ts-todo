@@ -24,5 +24,9 @@ export default {
       const error = new ExpressError('Invalid / Empty Todo, please try again', 422);
       next(error);
     }
+
+    const newTodo = new TodoModel(todo);
+    await newTodo.save();
+    res.status(201).json(todo);
   }) as RequestHandler
 };
