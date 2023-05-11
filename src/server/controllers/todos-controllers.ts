@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 
+import { Todo } from '../../client/scripts/models/todo-class';
 import { TodoModel } from '../models/todo';
 import ExpressError from '../utils/expressError';
 
@@ -14,5 +15,14 @@ export default {
     }
 
     res.json(todos.map(todo => todo.toObject({ getters: true })));
+  }) as RequestHandler,
+
+  create: (async (req, res, next): Promise<void> => {
+    const todo = (await req.body) as Todo;
+
+    if (!todo) {
+      const error = new ExpressError('Invalid / Empty Todo, please try again', 422);
+      next(error);
+    }
   }) as RequestHandler
 };
