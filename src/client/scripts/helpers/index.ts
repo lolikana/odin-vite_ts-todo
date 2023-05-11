@@ -8,14 +8,14 @@ export const querySelector = (el: string) => document.querySelector(el);
 export const querySelectorAll = (el: string) => document.querySelectorAll(el);
 export const create = (el: string) => document.createElement(el);
 
-export function closeModal() {
+export function closeModal(): void {
   const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;
   closeModalBtn.addEventListener('click', () => {
     modal.ariaHidden = 'true';
   });
 }
 
-export function countTypedCharacters() {
+export function countTypedCharacters(): void {
   const textarea = querySelector('#todo-text') as HTMLTextAreaElement;
   const countCharacters = querySelector('.count-characters') as HTMLSpanElement;
   const maxCharacters = querySelector('.max-characters') as HTMLSpanElement;

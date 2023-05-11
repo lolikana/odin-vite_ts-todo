@@ -145,7 +145,7 @@ Todo.prototype.getAll(tbody);
 
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
-addTodoBtn.addEventListener('click', () => {
+addTodoBtn.addEventListener('click', (): void => {
   modal.ariaHidden = 'false';
   modal.textContent = '';
   modal.append(createTodoForm());

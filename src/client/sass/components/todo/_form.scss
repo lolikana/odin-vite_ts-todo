@@ -75,8 +75,6 @@
 
 @container todoForm (min-width: 500px) {
   .todo-form {
-    align-items: center;
-
     .actions.top {
       flex-direction: row;
 
@@ -98,7 +96,11 @@
     .actions.checks {
       flex-direction: row;
       justify-content: center;
-			gap: 7rem
+      gap: 7rem;
+    }
+		
+    button[type='submit'] {
+      margin: 0 auto;
     }
   }
 }
