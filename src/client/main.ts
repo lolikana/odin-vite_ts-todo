@@ -5,7 +5,13 @@ import './scripts/burger';
 import { labelsData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
-import { querySelector, querySelectorAll } from './scripts/helpers';
+import { createTodoForm } from './scripts/components/todo/newForm';
+import {
+  closeModal,
+  countTypedCharacters,
+  querySelector,
+  querySelectorAll
+} from './scripts/helpers';
 import {
   deleteEmptyLabelsList,
   isDisabledEditBtns,
@@ -17,6 +23,7 @@ import { Todo } from './scripts/models/todo-class';
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
+export const modal = querySelector('#modal') as HTMLDivElement;
 
 main.append(createNavElement(nav));
 nav.append(createDivLabelsElement());
@@ -136,32 +143,14 @@ Label.prototype.getAll(labelsList);
 /* Todo START */
 Todo.prototype.getAll(tbody);
 
-const modal = querySelector('#modal') as HTMLDivElement;
-const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
 addTodoBtn.addEventListener('click', () => {
   modal.ariaHidden = 'false';
+  modal.textContent = '';
+  modal.append(createTodoForm());
+  countTypedCharacters();
+  closeModal();
 });
 
-closeModalBtn.addEventListener('click', () => {
-  modal.ariaHidden = 'true';
-});
-
-const textarea = querySelector('#todo-text') as HTMLTextAreaElement;
-const countCharacters = querySelector('.count-characters') as HTMLSpanElement;
-const maxCharacters = querySelector('.max-characters') as HTMLSpanElement;
-
-maxCharacters.textContent = String(textarea.maxLength);
-
-textarea.addEventListener('keyup', (): boolean | void => {
-  const value = textarea.value;
-
-  if (value.length > textarea.maxLength) {
-    textarea.value = value.slice(0, textarea.maxLength); // Trim the excess characters
-    return false;
-  }
-
-  countCharacters.textContent = String(value.length);
-});
 /* Todo END */
