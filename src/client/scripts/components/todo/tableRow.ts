@@ -1,3 +1,4 @@
+import { labelsData } from '../../../../libs/data';
 import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
@@ -35,10 +36,14 @@ export function createTodoItemElement(todo: Todo) {
   div.className = 'task--tags';
 
   const spanTag1 = document.createElement('span');
-  spanTag1.className = 'task--tags-tag tag-label';
-  const small1 = document.createElement('small');
-  small1.textContent = todo.tag.label;
-  spanTag1.appendChild(small1);
+  labelsData.forEach(label => {
+    if (label._id?.toString() === todo.tag.label[0]) {
+      spanTag1.className = 'task--tags-tag tag-label';
+      const small1 = document.createElement('small');
+      small1.textContent = label.name;
+      spanTag1.appendChild(small1);
+    }
+  });
 
   const spanTag2 = document.createElement('span');
   spanTag2.className = 'task--tags-tag tag-date';

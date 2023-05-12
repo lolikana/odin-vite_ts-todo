@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 import { TodosData } from '../../../libs/data';
 import { todoSchema } from '../../../libs/validations';
-import { createTodo, deleteTodo, fetchTodos } from '../../api';
+import { createTodo, deleteTodo, fetchTodo, fetchTodos } from '../../api';
 import { createTodoItemElement } from '../components/todo/tableRow';
 import { querySelector, querySelectorAll } from '../helpers';
 
@@ -39,14 +39,9 @@ export class Todo {
     this.id = id;
   }
 
-  getAll(tbody: HTMLElement) {
-    fetchTodos()
+  async getAll(tbody: HTMLElement) {
+    await fetchTodos()
       .then(res => {
-        // if (res.length === 0) {
-        //   list.textContent = 'No Label';
-        //   return;
-        // }
-
         res.map(todo => {
           TodosData.push(todo);
         });
@@ -61,12 +56,27 @@ export class Todo {
       });
   }
 
+  async get(tbody: HTMLElement) {
+    await fetchTodo(this._id.toString())
+      .then((res: Todo) => {
+        TodosData.push(res);
+        tbody.append(this.createElement(res));
+        // Allow to click on edit btn right after create new label
+        tbody.addEventListener('click', (e: Event) => {
+          editDeleteTodo(e);
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   async create() {
     await createTodo(this).catch(err => console.log(err));
   }
 
-  async delete(todoId: string) {
-    await deleteTodo(todoId);
+  delete(todoId: string) {
+    deleteTodo(todoId).catch(err => console.log(err));
   }
 
   createElement(todo: Todo) {
@@ -129,13 +139,12 @@ const editDeleteTodo = (e: Event) => {
   const isDeleteBtn = deleteBtn && target.dataset.todoId === getId;
 
   if (!isDeleteBtn) return;
-
   if (isDeleteBtn) {
-    TodosData.forEach(async todo => {
-      if (todo.id === getId) {
-        (document.getElementById(getId) as HTMLTableRowElement).remove();
-        await Todo.prototype.delete(getId);
-      }
-    });
+    const isTodoExist = TodosData.filter(todo => todo._id.toString() === getId);
+    if (isTodoExist) {
+      (document.getElementById(getId) as HTMLTableRowElement).remove();
+      Todo.prototype.delete(getId);
+      TodosData.splice(TodosData.indexOf(isTodoExist[0]), 1);
+    }
   }
 };

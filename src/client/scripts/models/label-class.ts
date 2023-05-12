@@ -2,38 +2,55 @@ import { Types } from 'mongoose';
 
 import { labelsData } from '../../../libs/data';
 import { labelSchema } from '../../../libs/validations';
-import { createLabel, deleteLabel, fetchLabels, updateLabel } from '../../api';
+import {
+  createLabel,
+  deleteLabel,
+  fetchLabel,
+  fetchLabels,
+  updateLabel
+} from '../../api';
 import { createListElement, createListLabelsElement } from '../components';
 import { createLabelFormElement, deleteLabelInputElement } from '../components/label';
 import { firstCapitalLetter, querySelector, querySelectorAll } from '../helpers';
 
 export class Label {
-  labelId: string;
-  _id?: Types.ObjectId;
   name: string;
-  constructor(name: string, _id?: Types.ObjectId) {
+  labelId: string;
+  _id: Types.ObjectId;
+  constructor(name: string, _id: Types.ObjectId) {
     this.name = name;
-    this._id = _id;
     this.labelId = name;
+    this._id = _id;
   }
 
   get label() {
     return this.name;
   }
 
-  getAll(list: HTMLUListElement) {
-    fetchLabels()
-      .then(res => {
-        if (res.length === 0) {
-          list.textContent = 'No Label';
-          return;
-        }
+  async getAll(list: HTMLUListElement) {
+    await fetchLabels().then(res => {
+      if (res.length === 0) {
+        list.textContent = 'No Label';
+        return;
+      }
 
-        res.map(label => {
-          labelsData.push(label);
-        });
-        createListLabelsElement(list, labelsData);
+      res.map(label => {
+        labelsData.push(label);
+      });
+      createListLabelsElement(list, labelsData);
 
+      // Allow to click on edit btn right after create new label
+      list.addEventListener('click', (e: Event) => {
+        editDeleteLabel(e);
+      });
+    });
+  }
+
+  async get(list: HTMLUListElement) {
+    await fetchLabel(this.labelId)
+      .then(() => {
+        labelsData.push(this);
+        list.appendChild(createListElement('labels', this.name));
         // Allow to click on edit btn right after create new label
         list.addEventListener('click', (e: Event) => {
           editDeleteLabel(e);
@@ -44,14 +61,14 @@ export class Label {
       });
   }
 
-  async create(list: HTMLUListElement) {
+  async create() {
     await createLabel(this).catch(err => console.log('create: ', err));
-    labelsData.push(this);
-    list.appendChild(createListElement('labels', this.name));
   }
 
   async update(label: Label) {
-    await updateLabel(label, this).catch(err => console.log('update: ', err));
+    await updateLabel(label, { ...this, _id: label._id }).catch(err =>
+      console.log('update: ', err)
+    );
   }
 }
 
@@ -65,9 +82,12 @@ export const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElem
     return;
   }
 
-  const enteredLabel = validatationData.data.inputLabel;
+  const data = {
+    name: validatationData.data.inputLabel,
+    _id: new Types.ObjectId()
+  };
 
-  return new Label(enteredLabel);
+  return new Label(data.name, data._id);
 };
 
 export const deleteEmptyLabelsList = (list: HTMLUListElement, content?: string) => {

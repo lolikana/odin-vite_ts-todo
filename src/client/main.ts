@@ -119,7 +119,7 @@ addLabelBtn?.addEventListener('click', () => {
       }
 
       deleteEmptyLabelsList(labelsList);
-      await enteredLabel.create(labelsList);
+      await enteredLabel.create().then(() => enteredLabel.get(labelsList));
       removeInput();
     });
 
@@ -135,14 +135,17 @@ addLabelBtn?.addEventListener('click', () => {
   }
 });
 /** Add label END **/
-/** Fetch Labels START **/
-Label.prototype.getAll(labelsList);
-/** Fetch Labels END **/
+/** Fetch Labels and Todos START **/
+Label.prototype
+  .getAll(labelsList)
+  .then(() => Todo.prototype.getAll(tbody))
+  .catch(err => {
+    console.log(err);
+  });
+/** Fetch Labels and Todos END **/
 /* Navbar END */
 
 /* Todo START */
-Todo.prototype.getAll(tbody);
-
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
 addTodoBtn.addEventListener('click', (): void => {
@@ -156,12 +159,10 @@ addTodoBtn.addEventListener('click', (): void => {
   form.addEventListener('submit', async (e: SubmitEvent) => {
     e.preventDefault();
     const enteredTodo = todoFormSubmit();
-
     if (!enteredTodo) return;
 
-    await enteredTodo.create();
-    tbody.appendChild(Todo.prototype.createElement(enteredTodo));
+    await enteredTodo.create().then(() => enteredTodo.get(tbody));
+    modal.ariaHidden = 'true';
   });
 });
-
 /* Todo END */

@@ -1,3 +1,6 @@
+import { labelsData } from '../../../../libs/data';
+import { firstCapitalLetter } from '../../helpers';
+
 export function createTodoForm(method: 'POST' | 'PUT') {
   // Create container
   const container = document.createElement('div');
@@ -42,20 +45,12 @@ export function createTodoForm(method: 'POST' | 'PUT') {
   labelSelect.setAttribute('id', 'todo-label');
   labelAction.appendChild(labelSelect);
 
-  const labelOption1 = document.createElement('option');
-  labelOption1.setAttribute('value', 'gym');
-  labelOption1.textContent = 'Gym';
-  labelSelect.appendChild(labelOption1);
-
-  const labelOption2 = document.createElement('option');
-  labelOption2.setAttribute('value', 'study');
-  labelOption2.textContent = 'Study';
-  labelSelect.appendChild(labelOption2);
-
-  const labelOption3 = document.createElement('option');
-  labelOption3.setAttribute('value', 'other');
-  labelOption3.textContent = 'Other';
-  labelSelect.appendChild(labelOption3);
+  labelsData.map(label => {
+    const labelOption = document.createElement('option');
+    labelOption.setAttribute('value', label._id.toString());
+    labelOption.textContent = firstCapitalLetter(label.name);
+    labelSelect.appendChild(labelOption);
+  });
 
   // Create dueDate action
   const dueDateAction = document.createElement('div');

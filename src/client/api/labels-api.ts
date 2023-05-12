@@ -9,6 +9,14 @@ export const fetchLabels = async (): Promise<Label[]> => {
   return res.json() as unknown as Label[];
 };
 
+export const fetchLabel = async (LabelId: string): Promise<Label> => {
+  const res = await fetch(`${!isProduction ? path : ''}/api/labels/${LabelId}`);
+  if (!res.ok) {
+    throw new Error('Failed to retrieve labels from server');
+  }
+  return res.json() as unknown as Label;
+};
+
 export const createLabel = async (label: Label) => {
   try {
     const res = await fetch(`${!isProduction ? path : ''}/api/labels`, {
@@ -16,7 +24,6 @@ export const createLabel = async (label: Label) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(label)
     });
-
     if (!res.ok) throw new Error('Failed to create label');
   } catch (err: unknown) {
     console.log(err);

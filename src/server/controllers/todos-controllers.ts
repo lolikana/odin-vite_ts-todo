@@ -17,6 +17,19 @@ export default {
     res.json(todos.map(todo => todo.toObject({ getters: true })));
   }) as RequestHandler,
 
+  get: (async (req, res, next) => {
+    const { todoId } = req.params;
+    const todo = await TodoModel.findById(todoId);
+
+    if (todo === null) {
+      const error = new ExpressError('Fetching todos failed, please try again', 500);
+      next(error);
+      return;
+    }
+
+    res.json(todo);
+  }) as RequestHandler,
+
   create: (async (req, res, next): Promise<void> => {
     const todo = (await req.body) as Todo;
 
@@ -32,7 +45,6 @@ export default {
 
   delete: (async (req, res) => {
     const { todoId } = req.params;
-    console.log(todoId);
     if (!todoId) console.log('No params were defined');
 
     await TodoModel.findOneAndDelete({ _id: todoId });

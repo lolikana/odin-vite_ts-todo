@@ -47,9 +47,7 @@ export default {
       next(error);
     }
 
-    const { name, labelId } = label;
-
-    const newLabel = new LabelModel({ name: name, labelId: labelId });
+    const newLabel = new LabelModel(label);
 
     await newLabel.save();
     res.status(201).json(label);
@@ -57,7 +55,6 @@ export default {
 
   update: (async (req, res, next): Promise<void> => {
     const { labelId } = req.params;
-
     if (!labelId) console.log('No params were defined');
 
     const label = req.body as Label;

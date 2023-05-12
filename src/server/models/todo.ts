@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 import { Todo } from '../../client/scripts/models/todo-class';
 
@@ -7,7 +7,12 @@ const TodoSchema = new mongoose.Schema<Todo>({
   done: Boolean,
   text: { type: String, required: [true, 'Cannot be empty'] },
   tag: {
-    label: String,
+    label: [
+      {
+        type: Types.ObjectId,
+        ref: 'Label'
+      }
+    ],
     dueDate: { type: String, required: [true, 'Please add a due date'] }
   },
   favorite: Boolean

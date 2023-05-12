@@ -9,6 +9,14 @@ export const fetchTodos = async (): Promise<Todo[]> => {
   return res.json() as unknown as Todo[];
 };
 
+export const fetchTodo = async (todoId: string): Promise<Todo> => {
+  const res = await fetch(`${!isProduction ? path : ''}/api/todos/${todoId}`);
+  if (!res.ok) {
+    throw new Error('Failed to retrieve todos from server');
+  }
+  return res.json() as unknown as Todo;
+};
+
 export const createTodo = async (todo: Todo) => {
   try {
     const res = await fetch(`${!isProduction ? path : ''}/api/todos`, {
