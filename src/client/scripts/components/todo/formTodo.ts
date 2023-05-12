@@ -1,5 +1,5 @@
 import { labelsData } from '../../../../libs/data';
-import { firstCapitalLetter } from '../../helpers';
+import { createBtnCloseModal, firstCapitalLetter } from '../../helpers';
 
 export function createTodoForm(method: 'POST' | 'PUT') {
   // Create container
@@ -7,9 +7,7 @@ export function createTodoForm(method: 'POST' | 'PUT') {
   container.classList.add('todo-form-container');
 
   // Create close button
-  const closeButton = document.createElement('button');
-  closeButton.classList.add('button--close', 'button--close-modal');
-  container.appendChild(closeButton);
+  container.appendChild(createBtnCloseModal());
 
   // Create form
   const form = document.createElement('form');

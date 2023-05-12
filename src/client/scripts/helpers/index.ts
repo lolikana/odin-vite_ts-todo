@@ -33,3 +33,9 @@ export function countTypedCharacters(): void {
     countCharacters.textContent = String(value.length);
   });
 }
+
+export function createBtnCloseModal() {
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('button--close', 'button--close-modal');
+  return closeButton;
+}

@@ -1,4 +1,5 @@
 import { labelsData } from '../../../../libs/data';
+import { firstCapitalLetter } from '../../helpers';
 import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
@@ -40,7 +41,7 @@ export function createTodoItemElement(todo: Todo) {
     if (label._id?.toString() === todo.tag.label[0]) {
       spanTag1.className = 'task--tags-tag tag-label';
       const small1 = document.createElement('small');
-      small1.textContent = label.name;
+      small1.textContent = firstCapitalLetter(label.name);
       spanTag1.appendChild(small1);
     }
   });
@@ -62,6 +63,7 @@ export function createTodoItemElement(todo: Todo) {
   const btnShow = document.createElement('button');
   btnShow.className = 'actions-btn btn-show';
   btnShow.id = `show-todo`;
+  btnShow.dataset.todoId = id;
 
   const span1 = document.createElement('span');
   span1.textContent = ' / ';

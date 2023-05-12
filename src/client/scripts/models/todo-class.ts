@@ -1,10 +1,12 @@
 import { Types } from 'mongoose';
 
-import { TodosData } from '../../../libs/data';
+import { labelsData, TodosData } from '../../../libs/data';
 import { todoSchema } from '../../../libs/validations';
 import { createTodo, deleteTodo, fetchTodo, fetchTodos } from '../../api';
+import { modal } from '../../main';
+import { createTodoCard } from '../components/todo/card';
 import { createTodoItemElement } from '../components/todo/tableRow';
-import { querySelector, querySelectorAll } from '../helpers';
+import { closeModal, querySelector, querySelectorAll } from '../helpers';
 
 export class Todo {
   createdAt: Date;
@@ -82,6 +84,21 @@ export class Todo {
   createElement(todo: Todo) {
     return createTodoItemElement(todo);
   }
+
+  showCard() {
+    modal.textContent = '';
+    modal.ariaHidden = 'false';
+    const labelFilter = labelsData.filter(
+      label => label._id.toString() === this.tag.label[0]
+    );
+    modal.append(
+      createTodoCard({
+        ...this,
+        tag: { label: labelFilter[0].name, dueDate: this.tag.dueDate }
+      })
+    );
+    closeModal();
+  }
 }
 
 export const todoFormSubmit = () => {
@@ -132,19 +149,33 @@ export const todoFormSubmit = () => {
 const editDeleteTodo = (e: Event) => {
   const target = e.target as HTMLButtonElement;
   const getId = (target.closest('tr') as HTMLElement).getAttribute('id') as string;
-  const deleteBtn = querySelector(
-    `#delete-todo[data-todo-id='${getId}']`
-  ) as HTMLButtonElement;
+  // const deleteBtn = querySelector(
+  //   `#delete-todo[data-todo-id='${getId}']`
+  // ) as HTMLButtonElement;
+  // const showBtn = querySelector(
+  //   `#show-todo[data-todo-id='${getId}']`
+  // ) as HTMLButtonElement;
 
-  const isDeleteBtn = deleteBtn && target.dataset.todoId === getId;
+  const isDeleteBtn = target.id === 'delete-todo' && target.dataset.todoId === getId;
+  const isShowbtn = target.id === 'show-todo' && target.dataset.todoId === getId;
 
-  if (!isDeleteBtn) return;
+  if (!isDeleteBtn && !isShowbtn) return;
+
   if (isDeleteBtn) {
     const isTodoExist = TodosData.filter(todo => todo._id.toString() === getId);
     if (isTodoExist) {
       (document.getElementById(getId) as HTMLTableRowElement).remove();
       Todo.prototype.delete(getId);
       TodosData.splice(TodosData.indexOf(isTodoExist[0]), 1);
+    }
+  }
+
+  if (isShowbtn) {
+    const isTodoExist = TodosData.filter(todo => todo._id.toString() === getId);
+    if (isTodoExist) {
+      const { createdAt, text, tag, favorite, done, _id } = isTodoExist[0];
+      const shownTodo = new Todo(createdAt, text, tag, favorite, done, _id);
+      shownTodo.showCard();
     }
   }
 };
