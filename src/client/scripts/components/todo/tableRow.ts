@@ -1,7 +1,11 @@
 import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
+  const { _id } = todo;
+  const id = _id.toString();
+
   const tr = document.createElement('tr');
+  tr.id = id;
 
   // create check input
   const td1 = document.createElement('td');
@@ -9,12 +13,12 @@ export function createTodoItemElement(todo: Todo) {
 
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.name = `done-${todo.id}`;
-  input.id = `done-${todo.id}`;
+  input.name = `done-${id}`;
+  input.id = `done-${id}`;
   input.checked = todo.done;
 
   const label = document.createElement('label');
-  label.htmlFor = `done-${todo.id}`;
+  label.htmlFor = `done-${id}`;
 
   td1.append(input, label);
 
@@ -52,21 +56,22 @@ export function createTodoItemElement(todo: Todo) {
 
   const btnShow = document.createElement('button');
   btnShow.className = 'actions-btn btn-show';
-  btnShow.id = `show-${todo.id}`;
+  btnShow.id = `show-todo`;
 
   const span1 = document.createElement('span');
   span1.textContent = ' / ';
 
   const btnEdit = document.createElement('button');
   btnEdit.className = 'actions-btn btn-edit';
-  btnEdit.id = `edit-${todo.id}`;
+  btnEdit.id = `edit-todo`;
 
   const span2 = document.createElement('span');
   span2.textContent = ' / ';
 
   const btnDelete = document.createElement('button');
   btnDelete.className = 'actions-btn btn-delete';
-  btnDelete.id = `delete-${todo.id}`;
+  btnDelete.id = `delete-todo`;
+  btnDelete.dataset.todoId = id;
 
   td3.append(btnShow, span1, btnEdit, span2, btnDelete);
 
@@ -76,13 +81,13 @@ export function createTodoItemElement(todo: Todo) {
 
   const favLabel = document.createElement('label');
   favLabel.className = 'fav-label';
-  favLabel.htmlFor = `fav-${todo.id}`;
+  favLabel.htmlFor = `fav-${id}`;
 
   const favInput = document.createElement('input');
   favInput.className = 'fav-input';
   favInput.type = 'checkbox';
-  favInput.name = `fav-${todo.id}`;
-  favInput.id = `fav-${todo.id}`;
+  favInput.name = `fav-${id}`;
+  favInput.id = `fav-${id}`;
   favInput.checked = todo.favorite;
 
   const favStarFill = document.createElement('span');

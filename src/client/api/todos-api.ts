@@ -22,3 +22,14 @@ export const createTodo = async (todo: Todo) => {
     console.log(err);
   }
 };
+
+export const deleteTodo = async (todoId: string) => {
+  try {
+    const res = await fetch(`${!isProduction ? path : ''}/api/todos/${todoId}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete todo');
+  } catch (err: unknown) {
+    console.log(err);
+  }
+};

@@ -28,5 +28,15 @@ export default {
     const newTodo = new TodoModel(todo);
     await newTodo.save();
     res.status(201).json(todo);
+  }) as RequestHandler,
+
+  delete: (async (req, res) => {
+    const { todoId } = req.params;
+    console.log(todoId);
+    if (!todoId) console.log('No params were defined');
+
+    await TodoModel.findOneAndDelete({ _id: todoId });
+
+    res.status(201).json('Todo successfully deleted');
   }) as RequestHandler
 };
