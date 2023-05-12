@@ -160,8 +160,7 @@ addTodoBtn.addEventListener('click', (): void => {
     if (!enteredTodo) return;
 
     await enteredTodo.create();
-
-    Todo.prototype.getAll(tbody);
+    tbody.appendChild(Todo.prototype.createElement(enteredTodo));
   });
 });
 

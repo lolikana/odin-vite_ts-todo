@@ -131,7 +131,7 @@ const editDeleteTodo = (e: Event) => {
   if (!isDeleteBtn) return;
 
   if (isDeleteBtn) {
-    TodosData.forEach(async (todo, i) => {
+    TodosData.forEach(async todo => {
       if (todo.id === getId) {
         (document.getElementById(getId) as HTMLTableRowElement).remove();
         await Todo.prototype.delete(getId);
