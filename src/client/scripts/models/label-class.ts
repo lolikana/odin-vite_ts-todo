@@ -16,8 +16,8 @@ import { firstCapitalLetter, querySelector, querySelectorAll } from '../helpers'
 export class Label {
   name: string;
   labelId: string;
-  _id: Types.ObjectId;
-  constructor(name: string, _id: Types.ObjectId) {
+  readonly _id?: Types.ObjectId;
+  constructor(name: string, _id?: Types.ObjectId) {
     this.name = name;
     this.labelId = name;
     this._id = _id;
@@ -72,7 +72,11 @@ export class Label {
   }
 }
 
-export const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElement) => {
+export const labelFormSubmit = (
+  form: HTMLFormElement,
+  pError: HTMLParagraphElement,
+  method?: 'POST'
+) => {
   const formData = new FormData(form);
   const inputData = Object.fromEntries(formData.entries());
   const validatationData = labelSchema.safeParse(inputData);
@@ -80,6 +84,14 @@ export const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElem
   if (!validatationData.success) {
     pError.textContent = validatationData.error.issues[0].message;
     return;
+  }
+
+  if (method !== 'POST') {
+    const data = {
+      name: validatationData.data.inputLabel
+    };
+
+    return new Label(data.name);
   }
 
   const data = {

@@ -17,7 +17,7 @@ export class Todo {
   };
   done: boolean;
   favorite: boolean;
-  readonly _id: Types.ObjectId;
+  readonly _id?: Types.ObjectId;
   readonly id?: string;
 
   constructor(
@@ -29,7 +29,7 @@ export class Todo {
     },
     done: boolean,
     favorite: boolean,
-    _id: Types.ObjectId,
+    _id?: Types.ObjectId,
     id?: string
   ) {
     this.createdAt = createdAt;
@@ -59,7 +59,7 @@ export class Todo {
   }
 
   async get(tbody: HTMLElement) {
-    await fetchTodo(this._id.toString())
+    await fetchTodo(this._id!.toString())
       .then((res: Todo) => {
         TodosData.push(res);
         tbody.append(this.createElement(res));
@@ -89,7 +89,7 @@ export class Todo {
     modal.textContent = '';
     modal.ariaHidden = 'false';
     const labelFilter = labelsData.filter(
-      label => label._id.toString() === this.tag.label[0]
+      label => label._id!.toString() === this.tag.label[0]
     );
     modal.append(
       createTodoCard({
@@ -101,7 +101,7 @@ export class Todo {
   }
 }
 
-export const todoFormSubmit = () => {
+export const todoFormSubmit = (method?: 'POST') => {
   const todoForm = querySelector('.todo-form') as HTMLFormElement;
 
   const formData = new FormData(todoForm);
@@ -122,6 +122,22 @@ export const todoFormSubmit = () => {
     return;
   }
 
+  if (method !== 'POST') {
+    const data = {
+      createdAt: validatationData.data.createdAt,
+      text: validatationData.data.text,
+      tag: {
+        dueDate: validatationData.data.dueDate,
+        label: validatationData.data.label
+      },
+      favorite: validatationData.data.favorite === 'on',
+      done: validatationData.data.done === 'on'
+    } as Todo;
+
+    todoForm.reset();
+
+    return new Todo(data.createdAt, data.text, data.tag, data.done, data.favorite);
+  }
   const data = {
     createdAt: validatationData.data.createdAt,
     text: validatationData.data.text,
@@ -162,7 +178,7 @@ const editDeleteTodo = (e: Event) => {
   if (!isDeleteBtn && !isShowbtn) return;
 
   if (isDeleteBtn) {
-    const isTodoExist = TodosData.filter(todo => todo._id.toString() === getId);
+    const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
     if (isTodoExist) {
       (document.getElementById(getId) as HTMLTableRowElement).remove();
       Todo.prototype.delete(getId);
@@ -171,7 +187,7 @@ const editDeleteTodo = (e: Event) => {
   }
 
   if (isShowbtn) {
-    const isTodoExist = TodosData.filter(todo => todo._id.toString() === getId);
+    const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
     if (isTodoExist) {
       const { createdAt, text, tag, favorite, done, _id } = isTodoExist[0];
       const shownTodo = new Todo(createdAt, text, tag, favorite, done, _id);

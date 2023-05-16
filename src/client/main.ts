@@ -106,7 +106,7 @@ addLabelBtn?.addEventListener('click', () => {
 
     form.addEventListener('submit', async (e: SubmitEvent) => {
       e.preventDefault();
-      const enteredLabel = labelFormSubmit(form, pError);
+      const enteredLabel = labelFormSubmit(form, pError, 'POST');
       if (!enteredLabel) return;
 
       const isLabelExist = labelsData.some(
@@ -158,7 +158,7 @@ addTodoBtn.addEventListener('click', (): void => {
 
   form.addEventListener('submit', async (e: SubmitEvent) => {
     e.preventDefault();
-    const enteredTodo = todoFormSubmit();
+    const enteredTodo = todoFormSubmit('POST');
     if (!enteredTodo) return;
 
     await enteredTodo.create().then(() => enteredTodo.get(tbody));
