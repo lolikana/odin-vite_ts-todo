@@ -11,7 +11,7 @@ export type TTodo = {
   done: boolean;
   text: string;
   tag: {
-    label: string;
+    label: Types.ObjectId;
     dueDate: string;
   };
   favorite: boolean;

@@ -1,7 +1,7 @@
 import { labelsData } from '../../../../libs/data';
 import { createBtnCloseModal, firstCapitalLetter } from '../../helpers';
 
-export function createTodoForm(method: 'POST' | 'PUT') {
+export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   // Create container
   const container = document.createElement('div');
   container.classList.add('todo-form-container');
@@ -13,7 +13,10 @@ export function createTodoForm(method: 'POST' | 'PUT') {
   const form = document.createElement('form');
   form.classList.add('todo-form');
   form.method = 'POST';
-  form.action = method === 'POST' ? (import.meta.env.VITE_API_TODOS as string) : '';
+  form.action =
+    method === 'POST'
+      ? (import.meta.env.VITE_API_TODOS as string)
+      : `${import.meta.env.VITE_API_TODOS as string}/${todoId!}?_method=PUT`;
 
   container.appendChild(form);
 
@@ -45,7 +48,7 @@ export function createTodoForm(method: 'POST' | 'PUT') {
 
   labelsData.map(label => {
     const labelOption = document.createElement('option');
-    labelOption.setAttribute('value', label._id.toString());
+    labelOption.setAttribute('value', label._id!.toString());
     labelOption.textContent = firstCapitalLetter(label.name);
     labelSelect.appendChild(labelOption);
   });

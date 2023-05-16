@@ -43,6 +43,25 @@ export default {
     res.status(201).json(todo);
   }) as RequestHandler,
 
+  update: (async (req, res, next): Promise<void> => {
+    const { todoId } = req.params;
+
+    if (!todoId) {
+      const error = new ExpressError('No params were defined', 404);
+      next(error);
+    }
+
+    const todo = req.body as Todo;
+
+    const updatedTodo = await TodoModel.findByIdAndUpdate(
+      todoId,
+      { ...todo },
+      { new: true }
+    );
+
+    res.status(201).json(updatedTodo);
+  }) as RequestHandler<{ todoId: string }>,
+
   delete: (async (req, res) => {
     const { todoId } = req.params;
     if (!todoId) console.log('No params were defined');

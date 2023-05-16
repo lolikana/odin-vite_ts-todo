@@ -37,7 +37,7 @@ const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
-const tbody = querySelector('.section--table-body') as HTMLElement;
+export const tbody = querySelector('.section--table-body') as HTMLElement;
 
 /* Navbar START */
 /** Selected tab **/

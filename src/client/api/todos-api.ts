@@ -31,6 +31,22 @@ export const createTodo = async (todo: Todo) => {
   }
 };
 
+export const updateTodo = async (existingTodo: Todo, enteredTodo: Todo) => {
+  try {
+    const res = await fetch(
+      `${!isProduction ? path : ''}/api/todos/${existingTodo._id!.toString()}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(enteredTodo)
+      }
+    );
+    if (!res.ok) throw new Error('Failed to update label');
+  } catch (err: unknown) {
+    console.log(err);
+  }
+};
+
 export const deleteTodo = async (todoId: string) => {
   try {
     const res = await fetch(`${!isProduction ? path : ''}/api/todos/${todoId}`, {

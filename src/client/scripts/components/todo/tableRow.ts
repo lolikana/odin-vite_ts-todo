@@ -4,7 +4,7 @@ import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
   const { _id } = todo;
-  const id = _id.toString();
+  const id = _id!.toString();
 
   const tr = document.createElement('tr');
   tr.id = id;
@@ -71,6 +71,7 @@ export function createTodoItemElement(todo: Todo) {
   const btnEdit = document.createElement('button');
   btnEdit.className = 'actions-btn btn-edit';
   btnEdit.id = `edit-todo`;
+  btnEdit.dataset.todoId = id;
 
   const span2 = document.createElement('span');
   span2.textContent = ' / ';

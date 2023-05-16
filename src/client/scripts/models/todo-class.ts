@@ -2,11 +2,17 @@ import { Types } from 'mongoose';
 
 import { labelsData, TodosData } from '../../../libs/data';
 import { todoSchema } from '../../../libs/validations';
-import { createTodo, deleteTodo, fetchTodo, fetchTodos } from '../../api';
-import { modal } from '../../main';
+import { createTodo, deleteTodo, fetchTodo, fetchTodos, updateTodo } from '../../api';
+import { modal, tbody } from '../../main';
 import { createTodoCard } from '../components/todo/card';
+import { createTodoForm } from '../components/todo/formTodo';
 import { createTodoItemElement } from '../components/todo/tableRow';
-import { closeModal, querySelector, querySelectorAll } from '../helpers';
+import {
+  closeModal,
+  countTypedCharacters,
+  querySelector,
+  querySelectorAll
+} from '../helpers';
 
 export class Todo {
   createdAt: Date;
@@ -58,8 +64,8 @@ export class Todo {
       });
   }
 
-  async get(tbody: HTMLElement) {
-    await fetchTodo(this._id!.toString())
+  async get(tbody: HTMLElement, id?: Types.ObjectId) {
+    await fetchTodo(!id ? this._id!.toString() : id.toString())
       .then((res: Todo) => {
         TodosData.push(res);
         tbody.append(this.createElement(res));
@@ -79,6 +85,12 @@ export class Todo {
 
   delete(todoId: string) {
     deleteTodo(todoId).catch(err => console.log(err));
+  }
+
+  async update(todo: Todo) {
+    await updateTodo(todo, { ...this, _id: todo._id }).catch(err =>
+      console.log('update: ', err)
+    );
   }
 
   createElement(todo: Todo) {
@@ -165,20 +177,16 @@ export const todoFormSubmit = (method?: 'POST') => {
 const editDeleteTodo = (e: Event) => {
   const target = e.target as HTMLButtonElement;
   const getId = (target.closest('tr') as HTMLElement).getAttribute('id') as string;
-  // const deleteBtn = querySelector(
-  //   `#delete-todo[data-todo-id='${getId}']`
-  // ) as HTMLButtonElement;
-  // const showBtn = querySelector(
-  //   `#show-todo[data-todo-id='${getId}']`
-  // ) as HTMLButtonElement;
 
   const isDeleteBtn = target.id === 'delete-todo' && target.dataset.todoId === getId;
   const isShowbtn = target.id === 'show-todo' && target.dataset.todoId === getId;
+  const isEditBtn = target.id === 'edit-todo' && target.dataset.todoId === getId;
 
-  if (!isDeleteBtn && !isShowbtn) return;
+  if (!isDeleteBtn && !isShowbtn && !isEditBtn) return;
+
+  const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
 
   if (isDeleteBtn) {
-    const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
     if (isTodoExist) {
       (document.getElementById(getId) as HTMLTableRowElement).remove();
       Todo.prototype.delete(getId);
@@ -187,11 +195,36 @@ const editDeleteTodo = (e: Event) => {
   }
 
   if (isShowbtn) {
-    const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
     if (isTodoExist) {
       const { createdAt, text, tag, favorite, done, _id } = isTodoExist[0];
       const shownTodo = new Todo(createdAt, text, tag, favorite, done, _id);
       shownTodo.showCard();
+    }
+  }
+
+  if (isEditBtn) {
+    if (isTodoExist) {
+      TodosData.forEach((existingTodo, i) => {
+        const { container, form } = createTodoForm('PUT', TodosData[i]._id!.toString());
+        modal.ariaHidden = 'false';
+        modal.textContent = '';
+        modal.append(container);
+        countTypedCharacters();
+        closeModal();
+
+        form.addEventListener('submit', async (e: SubmitEvent) => {
+          e.preventDefault();
+          const enteredTodo = todoFormSubmit() as Todo;
+
+          if (!enteredTodo) return;
+
+          await enteredTodo.update(existingTodo);
+          (document.getElementById(getId) as HTMLTableRowElement).remove();
+          await enteredTodo.get(tbody, TodosData[i]._id);
+
+          modal.ariaHidden = 'true';
+        });
+      });
     }
   }
 };
