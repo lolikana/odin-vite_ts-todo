@@ -15,12 +15,14 @@ export function createTodoItemElement(todo: Todo) {
 
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.name = `done-${id}`;
-  input.id = `done-${id}`;
+  input.name = `done-todo-${id}`;
+  input.id = `done-todo-${id}`;
   input.checked = todo.done;
+  input.dataset.todoId = id;
 
   const label = document.createElement('label');
-  label.htmlFor = `done-${id}`;
+  label.htmlFor = `done-todo-${id}`;
+  label.dataset.todoId = id;
 
   td1.append(input, label);
 
@@ -89,14 +91,15 @@ export function createTodoItemElement(todo: Todo) {
 
   const favLabel = document.createElement('label');
   favLabel.className = 'fav-label';
-  favLabel.htmlFor = `fav-${id}`;
+  favLabel.htmlFor = `fav-todo-${id}`;
 
   const favInput = document.createElement('input');
   favInput.className = 'fav-input';
   favInput.type = 'checkbox';
-  favInput.name = `fav-${id}`;
-  favInput.id = `fav-${id}`;
+  favInput.name = `fav-todo-${id}`;
+  favInput.id = `fav-todo-${id}`;
   favInput.checked = todo.favorite;
+  favInput.dataset.todoId = id;
 
   const favStarFill = document.createElement('span');
   favStarFill.className = 'fav-star fill';

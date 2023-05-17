@@ -175,14 +175,16 @@ export const todoFormSubmit = (method?: 'POST') => {
 };
 
 const editDeleteTodo = (e: Event) => {
-  const target = e.target as HTMLButtonElement;
+  const target = e.target as HTMLButtonElement | HTMLInputElement;
   const getId = (target.closest('tr') as HTMLElement).getAttribute('id') as string;
 
   const isDeleteBtn = target.id === 'delete-todo' && target.dataset.todoId === getId;
   const isShowbtn = target.id === 'show-todo' && target.dataset.todoId === getId;
   const isEditBtn = target.id === 'edit-todo' && target.dataset.todoId === getId;
+  const isDoneInput = target.id.includes('done-todo') && target.dataset.todoId === getId;
+  const isFavInput = target.id.includes('fav-todo') && target.dataset.todoId === getId;
 
-  if (!isDeleteBtn && !isShowbtn && !isEditBtn) return;
+  if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
 
   const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
 
@@ -225,6 +227,25 @@ const editDeleteTodo = (e: Event) => {
           modal.ariaHidden = 'true';
         });
       });
+    }
+  }
+
+  if (isDoneInput) {
+    if (isTodoExist) {
+      const todo = isTodoExist[0];
+      const data = {
+        createdAt: todo.createdAt,
+        text: todo.text,
+        tag: {
+          dueDate: todo.tag.dueDate,
+          label: todo.tag.label
+        },
+        favorite: todo.favorite,
+        done: (target as HTMLInputElement).checked,
+        _id: todo._id
+      } as Todo;
+
+      updateTodo(todo, data).catch(err => console.log(err));
     }
   }
 };
