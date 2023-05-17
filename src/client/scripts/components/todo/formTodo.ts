@@ -144,14 +144,14 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
 
   const doneInput = document.createElement('input');
   doneInput.setAttribute('type', 'checkbox');
-  doneInput.setAttribute('name', 'done');
-  doneInput.setAttribute('id', 'todo-done');
+  doneInput.setAttribute('name', 'isDone');
+  doneInput.setAttribute('id', 'todo-isDone');
   doneAction.appendChild(doneInput);
 
   const doneLabel = document.createElement('label');
-  doneLabel.setAttribute('for', 'todo-done');
-  doneLabel.classList.add('todo-done');
-  doneLabel.textContent = 'done';
+  doneLabel.setAttribute('for', 'todo-isDone');
+  doneLabel.classList.add('todo-isDone');
+  doneLabel.textContent = 'isDone';
   doneAction.appendChild(doneLabel);
 
   // Create submit button
