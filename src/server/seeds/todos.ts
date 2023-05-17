@@ -3,7 +3,7 @@ import { labelsSeed } from './labels';
 export const todosSeed = [
   {
     createdAt: new Date('01-04-2023'),
-    done: true,
+    isDone: true,
     text: 'Do some workout, Do some workout, Do some workout, Do some workout, Do some workout',
     tag: {
       label: labelsSeed[0]._id,
@@ -13,7 +13,7 @@ export const todosSeed = [
   },
   {
     createdAt: new Date('01-05-2023'),
-    done: false,
+    isDone: false,
     text: 'Learn Vite and MongoDB',
     tag: {
       label: labelsSeed[1]._id,

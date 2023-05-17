@@ -21,7 +21,7 @@ export class Todo {
     label: string;
     dueDate: string;
   };
-  done: boolean;
+  isDone: boolean;
   favorite: boolean;
   readonly _id?: Types.ObjectId;
   readonly id?: string;
@@ -33,13 +33,13 @@ export class Todo {
       label: string;
       dueDate: string;
     },
-    done: boolean,
+    isDone: boolean,
     favorite: boolean,
     _id?: Types.ObjectId,
     id?: string
   ) {
     this.createdAt = createdAt;
-    this.done = done;
+    this.isDone = isDone;
     this.text = text;
     this.tag = tag;
     this.favorite = favorite;
@@ -143,12 +143,12 @@ export const todoFormSubmit = (method?: 'POST') => {
         label: validatationData.data.label
       },
       favorite: validatationData.data.favorite === 'on',
-      done: validatationData.data.done === 'on'
+      isDone: validatationData.data.isDone === 'on'
     } as Todo;
 
     todoForm.reset();
 
-    return new Todo(data.createdAt, data.text, data.tag, data.done, data.favorite);
+    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.favorite);
   }
   const data = {
     createdAt: validatationData.data.createdAt,
@@ -158,7 +158,7 @@ export const todoFormSubmit = (method?: 'POST') => {
       label: validatationData.data.label
     },
     favorite: validatationData.data.favorite === 'on',
-    done: validatationData.data.done === 'on',
+    isDone: validatationData.data.isDone === 'on',
     _id: new Types.ObjectId()
   } as Todo;
 
@@ -168,7 +168,7 @@ export const todoFormSubmit = (method?: 'POST') => {
     data.createdAt,
     data.text,
     data.tag,
-    data.done,
+    data.isDone,
     data.favorite,
     data._id
   );
@@ -181,7 +181,8 @@ const editDeleteTodo = (e: Event) => {
   const isDeleteBtn = target.id === 'delete-todo' && target.dataset.todoId === getId;
   const isShowbtn = target.id === 'show-todo' && target.dataset.todoId === getId;
   const isEditBtn = target.id === 'edit-todo' && target.dataset.todoId === getId;
-  const isDoneInput = target.id.includes('done-todo') && target.dataset.todoId === getId;
+  const isDoneInput =
+    target.id.includes('isDone-todo') && target.dataset.todoId === getId;
   const isFavInput = target.id.includes('fav-todo') && target.dataset.todoId === getId;
 
   if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
@@ -198,8 +199,8 @@ const editDeleteTodo = (e: Event) => {
 
   if (isShowbtn) {
     if (isTodoExist) {
-      const { createdAt, text, tag, favorite, done, _id } = isTodoExist[0];
-      const shownTodo = new Todo(createdAt, text, tag, favorite, done, _id);
+      const { createdAt, text, tag, favorite, isDone, _id } = isTodoExist[0];
+      const shownTodo = new Todo(createdAt, text, tag, favorite, isDone, _id);
       shownTodo.showCard();
     }
   }
@@ -241,7 +242,7 @@ const editDeleteTodo = (e: Event) => {
           label: todo.tag.label
         },
         favorite: todo.favorite,
-        done: (target as HTMLInputElement).checked,
+        isDone: (target as HTMLInputElement).checked,
         _id: todo._id
       } as Todo;
 

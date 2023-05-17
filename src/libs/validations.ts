@@ -35,5 +35,5 @@ export const todoSchema = z.object({
       message: 'Cannot not be empty'
     }),
   favorite: z.string().optional(),
-  done: z.string().optional()
+  isDone: z.string().optional()
 });

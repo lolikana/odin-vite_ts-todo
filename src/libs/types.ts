@@ -8,7 +8,7 @@ export type TLabel = {
 export type TTodo = {
   _id?: Types.ObjectId;
   createdAt: Date;
-  done: boolean;
+  isDone: boolean;
   text: string;
   tag: {
     label: Types.ObjectId;

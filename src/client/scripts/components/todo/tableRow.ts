@@ -15,13 +15,13 @@ export function createTodoItemElement(todo: Todo) {
 
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.name = `done-todo-${id}`;
-  input.id = `done-todo-${id}`;
-  input.checked = todo.done;
+  input.name = `isDone-todo-${id}`;
+  input.id = `isDone-todo-${id}`;
+  input.checked = todo.isDone;
   input.dataset.todoId = id;
 
   const label = document.createElement('label');
-  label.htmlFor = `done-todo-${id}`;
+  label.htmlFor = `isDone-todo-${id}`;
   label.dataset.todoId = id;
 
   td1.append(input, label);
