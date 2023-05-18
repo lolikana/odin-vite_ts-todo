@@ -1,7 +1,11 @@
-import { labelsData } from '../../../../libs/data';
+import { labelsData, TodosData } from '../../../../libs/data';
 import { createBtnCloseModal, firstCapitalLetter } from '../../helpers';
 
 export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
+  const todo =
+    method === 'PUT' &&
+    todoId &&
+    TodosData.filter(todo => todo._id?.toString() === todoId)[0];
   // Create container
   const container = document.createElement('div');
   container.classList.add('todo-form-container');
@@ -50,6 +54,10 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
     const labelOption = document.createElement('option');
     labelOption.setAttribute('value', label._id!.toString());
     labelOption.textContent = firstCapitalLetter(label.name);
+    if (method === 'PUT' && todo && label._id!.toString() === todo.tag.label) {
+      labelOption.defaultSelected = true;
+    }
+
     labelSelect.appendChild(labelOption);
   });
 
@@ -67,6 +75,7 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   dueDateInput.setAttribute('type', 'date');
   dueDateInput.setAttribute('name', 'dueDate');
   dueDateInput.setAttribute('id', 'todo-dueDate');
+  method === 'PUT' && todo && dueDateInput.setAttribute('value', todo.tag.dueDate);
   dueDateAction.append(dueDateInput, pErrorDueDate);
 
   // Create text actions
@@ -88,6 +97,9 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   textTextarea.setAttribute('id', 'todo-text');
   textTextarea.setAttribute('rows', '5');
   textTextarea.setAttribute('maxlength', '100');
+
+  method === 'PUT' && todo && (textTextarea.textContent = todo.text);
+
   textAction.appendChild(textTextarea);
 
   const countContainer = document.createElement('div');
@@ -128,6 +140,10 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   favInput.setAttribute('class', 'fav-input');
   favInput.setAttribute('name', 'favorite');
   favInput.setAttribute('id', 'todo-fav');
+  method === 'PUT' &&
+    todo &&
+    (todo.isFavorite === true ? (favInput.checked = true) : (favInput.checked = false));
+
   favLabel.appendChild(favInput);
 
   const favStar1 = document.createElement('span');
@@ -146,6 +162,9 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   doneInput.setAttribute('type', 'checkbox');
   doneInput.setAttribute('name', 'isDone');
   doneInput.setAttribute('id', 'todo-isDone');
+  method === 'PUT' &&
+    todo &&
+    (todo.isDone === true ? (doneInput.checked = true) : (doneInput.checked = false));
   doneAction.appendChild(doneInput);
 
   const doneLabel = document.createElement('label');
