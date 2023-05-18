@@ -15,7 +15,7 @@ const TodoSchema = new mongoose.Schema<Todo>({
     ],
     dueDate: { type: String, required: [true, 'Please add a due date'] }
   },
-  favorite: Boolean
+  isFavorite: Boolean
 });
 
 export const TodoModel = mongoose.model<Todo>('Todo', TodoSchema);

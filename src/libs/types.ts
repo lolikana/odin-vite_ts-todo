@@ -14,5 +14,5 @@ export type TTodo = {
     label: Types.ObjectId;
     dueDate: string;
   };
-  favorite: boolean;
+  isFavorite: boolean;
 };

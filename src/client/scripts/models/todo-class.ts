@@ -22,7 +22,7 @@ export class Todo {
     dueDate: string;
   };
   isDone: boolean;
-  favorite: boolean;
+  isFavorite: boolean;
   readonly _id?: Types.ObjectId;
   readonly id?: string;
 
@@ -34,7 +34,7 @@ export class Todo {
       dueDate: string;
     },
     isDone: boolean,
-    favorite: boolean,
+    isFavorite: boolean,
     _id?: Types.ObjectId,
     id?: string
   ) {
@@ -42,7 +42,7 @@ export class Todo {
     this.isDone = isDone;
     this.text = text;
     this.tag = tag;
-    this.favorite = favorite;
+    this.isFavorite = isFavorite;
     this._id = _id;
     this.id = id;
   }
@@ -142,13 +142,13 @@ export const todoFormSubmit = (method?: 'POST') => {
         dueDate: validatationData.data.dueDate,
         label: validatationData.data.label
       },
-      favorite: validatationData.data.favorite === 'on',
+      isFavorite: validatationData.data.isFavorite === 'on',
       isDone: validatationData.data.isDone === 'on'
     } as Todo;
 
     todoForm.reset();
 
-    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.favorite);
+    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
   }
   const data = {
     createdAt: validatationData.data.createdAt,
@@ -157,7 +157,7 @@ export const todoFormSubmit = (method?: 'POST') => {
       dueDate: validatationData.data.dueDate,
       label: validatationData.data.label
     },
-    favorite: validatationData.data.favorite === 'on',
+    isFavorite: validatationData.data.isFavorite === 'on',
     isDone: validatationData.data.isDone === 'on',
     _id: new Types.ObjectId()
   } as Todo;
@@ -169,7 +169,7 @@ export const todoFormSubmit = (method?: 'POST') => {
     data.text,
     data.tag,
     data.isDone,
-    data.favorite,
+    data.isFavorite,
     data._id
   );
 };
@@ -199,8 +199,8 @@ const editDeleteTodo = (e: Event) => {
 
   if (isShowbtn) {
     if (isTodoExist) {
-      const { createdAt, text, tag, favorite, isDone, _id } = isTodoExist[0];
-      const shownTodo = new Todo(createdAt, text, tag, favorite, isDone, _id);
+      const { createdAt, text, tag, isFavorite, isDone, _id } = isTodoExist[0];
+      const shownTodo = new Todo(createdAt, text, tag, isFavorite, isDone, _id);
       shownTodo.showCard();
     }
   }
@@ -241,7 +241,7 @@ const editDeleteTodo = (e: Event) => {
           dueDate: todo.tag.dueDate,
           label: todo.tag.label
         },
-        favorite: todo.favorite,
+        isFavorite: todo.isFavorite,
         isDone: (target as HTMLInputElement).checked,
         _id: todo._id
       } as Todo;

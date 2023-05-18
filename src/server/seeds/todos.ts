@@ -9,7 +9,7 @@ export const todosSeed = [
       label: labelsSeed[0]._id,
       dueDate: new Date('01-05-2023').toDateString()
     },
-    favorite: true
+    isFavorite: true
   },
   {
     createdAt: new Date('01-05-2023'),
@@ -19,6 +19,6 @@ export const todosSeed = [
       label: labelsSeed[1]._id,
       dueDate: new Date('05-30-2023').toDateString()
     },
-    favorite: true
+    isFavorite: true
   }
 ];

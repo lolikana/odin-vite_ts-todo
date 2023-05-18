@@ -91,14 +91,14 @@ export function createTodoItemElement(todo: Todo) {
 
   const favLabel = document.createElement('label');
   favLabel.className = 'fav-label';
-  favLabel.htmlFor = `fav-todo-${id}`;
+  favLabel.htmlFor = `isFavorite-todo-${id}`;
 
   const favInput = document.createElement('input');
   favInput.className = 'fav-input';
   favInput.type = 'checkbox';
-  favInput.name = `fav-todo-${id}`;
-  favInput.id = `fav-todo-${id}`;
-  favInput.checked = todo.favorite;
+  favInput.name = `isFavorite-todo-${id}`;
+  favInput.id = `isFavorite-todo-${id}`;
+  favInput.checked = todo.isFavorite;
   favInput.dataset.todoId = id;
 
   const favStarFill = document.createElement('span');
