@@ -67,7 +67,6 @@ export class Todo {
   async get(tbody: HTMLElement, id?: Types.ObjectId) {
     await fetchTodo(!id ? this._id!.toString() : id.toString())
       .then((res: Todo) => {
-        TodosData.push(res);
         tbody.append(this.createElement(res));
         // Allow to click on edit btn right after create new label
         tbody.addEventListener('click', (e: Event) => {
@@ -101,7 +100,7 @@ export class Todo {
     modal.textContent = '';
     modal.ariaHidden = 'false';
     const labelFilter = labelsData.filter(
-      label => label._id!.toString() === this.tag.label[0]
+      label => label._id!.toString() === this.tag.label
     );
     modal.append(
       createTodoCard({
@@ -188,85 +187,95 @@ const editDeleteTodo = (e: Event) => {
 
   if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
 
-  const isTodoExist = TodosData.filter(todo => todo._id!.toString() === getId);
+  const getExistingTodo = TodosData.filter(todo => todo._id!.toString() === getId)[0];
 
-  if (isDeleteBtn) {
-    if (isTodoExist) {
+  if (getExistingTodo) {
+    if (isDeleteBtn) {
       (document.getElementById(getId) as HTMLTableRowElement).remove();
       Todo.prototype.delete(getId);
-      TodosData.splice(TodosData.indexOf(isTodoExist[0]), 1);
+      TodosData.splice(TodosData.indexOf(getExistingTodo), 1);
     }
-  }
 
-  if (isShowbtn) {
-    if (isTodoExist) {
-      const { createdAt, text, tag, isFavorite, isDone, _id } = isTodoExist[0];
+    if (isShowbtn) {
+      const { createdAt, text, tag, isFavorite, isDone, _id } = getExistingTodo;
       const shownTodo = new Todo(createdAt, text, tag, isFavorite, isDone, _id);
       shownTodo.showCard();
     }
-  }
 
-  if (isEditBtn) {
-    if (isTodoExist) {
-      TodosData.forEach((existingTodo, i) => {
-        const { container, form } = createTodoForm('PUT', TodosData[i]._id!.toString());
-        modal.ariaHidden = 'false';
-        modal.textContent = '';
-        modal.append(container);
-        countTypedCharacters();
-        closeModal();
+    if (isEditBtn) {
+      const { container, form } = createTodoForm('PUT', getExistingTodo._id!.toString());
+      modal.ariaHidden = 'false';
+      modal.textContent = '';
+      modal.append(container);
+      countTypedCharacters();
+      closeModal();
 
-        form.addEventListener('submit', async (e: SubmitEvent) => {
-          e.preventDefault();
-          const enteredTodo = todoFormSubmit() as Todo;
+      form.addEventListener('submit', async (e: SubmitEvent) => {
+        e.preventDefault();
+        const enteredTodo = todoFormSubmit() as Todo;
 
-          if (!enteredTodo) return;
+        if (!enteredTodo) return;
 
-          await enteredTodo.update(existingTodo);
-          (document.getElementById(getId) as HTMLTableRowElement).remove();
-          await enteredTodo.get(tbody, TodosData[i]._id);
+        await enteredTodo
+          .update(getExistingTodo)
+          .then(() => {
+            const todoIndex = TodosData.findIndex(
+              item => item._id === getExistingTodo._id
+            );
+            TodosData[todoIndex].text = enteredTodo.text;
+            TodosData[todoIndex].tag.label = enteredTodo.tag.label;
+            TodosData[todoIndex].tag.dueDate = enteredTodo.tag.dueDate;
+            TodosData[todoIndex].isDone = enteredTodo.isDone;
+            TodosData[todoIndex].isFavorite = enteredTodo.isFavorite;
+          })
+          .catch(err => console.log(err));
+        (document.getElementById(getId) as HTMLTableRowElement).remove();
+        await enteredTodo.get(tbody, getExistingTodo._id);
 
-          modal.ariaHidden = 'true';
-        });
+        modal.ariaHidden = 'true';
       });
     }
-  }
 
-  if (isDoneInput) {
-    if (isTodoExist) {
-      const todo = isTodoExist[0];
+    if (isDoneInput) {
       const data = {
-        createdAt: todo.createdAt,
-        text: todo.text,
+        createdAt: getExistingTodo.createdAt,
+        text: getExistingTodo.text,
         tag: {
-          dueDate: todo.tag.dueDate,
-          label: todo.tag.label
+          dueDate: getExistingTodo.tag.dueDate,
+          label: getExistingTodo.tag.label
         },
-        isFavorite: todo.isFavorite,
+        isFavorite: getExistingTodo.isFavorite,
         isDone: (target as HTMLInputElement).checked,
-        _id: todo._id
+        _id: getExistingTodo._id
       } as Todo;
 
-      updateTodo(todo, data).catch(err => console.log(err));
+      updateTodo(getExistingTodo, data)
+        .then(() => {
+          const todoIndex = TodosData.findIndex(item => item._id === getExistingTodo._id);
+          TodosData[todoIndex].isDone = data.isDone;
+        })
+        .catch(err => console.log(err));
     }
-  }
 
-  if (isFavInput) {
-    if (isTodoExist) {
-      const todo = isTodoExist[0];
+    if (isFavInput) {
       const data = {
-        createdAt: todo.createdAt,
-        text: todo.text,
+        createdAt: getExistingTodo.createdAt,
+        text: getExistingTodo.text,
         tag: {
-          dueDate: todo.tag.dueDate,
-          label: todo.tag.label
+          dueDate: getExistingTodo.tag.dueDate,
+          label: getExistingTodo.tag.label
         },
         isFavorite: (target as HTMLInputElement).checked,
-        isDone: todo.isDone,
-        _id: todo._id
+        isDone: getExistingTodo.isDone,
+        _id: getExistingTodo._id
       } as Todo;
 
-      updateTodo(todo, data).catch(err => console.log(err));
+      updateTodo(getExistingTodo, data)
+        .then(() => {
+          const todoIndex = TodosData.findIndex(item => item._id === getExistingTodo._id);
+          TodosData[todoIndex].isFavorite = data.isFavorite;
+        })
+        .catch(err => console.log(err));
     }
   }
 };

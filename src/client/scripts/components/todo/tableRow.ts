@@ -40,7 +40,7 @@ export function createTodoItemElement(todo: Todo) {
 
   const spanTag1 = document.createElement('span');
   labelsData.forEach(label => {
-    if (label._id?.toString() === todo.tag.label[0]) {
+    if (label._id?.toString() === todo.tag.label) {
       spanTag1.className = 'task--tags-tag tag-label';
       const small1 = document.createElement('small');
       small1.textContent = firstCapitalLetter(label.name);

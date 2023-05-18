@@ -7,12 +7,10 @@ const TodoSchema = new mongoose.Schema<Todo>({
   isDone: Boolean,
   text: { type: String, required: [true, 'Cannot be empty'] },
   tag: {
-    label: [
-      {
-        type: Types.ObjectId,
-        ref: 'Label'
-      }
-    ],
+    label: {
+      type: Types.ObjectId,
+      ref: 'Label'
+    },
     dueDate: { type: String, required: [true, 'Please add a due date'] }
   },
   isFavorite: Boolean

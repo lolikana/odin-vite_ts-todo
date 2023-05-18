@@ -2,7 +2,7 @@ import { labelsSeed } from './labels';
 
 export const todosSeed = [
   {
-    createdAt: new Date('01-04-2023'),
+    createdAt: new Date(),
     isDone: true,
     text: 'Do some workout, Do some workout, Do some workout, Do some workout, Do some workout',
     tag: {
@@ -12,7 +12,7 @@ export const todosSeed = [
     isFavorite: true
   },
   {
-    createdAt: new Date('01-05-2023'),
+    createdAt: new Date(),
     isDone: false,
     text: 'Learn Vite and MongoDB',
     tag: {
