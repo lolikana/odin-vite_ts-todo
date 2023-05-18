@@ -183,7 +183,8 @@ const editDeleteTodo = (e: Event) => {
   const isEditBtn = target.id === 'edit-todo' && target.dataset.todoId === getId;
   const isDoneInput =
     target.id.includes('isDone-todo') && target.dataset.todoId === getId;
-  const isFavInput = target.id.includes('fav-todo') && target.dataset.todoId === getId;
+  const isFavInput =
+    target.id.includes('isFavorite-todo') && target.dataset.todoId === getId;
 
   if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
 
@@ -243,6 +244,25 @@ const editDeleteTodo = (e: Event) => {
         },
         isFavorite: todo.isFavorite,
         isDone: (target as HTMLInputElement).checked,
+        _id: todo._id
+      } as Todo;
+
+      updateTodo(todo, data).catch(err => console.log(err));
+    }
+  }
+
+  if (isFavInput) {
+    if (isTodoExist) {
+      const todo = isTodoExist[0];
+      const data = {
+        createdAt: todo.createdAt,
+        text: todo.text,
+        tag: {
+          dueDate: todo.tag.dueDate,
+          label: todo.tag.label
+        },
+        isFavorite: (target as HTMLInputElement).checked,
+        isDone: todo.isDone,
         _id: todo._id
       } as Todo;
 
