@@ -79,6 +79,7 @@ export class Todo {
   }
 
   async create() {
+    TodosData.push(this);
     await createTodo(this).catch(err => console.log(err));
   }
 

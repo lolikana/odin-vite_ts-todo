@@ -3,7 +3,11 @@ import { create, firstCapitalLetter } from '../helpers';
 import { Label } from '../models/label-class';
 import { createAddLabelBtn } from './ui/buttons';
 
-export const createListElement = (list: 'tabs' | 'labels', text: string) => {
+export const createListElement = (
+  list: 'tabs' | 'labels',
+  text: string,
+  labelId?: string
+) => {
   const li = create('li');
   const div = create('div');
   const button = create('button');
@@ -36,6 +40,7 @@ export const createListElement = (list: 'tabs' | 'labels', text: string) => {
 
     button.setAttribute('data-label', text);
     button.classList.add('labels--list-btn');
+    button.dataset.labelId = labelId;
 
     divActions.classList.add('label--actions');
 
@@ -92,6 +97,6 @@ export const createDivLabelsElement = () => {
 
 export const createListLabelsElement = (ul: HTMLUListElement, labels: Label[] | null) => {
   labels?.map(label => {
-    ul.append(createListElement('labels', label.name));
+    ul.append(createListElement('labels', label.name, label._id!.toString()));
   });
 };

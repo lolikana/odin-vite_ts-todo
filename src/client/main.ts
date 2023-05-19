@@ -2,7 +2,7 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData } from '../libs/data';
+import { labelsData, TodosData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
 import { createTodoForm } from './scripts/components/todo/formTodo';
@@ -39,11 +39,16 @@ const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
+const selectedTabTodos: Todo[] = [];
+let selectedLabelTodos: Todo[] = [];
+
 /* Navbar START */
 /** Selected tab **/
 const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
+  let selectedTab: HTMLLIElement;
+  const selectedTodos: Todo[] = selectedTabTodos.concat(selectedLabelTodos);
+
   const target = e.target as HTMLElement;
-  let selectedTab;
 
   if (
     target === tabsList ||
@@ -53,14 +58,14 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
     return;
 
   if (listItems === tabsListItems) {
-    selectedTab = target.closest('.tabs--list-item');
+    selectedTab = target.closest('.tabs--list-item') as HTMLLIElement;
   } else {
-    selectedTab = target.closest('.labels--list-item');
+    selectedTab = target.closest('.labels--list-item') as HTMLLIElement;
   }
 
   if (selectedTab === null) return;
 
-  const selectedTabBtn = selectedTab.firstChild as HTMLButtonElement;
+  const selectedTabBtn = selectedTab.querySelector('button') as HTMLButtonElement;
 
   /* set inbox by default if no tab selected */
   if (
@@ -68,6 +73,9 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
     selectedTabBtn.dataset.tab !== inboxBtn.dataset.tab
   ) {
     selectedTab.ariaSelected = 'false';
+    tbody.textContent = '';
+    TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+
     if (!selectedTab.classList.contains('labels--list-item')) {
       inboxTab.ariaSelected = 'true';
     }
@@ -77,6 +85,22 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
   /* Reset aria-selected tabs and set selected one to true */
   listItems.forEach(item => (item.ariaSelected = 'false'));
   selectedTab.ariaSelected = 'true';
+
+  if (
+    selectedTab.classList.contains('labels--list-item') &&
+    selectedTab.ariaSelected === 'true'
+  ) {
+    tbody.textContent = '';
+    selectedLabelTodos = [];
+    const selectedLabel = selectedTab.querySelector('button') as HTMLButtonElement;
+    const selectedLabelId = selectedLabel.dataset.labelId;
+    TodosData.forEach(todo => {
+      if (todo.tag.label === selectedLabelId) {
+        selectedLabelTodos.push(todo);
+        tbody.append(Todo.prototype.createElement(todo));
+      }
+    });
+  }
 };
 
 tabsList?.addEventListener('click', (e: Event) => {

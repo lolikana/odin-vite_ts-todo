@@ -50,7 +50,7 @@ export class Label {
     await fetchLabel(this.labelId)
       .then(() => {
         labelsData.push(this);
-        list.appendChild(createListElement('labels', this.name));
+        list.appendChild(createListElement('labels', this.name, this._id!.toString()));
         // Allow to click on edit btn right after create new label
         list.addEventListener('click', (e: Event) => {
           editDeleteLabel(e);
