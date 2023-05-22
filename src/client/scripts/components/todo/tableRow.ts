@@ -51,7 +51,7 @@ export function createTodoItemElement(todo: Todo) {
   const spanTag2 = document.createElement('span');
   spanTag2.className = 'task--tags-tag tag-date';
   const small2 = document.createElement('small');
-  small2.textContent = todo.tag.dueDate;
+  small2.textContent = new Date(todo.tag.dueDate).toDateString();
   spanTag2.appendChild(small2);
 
   div.append(spanTag1, spanTag2);

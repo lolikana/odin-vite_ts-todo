@@ -53,6 +53,9 @@ export class Todo {
         res.map(todo => {
           TodosData.push(todo);
         });
+        TodosData.sort((a, b) => {
+          return new Date(a.tag.dueDate).getTime() - new Date(b.tag.dueDate).getTime();
+        });
         TodosData.map(todo => tbody.append(this.createElement(todo)));
         // Allow to click on edit btn right after create new label
         tbody.addEventListener('click', (e: Event) => {
