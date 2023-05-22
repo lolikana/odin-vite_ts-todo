@@ -34,9 +34,7 @@ export const createListElement = (
   } else {
     li.classList.add('labels--list-item');
     div.classList.add('labels--list-container');
-    if (text === 'gym') {
-      li.setAttribute('aria-selected', 'true');
-    }
+    li.setAttribute('aria-selected', 'false');
 
     button.setAttribute('data-label', text);
     button.classList.add('labels--list-btn');
