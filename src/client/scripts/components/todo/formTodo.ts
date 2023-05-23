@@ -138,7 +138,7 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   const favInput = document.createElement('input');
   favInput.setAttribute('type', 'checkbox');
   favInput.setAttribute('class', 'fav-input');
-  favInput.setAttribute('name', 'favorite');
+  favInput.setAttribute('name', 'isFavorite');
   favInput.setAttribute('id', 'todo-fav');
   method === 'PUT' &&
     todo &&
