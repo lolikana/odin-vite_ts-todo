@@ -30,7 +30,7 @@ header {
 main {
   position: relative;
   top: 4rem;
-  height: 100%;
+  flex: 1;
 
   nav {
     width: $__full__width;
