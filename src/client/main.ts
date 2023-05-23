@@ -46,7 +46,6 @@ let selectedLabelTodos: Todo[] = [];
 /** Selected tab **/
 const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
   let selectedTab: HTMLLIElement;
-  const selectedTodos: Todo[] = selectedTabTodos.concat(selectedLabelTodos);
 
   const target = e.target as HTMLElement;
 

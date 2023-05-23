@@ -3,26 +3,14 @@
     width: $__full__width;
     height: 0;
     overflow: hidden;
-    top: -2rem;
+		top: -2rem;
     position: absolute;
 
     &[data-visible='true'] {
+			position: fixed;
       height: fit-content;
-      top: 0rem;
+      top: 4rem;
     }
-  }
-}
-
-.nav {
-  width: $__full__width;
-  background-color: $__grey300;
-  color: $__main;
-  font-weight: $__bold;
-  padding: 2rem 1rem 0;
-
-  @include mq(custom700) {
-    width: 15rem;
-    min-height: 100%;
   }
 }
 
