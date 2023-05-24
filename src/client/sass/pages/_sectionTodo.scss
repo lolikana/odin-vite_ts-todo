@@ -55,6 +55,11 @@ table {
     -webkit-line-clamp: 2;
     white-space: normal; /* allow the text to wrap normally within the cell */
   }
+	
+	.task--text-notodo {
+		font-weight: bold;
+		font-size: 1.3rem;
+	}
 }
 
 .task--tags {

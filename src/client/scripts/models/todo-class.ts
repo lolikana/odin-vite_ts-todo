@@ -15,6 +15,7 @@ import {
 } from '../helpers';
 
 export class Todo {
+  readonly _id: Types.ObjectId;
   createdAt: Date;
   text: string;
   tag: {
@@ -23,10 +24,9 @@ export class Todo {
   };
   isDone: boolean;
   isFavorite: boolean;
-  readonly _id?: Types.ObjectId;
-  readonly id?: string;
 
   constructor(
+    _id: Types.ObjectId,
     createdAt: Date,
     text: string,
     tag: {
@@ -34,17 +34,14 @@ export class Todo {
       dueDate: string;
     },
     isDone: boolean,
-    isFavorite: boolean,
-    _id?: Types.ObjectId,
-    id?: string
+    isFavorite: boolean
   ) {
+    this._id = _id;
     this.createdAt = createdAt;
-    this.isDone = isDone;
     this.text = text;
     this.tag = tag;
+    this.isDone = isDone;
     this.isFavorite = isFavorite;
-    this._id = _id;
-    this.id = id;
   }
 
   async getAll(tbody: HTMLElement) {
@@ -53,10 +50,13 @@ export class Todo {
         res.map(todo => {
           TodosData.push(todo);
         });
+
         TodosData.sort((a, b) => {
           return new Date(a.tag.dueDate).getTime() - new Date(b.tag.dueDate).getTime();
         });
+
         TodosData.map(todo => tbody.append(this.createElement(todo)));
+
         // Allow to click on edit btn right after create new label
         tbody.addEventListener('click', (e: Event) => {
           editDeleteTodo(e);
@@ -68,7 +68,7 @@ export class Todo {
   }
 
   async get(tbody: HTMLElement, id?: Types.ObjectId) {
-    await fetchTodo(!id ? this._id!.toString() : id.toString())
+    await fetchTodo(!id ? this._id.toString() : id.toString())
       .then((res: Todo) => {
         tbody.append(this.createElement(res));
         // Allow to click on edit btn right after create new label
@@ -121,7 +121,10 @@ export const todoFormSubmit = (method?: 'POST') => {
 
   const formData = new FormData(todoForm);
   const inputData = Object.fromEntries(formData.entries());
-  const validatationData = todoSchema.safeParse({ ...inputData, createdAt: new Date() });
+  const validatationData = todoSchema.safeParse({
+    ...inputData,
+    createdAt: new Date()
+  });
 
   const pError = querySelectorAll('p.error-message') as NodeListOf<HTMLParagraphElement>;
   pError.forEach(p => (p.textContent = ''));
@@ -142,8 +145,8 @@ export const todoFormSubmit = (method?: 'POST') => {
       createdAt: validatationData.data.createdAt,
       text: validatationData.data.text,
       tag: {
-        dueDate: validatationData.data.dueDate,
-        label: validatationData.data.label
+        label: validatationData.data.label,
+        dueDate: new Date(validatationData.data.dueDate).toDateString()
       },
       isFavorite: validatationData.data.isFavorite === 'on',
       isDone: validatationData.data.isDone === 'on'
@@ -151,29 +154,36 @@ export const todoFormSubmit = (method?: 'POST') => {
 
     todoForm.reset();
 
-    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
+    return new Todo(
+      new Types.ObjectId(),
+      data.createdAt,
+      data.text,
+      data.tag,
+      data.isDone,
+      data.isFavorite
+    );
   }
   const data = {
+    _id: new Types.ObjectId(),
     createdAt: validatationData.data.createdAt,
     text: validatationData.data.text,
     tag: {
-      dueDate: validatationData.data.dueDate,
-      label: validatationData.data.label
+      label: validatationData.data.label,
+      dueDate: new Date(validatationData.data.dueDate).toDateString()
     },
     isFavorite: validatationData.data.isFavorite === 'on',
-    isDone: validatationData.data.isDone === 'on',
-    _id: new Types.ObjectId()
+    isDone: validatationData.data.isDone === 'on'
   } as Todo;
 
   todoForm.reset();
 
   return new Todo(
+    data._id,
     data.createdAt,
     data.text,
     data.tag,
     data.isDone,
-    data.isFavorite,
-    data._id
+    data.isFavorite
   );
 };
 
@@ -191,7 +201,7 @@ const editDeleteTodo = (e: Event) => {
 
   if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
 
-  const getExistingTodo = TodosData.filter(todo => todo._id!.toString() === getId)[0];
+  const getExistingTodo = TodosData.filter(todo => todo._id.toString() === getId)[0];
 
   if (getExistingTodo) {
     if (isDeleteBtn) {
@@ -202,12 +212,12 @@ const editDeleteTodo = (e: Event) => {
 
     if (isShowbtn) {
       const { createdAt, text, tag, isFavorite, isDone, _id } = getExistingTodo;
-      const shownTodo = new Todo(createdAt, text, tag, isFavorite, isDone, _id);
+      const shownTodo = new Todo(_id, createdAt, text, tag, isFavorite, isDone);
       shownTodo.showCard();
     }
 
     if (isEditBtn) {
-      const { container, form } = createTodoForm('PUT', getExistingTodo._id!.toString());
+      const { container, form } = createTodoForm('PUT', getExistingTodo._id.toString());
       modal.ariaHidden = 'false';
       modal.textContent = '';
       modal.append(container);
@@ -242,6 +252,7 @@ const editDeleteTodo = (e: Event) => {
 
     if (isDoneInput) {
       const data = {
+        _id: getExistingTodo._id,
         createdAt: getExistingTodo.createdAt,
         text: getExistingTodo.text,
         tag: {
@@ -249,8 +260,7 @@ const editDeleteTodo = (e: Event) => {
           label: getExistingTodo.tag.label
         },
         isFavorite: getExistingTodo.isFavorite,
-        isDone: (target as HTMLInputElement).checked,
-        _id: getExistingTodo._id
+        isDone: (target as HTMLInputElement).checked
       } as Todo;
 
       updateTodo(getExistingTodo, data)
@@ -263,6 +273,7 @@ const editDeleteTodo = (e: Event) => {
 
     if (isFavInput) {
       const data = {
+        _id: getExistingTodo._id,
         createdAt: getExistingTodo.createdAt,
         text: getExistingTodo.text,
         tag: {
@@ -270,8 +281,7 @@ const editDeleteTodo = (e: Event) => {
           label: getExistingTodo.tag.label
         },
         isFavorite: (target as HTMLInputElement).checked,
-        isDone: getExistingTodo.isDone,
-        _id: getExistingTodo._id
+        isDone: getExistingTodo.isDone
       } as Todo;
 
       updateTodo(getExistingTodo, data)

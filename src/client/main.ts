@@ -2,13 +2,15 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData, TodosData } from '../libs/data';
+import { labelsData, noTodo, TodosData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
 import { createTodoForm } from './scripts/components/todo/formTodo';
 import {
   closeModal,
   countTypedCharacters,
+  findMatchingTodos,
+  pushTabData,
   querySelector,
   querySelectorAll
 } from './scripts/helpers';
@@ -39,8 +41,9 @@ const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
-const selectedTabTodos: Todo[] = [];
 let selectedLabelTodos: Todo[] = [];
+let selectedTabTodos: Todo[] = [];
+let selectedTodos: Todo[] = [];
 
 /* Navbar START */
 /** Selected tab **/
@@ -64,25 +67,53 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
 
   if (selectedTab === null) return;
 
-  const selectedTabBtn = selectedTab.querySelector('button') as HTMLButtonElement;
+  const selectedBtn = selectedTab.querySelector('button') as HTMLButtonElement;
 
-  /* set inbox by default if no tab selected */
+  /* Select tab or label */
   if (
     selectedTab.ariaSelected === 'true' &&
-    selectedTabBtn.dataset.tab !== inboxBtn.dataset.tab
+    selectedBtn.dataset.tab !== inboxBtn.dataset.tab
   ) {
     selectedTab.ariaSelected = 'false';
     tbody.textContent = '';
-    TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
 
+    if (selectedTab.classList.contains('labels--list-item')) {
+      selectedLabelTodos = [];
+    }
+
+    if (
+      selectedTab.classList.contains('labels--list-item') &&
+      selectedTabTodos.length !== 0
+    ) {
+      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    }
+
+    if (
+      selectedTab.classList.contains('tabs--list-item') &&
+      selectedLabelTodos.length !== 0
+    ) {
+      selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    }
+
+    /* set inbox by default if no tab selected */
     if (!selectedTab.classList.contains('labels--list-item')) {
       inboxTab.ariaSelected = 'true';
+
+      if (selectedLabelTodos.length === 0) {
+        tbody.textContent = '';
+        TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      }
     }
     return;
   }
 
   /* Reset aria-selected tabs and set selected one to true */
-  listItems.forEach(item => (item.ariaSelected = 'false'));
+  listItems.forEach(item => {
+    if (selectedTab.classList.contains('labels--list-item')) {
+      selectedLabelTodos = [];
+    }
+    item.ariaSelected = 'false';
+  });
   selectedTab.ariaSelected = 'true';
 
   if (
@@ -91,14 +122,49 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
   ) {
     tbody.textContent = '';
     selectedLabelTodos = [];
-    const selectedLabel = selectedTab.querySelector('button') as HTMLButtonElement;
-    const selectedLabelId = selectedLabel.dataset.labelId;
+    const selectedLabelId = selectedBtn.dataset.labelId as string;
+
     TodosData.forEach(todo => {
       if (todo.tag.label === selectedLabelId) {
         selectedLabelTodos.push(todo);
-        tbody.append(Todo.prototype.createElement(todo));
       }
     });
+
+    if (selectedLabelTodos.length === 0) selectedLabelTodos.push(noTodo);
+
+    if (selectedTabTodos.length !== 0) {
+      selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'date');
+      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+
+    selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  }
+
+  if (
+    selectedTab.classList.contains('tabs--list-item') &&
+    selectedTab.ariaSelected === 'true'
+  ) {
+    tbody.textContent = '';
+    selectedTabTodos = [];
+    const selectedTabBtnDataSet = selectedBtn.dataset.tab as
+      | 'today'
+      | 'upcoming'
+      | 'inbox';
+
+    pushTabData(selectedTabBtnDataSet).map(todo => selectedTabTodos.push(todo));
+
+    if (selectedLabelTodos.length !== 0) {
+      selectedTodos = findMatchingTodos(selectedTabTodos, selectedLabelTodos, 'id');
+
+      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
+
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+
+    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
   }
 };
 

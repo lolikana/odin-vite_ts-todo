@@ -3,8 +3,9 @@ import { firstCapitalLetter } from '../../helpers';
 import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
-  const { _id } = todo;
-  const id = _id!.toString();
+  const { _id, text } = todo;
+  const id = _id.toString();
+  const isNoTodo = text === 'No todo found';
 
   const tr = document.createElement('tr');
   tr.id = id;
@@ -24,14 +25,14 @@ export function createTodoItemElement(todo: Todo) {
   label.htmlFor = `isDone-todo-${id}`;
   label.dataset.todoId = id;
 
-  td1.append(input, label);
+  !isNoTodo && td1.append(input, label);
 
   // create Todo Text
   const td2 = document.createElement('td');
   td2.className = 'table--body-task';
 
   const span = document.createElement('span');
-  span.className = 'task--text';
+  span.className = !isNoTodo ? 'task--text' : 'task--text-notodo';
   span.textContent = todo.text;
 
   // create tags Label and dueDate
@@ -54,7 +55,7 @@ export function createTodoItemElement(todo: Todo) {
   small2.textContent = new Date(todo.tag.dueDate).toDateString();
   spanTag2.appendChild(small2);
 
-  div.append(spanTag1, spanTag2);
+  !isNoTodo && div.append(spanTag1, spanTag2);
 
   td2.append(span, div);
 
@@ -83,7 +84,7 @@ export function createTodoItemElement(todo: Todo) {
   btnDelete.id = `delete-todo`;
   btnDelete.dataset.todoId = id;
 
-  td3.append(btnShow, span1, btnEdit, span2, btnDelete);
+  !isNoTodo && td3.append(btnShow, span1, btnEdit, span2, btnDelete);
 
   // create Favorites input
   const td4 = document.createElement('td');
@@ -109,7 +110,7 @@ export function createTodoItemElement(todo: Todo) {
 
   favLabel.append(favInput, favStarFill, favStarEmpty);
 
-  td4.appendChild(favLabel);
+  !isNoTodo && td4.appendChild(favLabel);
 
   tr.append(td1, td2, td3, td4);
 

@@ -20,13 +20,11 @@ export default {
   get: (async (req, res, next) => {
     const { todoId } = req.params;
     const todo = await TodoModel.findById(todoId);
-
     if (todo === null) {
       const error = new ExpressError('Fetching todos failed, please try again', 500);
       next(error);
       return;
     }
-
     res.json(todo);
   }) as RequestHandler,
 
