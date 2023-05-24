@@ -17,11 +17,14 @@ The project uses the following technologies:
 
 ## Features
 - [x] User can add new labels 
-- [ ] User can add new tasks with a title and description
-- [ ] User can view a list of all tasks
-- [ ] User can edit a task's title and description
-- [ ] User can mark a task as completed or not completed
-- [ ] User can delete a task
+- [x] User can add new tasks
+- [x] User can view a list of all tasks
+- [x] User can edit a task's title and description
+- [x] User can mark a task as completed or not completed
+- [x] User can mark a task as favorite
+- [x] User can delete a task
+- [x] User can filter tasks by label or date
+
 
 ## Getting Started
 ### Locally
@@ -72,9 +75,10 @@ npm install
 VITE_MONGODB_URI='mongodb+srv://<username>:<password>@cluster0.5yj73eu.mongodb.net/<collection>?retryWrites=true&w=majority'
 VITE_MONGODB_DB=<collection>
 
-VITE_PORT=<port !== 3000>
+VITE_PORT='3001' // or different, (but not '4000')
 VITE_PATH='http://localhost:'
 VITE_API_LABELS="/api/labels"
+VITE_API_TODOS="/api/todos"
 ```
 
 4. Build and Start the production mode:
