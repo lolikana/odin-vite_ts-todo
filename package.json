@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production ts-node src/server/main.ts",
     "build": "vite build",
     "preview": "vite build && NODE_ENV=production ts-node src/server/main.ts",
+    "seeds": "ts-node src/server/seeds/index.ts",
     "lint": "eslint --fix -f table './**/*.ts'",
     "lint-staged": "lint-staged",
     "prettier-format": "prettier --config .prettierrc './**/*.{ts,css,scss,json}' --write"

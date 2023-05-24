@@ -2,24 +2,30 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData } from '../libs/data';
-import { TLabel } from '../libs/types';
-import { labelSchema } from '../libs/validations';
-import { createLabel, deleteLabel, fetchLabels, updateLabel } from './api';
+import { labelsData, noTodo, TodosData } from '../libs/data';
+import { createDivLabelsElement, createNavElement } from './scripts/components';
+import { createLabelFormElement } from './scripts/components/label';
+import { createTodoForm } from './scripts/components/todo/formTodo';
 import {
-  createDivLabelsElement,
-  createListElement,
-  createListLabelsElement,
-  createNavElement
-} from './scripts/components';
+  closeModal,
+  countTypedCharacters,
+  findMatchingTodos,
+  pushTabData,
+  querySelector,
+  querySelectorAll
+} from './scripts/helpers';
 import {
-  createLabelFormElement,
-  deleteLabelInputElement
-} from './scripts/components/label';
-import { firstCapitalLetter, querySelector, querySelectorAll } from './scripts/helpers';
+  deleteEmptyLabelsList,
+  isDisabledEditBtns,
+  Label,
+  labelFormSubmit,
+  removeLabelInput
+} from './scripts/models/label-class';
+import { Todo, todoFormSubmit } from './scripts/models/todo-class';
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
+export const modal = querySelector('#modal') as HTMLDivElement;
 
 main.append(createNavElement(nav));
 nav.append(createDivLabelsElement());
@@ -33,11 +39,18 @@ const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
+export const tbody = querySelector('.section--table-body') as HTMLElement;
+
+let selectedLabelTodos: Todo[] = [];
+let selectedTabTodos: Todo[] = [];
+let selectedTodos: Todo[] = [];
+
 /* Navbar START */
 /** Selected tab **/
 const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
+  let selectedTab: HTMLLIElement;
+
   const target = e.target as HTMLElement;
-  let selectedTab;
 
   if (
     target === tabsList ||
@@ -47,30 +60,112 @@ const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
     return;
 
   if (listItems === tabsListItems) {
-    selectedTab = target.closest('.tabs--list-item');
+    selectedTab = target.closest('.tabs--list-item') as HTMLLIElement;
   } else {
-    selectedTab = target.closest('.labels--list-item');
+    selectedTab = target.closest('.labels--list-item') as HTMLLIElement;
   }
 
   if (selectedTab === null) return;
 
-  const selectedTabBtn = selectedTab.firstChild as HTMLButtonElement;
+  const selectedBtn = selectedTab.querySelector('button') as HTMLButtonElement;
 
-  /* set inbox by default if no tab selected */
+  /* Select tab or label */
   if (
     selectedTab.ariaSelected === 'true' &&
-    selectedTabBtn.dataset.tab !== inboxBtn.dataset.tab
+    selectedBtn.dataset.tab !== inboxBtn.dataset.tab
   ) {
     selectedTab.ariaSelected = 'false';
-    if (!selectedTab.classList.contains('labels--list-container')) {
+    tbody.textContent = '';
+
+    if (selectedTab.classList.contains('labels--list-item')) {
+      selectedLabelTodos = [];
+    }
+
+    if (
+      selectedTab.classList.contains('labels--list-item') &&
+      selectedTabTodos.length !== 0
+    ) {
+      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    }
+
+    if (
+      selectedTab.classList.contains('tabs--list-item') &&
+      selectedLabelTodos.length !== 0
+    ) {
+      selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    }
+
+    /* set inbox by default if no tab selected */
+    if (!selectedTab.classList.contains('labels--list-item')) {
       inboxTab.ariaSelected = 'true';
+
+      if (selectedLabelTodos.length === 0) {
+        tbody.textContent = '';
+        TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      }
     }
     return;
   }
 
   /* Reset aria-selected tabs and set selected one to true */
-  listItems.forEach(item => (item.ariaSelected = 'false'));
+  listItems.forEach(item => {
+    if (selectedTab.classList.contains('labels--list-item')) {
+      selectedLabelTodos = [];
+    }
+    item.ariaSelected = 'false';
+  });
   selectedTab.ariaSelected = 'true';
+
+  if (
+    selectedTab.classList.contains('labels--list-item') &&
+    selectedTab.ariaSelected === 'true'
+  ) {
+    tbody.textContent = '';
+    selectedLabelTodos = [];
+    const selectedLabelId = selectedBtn.dataset.labelId as string;
+
+    TodosData.forEach(todo => {
+      if (todo.tag.label === selectedLabelId) {
+        selectedLabelTodos.push(todo);
+      }
+    });
+
+    if (selectedLabelTodos.length === 0) selectedLabelTodos.push(noTodo);
+
+    if (selectedTabTodos.length !== 0) {
+      selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'date');
+      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+
+    selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  }
+
+  if (
+    selectedTab.classList.contains('tabs--list-item') &&
+    selectedTab.ariaSelected === 'true'
+  ) {
+    tbody.textContent = '';
+    selectedTabTodos = [];
+    const selectedTabBtnDataSet = selectedBtn.dataset.tab as
+      | 'today'
+      | 'upcoming'
+      | 'inbox';
+
+    pushTabData(selectedTabBtnDataSet).map(todo => selectedTabTodos.push(todo));
+
+    if (selectedLabelTodos.length !== 0) {
+      selectedTodos = findMatchingTodos(selectedTabTodos, selectedLabelTodos, 'id');
+
+      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
+
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+
+    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  }
 };
 
 tabsList?.addEventListener('click', (e: Event) => {
@@ -83,48 +178,8 @@ labelsList.addEventListener('click', (e: Event) => {
 });
 
 /** Add label START **/
-
-const labelFormSubmit = (form: HTMLFormElement, pError: HTMLParagraphElement) => {
-  const formData = new FormData(form);
-  const inputData = Object.fromEntries(formData.entries());
-  const validatationData = labelSchema.safeParse(inputData);
-
-  if (!validatationData.success) {
-    pError.textContent = validatationData.error.issues[0].message;
-    return;
-  }
-
-  const enteredLabel = firstCapitalLetter(validatationData.data.inputLabel);
-
-  return { name: enteredLabel };
-};
-
-const deleteEmptyLabelsList = (content?: string) => {
-  if (labelsData.length === 0) {
-    labelsList.textContent = content ? content : '';
-  }
-};
-
-const removeLabelInputElement = () => {
-  deleteLabelInputElement();
-  addLabelBtn.ariaDisabled = 'false';
-  return;
-};
-
-const addLabelElement = (label: TLabel) => {
-  deleteEmptyLabelsList();
-  labelsData.push(label);
-  labelsList.appendChild(createListElement('labels', label.name));
-};
-
-const isDisabledEditBtns = (boolean: boolean) => {
-  const editBtns = querySelectorAll('.btn-edit');
-  if (boolean === true) editBtns.forEach(btn => (btn.ariaDisabled = 'true'));
-  if (boolean === false) editBtns.forEach(btn => (btn.ariaDisabled = 'false'));
-};
-
 addLabelBtn?.addEventListener('click', () => {
-  deleteEmptyLabelsList();
+  deleteEmptyLabelsList(labelsList);
 
   if (addLabelBtn.ariaDisabled === ' true') return;
 
@@ -132,7 +187,7 @@ addLabelBtn?.addEventListener('click', () => {
     isDisabledEditBtns(true);
 
     const removeInput = () => {
-      removeLabelInputElement();
+      removeLabelInput(addLabelBtn);
       isDisabledEditBtns(false);
     };
 
@@ -140,7 +195,7 @@ addLabelBtn?.addEventListener('click', () => {
 
     form.addEventListener('submit', async (e: SubmitEvent) => {
       e.preventDefault();
-      const enteredLabel = labelFormSubmit(form, pError) as TLabel;
+      const enteredLabel = labelFormSubmit(form, pError, 'POST');
       if (!enteredLabel) return;
 
       const isLabelExist = labelsData.some(
@@ -152,8 +207,8 @@ addLabelBtn?.addEventListener('click', () => {
         return;
       }
 
-      await createLabel(enteredLabel).catch((err: unknown) => console.log('test:', err));
-      addLabelElement(enteredLabel);
+      deleteEmptyLabelsList(labelsList);
+      await enteredLabel.create().then(() => enteredLabel.get(labelsList));
       removeInput();
     });
 
@@ -163,121 +218,40 @@ addLabelBtn?.addEventListener('click', () => {
     });
 
     cancelLabelBtn.addEventListener('click', () => {
-      deleteEmptyLabelsList('No Label');
+      deleteEmptyLabelsList(labelsList, 'No Label');
       removeInput();
     });
   }
 });
 /** Add label END **/
-/** Delete / Edit label START **/
-const editDeleteLabel = async (e: Event) => {
-  const target = e.target as HTMLButtonElement;
-  const label = target.dataset.label as string;
-
-  if (target.ariaDisabled === 'true' || !label) return;
-
-  const item = target.closest('.labels--list-item') as HTMLLIElement;
-  const listItem = target.closest('.labels--list-item') as HTMLLIElement;
-  const listItemContainer = listItem.firstChild as HTMLDivElement;
-  const listItemBtn = listItemContainer.firstChild as HTMLButtonElement;
-  const editBtn = querySelector(`.btn-edit[data-label='${label}']`) as HTMLButtonElement;
-  const deleteBtn = querySelector(
-    `.btn-delete[data-label='${label}']`
-  ) as HTMLButtonElement;
-
-  const isDeleteBtn =
-    target.classList.contains('btn-delete') && target.dataset.label === label;
-  const isEditBtn =
-    target.classList.contains('btn-edit') && target.dataset.label === label;
-
-  if (!isDeleteBtn && !isEditBtn) return;
-
-  if (isDeleteBtn) {
-    labelsData.forEach((labelData, i) => {
-      if (labelData.name === label) labelsData.splice(i, 1);
-    });
-    item.remove();
-    await deleteLabel(label);
-
-    deleteEmptyLabelsList('No Label');
-    return;
-  }
-
-  if (isEditBtn) {
-    const removeInput = () => {
-      removeLabelInputElement();
-      listItemContainer.style.display = 'inline-flex';
-      isDisabledEditBtns(false);
-    };
-
-    labelsData.forEach((existingLabel, i) => {
-      isDisabledEditBtns(true);
-      if (existingLabel.name === label) {
-        listItemContainer.style.display = 'none';
-
-        const { form, pError, cancelLabelBtn } = createLabelFormElement(
-          'PUT',
-          listItem,
-          label
-        );
-
-        form.addEventListener('submit', async (e: SubmitEvent) => {
-          e.preventDefault();
-          const enteredLabel = labelFormSubmit(form, pError) as TLabel;
-
-          if (!enteredLabel || enteredLabel.name === label) {
-            removeInput();
-            return;
-          }
-
-          const isLabelExist = labelsData.some(
-            label =>
-              label.name.toLocaleLowerCase() === enteredLabel.name.toLocaleLowerCase()
-          );
-
-          if (isLabelExist) {
-            pError.textContent = 'This label already exist';
-            return;
-          }
-
-          labelsData[i] = enteredLabel;
-          listItemBtn.textContent = enteredLabel.name;
-          listItemBtn.dataset.label = enteredLabel.name;
-          deleteBtn.dataset.label = enteredLabel.name;
-          editBtn.dataset.label = enteredLabel.name;
-          await updateLabel(existingLabel, enteredLabel);
-          removeInput();
-        });
-
-        addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key !== 'Escape') return;
-          removeInput();
-        });
-
-        cancelLabelBtn.addEventListener('click', () => {
-          removeInput();
-        });
-      }
-    });
-  }
-};
-/** Delete / Edit label END **/
-/* Navbar END */
-
-fetchLabels()
-  .then(res => {
-    if (res.fetchedLabels.length === 0) {
-      labelsList.textContent = 'No Label';
-      return;
-    }
-
-    res.fetchedLabels.map(label => labelsData.push(label));
-    createListLabelsElement(labelsList, labelsData);
-
-    labelsList.addEventListener('click', async (e: Event) => {
-      await editDeleteLabel(e);
-    });
-  })
+/** Fetch Labels and Todos START **/
+Label.prototype
+  .getAll(labelsList)
+  .then(() => Todo.prototype.getAll(tbody))
   .catch(err => {
     console.log(err);
   });
+/** Fetch Labels and Todos END **/
+/* Navbar END */
+
+/* Todo START */
+const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
+
+addTodoBtn.addEventListener('click', (): void => {
+  const { container, form } = createTodoForm('POST');
+  modal.ariaHidden = 'false';
+  modal.textContent = '';
+  modal.append(container);
+  countTypedCharacters();
+  closeModal();
+
+  form.addEventListener('submit', async (e: SubmitEvent) => {
+    e.preventDefault();
+    const enteredTodo = todoFormSubmit('POST');
+    if (!enteredTodo) return;
+
+    await enteredTodo.create().then(() => enteredTodo.get(tbody));
+    modal.ariaHidden = 'true';
+  });
+});
+/* Todo END */

@@ -6,4 +6,4 @@ export const router = Router();
 
 router.route('/').get(labels.getAll).post(labels.create);
 
-router.route('/:name').get(labels.get).put(labels.update).delete(labels.delete);
+router.route('/:labelId').get(labels.get).put(labels.update).delete(labels.delete);

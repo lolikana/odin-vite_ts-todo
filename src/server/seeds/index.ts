@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
+import { mongoDBUri } from '../main';
 import { LabelModel } from '../models';
+import { TodoModel } from '../models/todo';
 import { labelsSeed } from './labels';
-
-const mongoDBUri = process.env.VITE_MONGODB_URI as string;
+import { todosSeed } from './todos';
 
 mongoose
   .connect(mongoDBUri)
@@ -18,6 +19,7 @@ db.once('open', () => {
 
 const seedDB = async (): Promise<void> => {
   await LabelModel.deleteMany({});
+  await TodoModel.deleteMany({});
   for (let i = 0; i < labelsSeed.length; i++) {
     const label = new LabelModel(labelsSeed[i]);
     await label
@@ -28,6 +30,19 @@ const seedDB = async (): Promise<void> => {
       })
       .catch((err: Error) => {
         console.log(`Oops, couldn't save the label`);
+        console.log(err.message);
+      });
+  }
+  for (let i = 0; i < todosSeed.length; i++) {
+    const todo = new TodoModel(todosSeed[i]);
+    await todo
+      .save()
+      .then(res => {
+        console.log('Successfully saved todos');
+        console.log(res);
+      })
+      .catch((err: Error) => {
+        console.log(`Oops, couldn't save the todos`);
         console.log(err.message);
       });
   }
