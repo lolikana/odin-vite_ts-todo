@@ -75,10 +75,10 @@ npm install
 VITE_MONGODB_URI='mongodb+srv://<username>:<password>@cluster0.5yj73eu.mongodb.net/<collection>?retryWrites=true&w=majority'
 VITE_MONGODB_DB=<collection>
 
-VITE_PORT='3001' // or different, (but not '4000')
+VITE_PORT=<port>
 VITE_PATH='http://localhost:'
-VITE_API_LABELS="/api/labels"
-VITE_API_TODOS="/api/todos"
+VITE_API_LABELS='/api/labels'
+VITE_API_TODOS='/api/todos'
 ```
 
 4. Build and Start the production mode:
