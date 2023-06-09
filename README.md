@@ -1,6 +1,6 @@
-# The Odin Project - FullStack JS Path
+# Todo App
 
-## Todo app
+### <a href="https://www.theodinproject.com/">The Odin Project</a> : Full Stack JS - JAVASCRIPT Course
 
 This is a Todo app built with Vitejs, TypeScript vanilla, Express, and MongoDB for The Odin Project's JavaScript curriculum. 
 The app allows users to add, view, edit, and delete tasks, as well as mark tasks as completed.
