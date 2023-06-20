@@ -7,6 +7,9 @@ export default defineConfig({
     minify: 'esbuild',
     manifest: true
   },
+  test: {
+    globals: true
+  },
   server: {
     port: 4000
   }
