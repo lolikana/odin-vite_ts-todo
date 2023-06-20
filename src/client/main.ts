@@ -41,141 +41,66 @@ const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
-let selectedLabelTodos: Todo[] = [];
+const selectedLabelTodos: Todo[] = [];
 let selectedTabTodos: Todo[] = [];
-let selectedTodos: Todo[] = [];
+const selectedTodos: Todo[] = [];
 
 /* Navbar START */
 /** Selected tab **/
-const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
-  let selectedTab: HTMLLIElement;
-
-  const target = e.target as HTMLElement;
+const selectTab = (e: Event): void | string => {
+  const selectedTabBtn = e.target as HTMLButtonElement;
+  const selectedTab = selectedTabBtn.closest('.tabs--list-item') as HTMLLIElement;
 
   if (
-    target === tabsList ||
-    target === labelsList ||
-    target.classList.contains('actions-btn')
+    !selectedTabBtn.classList.contains('tabs--list-btn') ||
+    (selectedTabBtn.dataset.tab === 'inbox' && selectedTab.ariaSelected === 'true')
   )
     return;
 
-  if (listItems === tabsListItems) {
-    selectedTab = target.closest('.tabs--list-item') as HTMLLIElement;
-  } else {
-    selectedTab = target.closest('.labels--list-item') as HTMLLIElement;
-  }
-
-  if (selectedTab === null) return;
-
-  const selectedBtn = selectedTab.querySelector('button') as HTMLButtonElement;
-
-  /* Select tab or label */
-  if (
-    selectedTab.ariaSelected === 'true' &&
-    selectedBtn.dataset.tab !== inboxBtn.dataset.tab
-  ) {
+  /* set inbox by default if no tab selected */
+  if (selectedTab.ariaSelected === 'true' && selectedTabBtn.dataset.tab !== 'inbox') {
     selectedTab.ariaSelected = 'false';
+    inboxTab.ariaSelected = 'true';
     tbody.textContent = '';
-
-    if (selectedTab.classList.contains('labels--list-item')) {
-      selectedLabelTodos = [];
-    }
-
-    if (
-      selectedTab.classList.contains('labels--list-item') &&
-      selectedTabTodos.length !== 0
-    ) {
-      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-    }
-
-    if (
-      selectedTab.classList.contains('tabs--list-item') &&
-      selectedLabelTodos.length !== 0
-    ) {
-      selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-    }
-
-    /* set inbox by default if no tab selected */
-    if (!selectedTab.classList.contains('labels--list-item')) {
-      inboxTab.ariaSelected = 'true';
-
-      if (selectedLabelTodos.length === 0) {
-        tbody.textContent = '';
-        TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      }
-    }
+    selectedTabTodos = TodosData;
+    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
     return;
   }
 
-  /* Reset aria-selected tabs and set selected one to true */
-  listItems.forEach(item => {
-    if (selectedTab.classList.contains('labels--list-item')) {
-      selectedLabelTodos = [];
-    }
-    item.ariaSelected = 'false';
-  });
-  selectedTab.ariaSelected = 'true';
-
-  if (
-    selectedTab.classList.contains('labels--list-item') &&
-    selectedTab.ariaSelected === 'true'
-  ) {
+  tabsListItems.forEach(list => {
+    list.ariaSelected = 'false';
+    selectedTab.ariaSelected = 'true';
     tbody.textContent = '';
-    selectedLabelTodos = [];
-    const selectedLabelId = selectedBtn.dataset.labelId as string;
 
-    TodosData.forEach(todo => {
-      if (todo.tag.label === selectedLabelId) {
-        selectedLabelTodos.push(todo);
-      }
-    });
-
-    if (selectedLabelTodos.length === 0) selectedLabelTodos.push(noTodo);
-
-    if (selectedTabTodos.length !== 0) {
-      selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'date');
-      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    if (selectedTabBtn.dataset.tab === 'today') {
+      selectedTabTodos = TodosData.filter(
+        todo => new Date(todo.tag.dueDate).toDateString() === new Date().toDateString()
+      );
+      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
       return;
     }
 
-    selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-  }
-
-  if (
-    selectedTab.classList.contains('tabs--list-item') &&
-    selectedTab.ariaSelected === 'true'
-  ) {
-    tbody.textContent = '';
-    selectedTabTodos = [];
-    const selectedTabBtnDataSet = selectedBtn.dataset.tab as
-      | 'today'
-      | 'upcoming'
-      | 'inbox';
-
-    pushTabData(selectedTabBtnDataSet).map(todo => selectedTabTodos.push(todo));
-
-    if (selectedLabelTodos.length !== 0) {
-      selectedTodos = findMatchingTodos(selectedTabTodos, selectedLabelTodos, 'id');
-
-      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
-
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    if (selectedTabBtn.dataset.tab === 'upcoming') {
+      selectedTabTodos = TodosData.filter(
+        todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
+      );
+      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
       return;
     }
 
+    selectedTabTodos = TodosData;
     selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-  }
+  });
 };
 
 tabsList?.addEventListener('click', (e: Event) => {
-  selectTab(e, tabsListItems);
+  selectTab(e);
 });
 
-labelsList.addEventListener('click', (e: Event) => {
-  const labelsListItems = querySelectorAll('.labels--list-item');
-  selectTab(e, labelsListItems);
-});
+// labelsList.addEventListener('click', (e: Event) => {
+//   const labelsListItems = querySelectorAll('.labels--list-item');
+//   selectTab(e, labelsListItems);
+// });
 
 /** Add label START **/
 addLabelBtn?.addEventListener('click', () => {
