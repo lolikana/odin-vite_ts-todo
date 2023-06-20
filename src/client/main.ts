@@ -10,7 +10,6 @@ import {
   closeModal,
   countTypedCharacters,
   findMatchingTodos,
-  pushTabData,
   querySelector,
   querySelectorAll
 } from './scripts/helpers';
@@ -46,17 +45,21 @@ let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
 /** Selected tab **/
-const selectDefaultInboxTab = (selectedTab: HTMLLIElement): void => {
+export const selectDefaultInboxTab = (selectedTab: HTMLLIElement): void => {
   selectedTab.ariaSelected = 'false';
   inboxTab.ariaSelected = 'true';
   tbody.textContent = '';
 
   selectedTabTodos = TodosData;
-  selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
-  selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+  if (selectedLabelTodos.length !== 0) {
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+    selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+  } else {
+    selectedTabTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+  }
 };
 
-const selectDateTab = (date: 'today' | 'upcoming' | 'inbox'): void => {
+export const selectDateTab = (date: 'today' | 'upcoming' | 'inbox'): void => {
   if (date === 'inbox') selectedTabTodos = TodosData;
 
   if (date === 'today')
