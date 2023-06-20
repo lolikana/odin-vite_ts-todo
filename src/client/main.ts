@@ -34,7 +34,6 @@ const tabsList = querySelector('.tabs--list') as HTMLUListElement;
 const tabsListItems = querySelectorAll(
   '.tabs--list-item'
 ) as NodeListOf<HTMLUListElement>;
-const inboxBtn = querySelector('.inbox-btn') as HTMLButtonElement;
 const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
@@ -47,6 +46,38 @@ let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
 /** Selected tab **/
+const selectDefaultInboxTab = (selectedTab: HTMLLIElement): void => {
+  selectedTab.ariaSelected = 'false';
+  inboxTab.ariaSelected = 'true';
+  tbody.textContent = '';
+
+  selectedTabTodos = TodosData;
+  selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+  selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+};
+
+const selectDateTab = (date: 'today' | 'upcoming' | 'inbox'): void => {
+  if (date === 'inbox') selectedTabTodos = TodosData;
+
+  if (date === 'today')
+    selectedTabTodos = TodosData.filter(
+      todo => new Date(todo.tag.dueDate).toDateString() === new Date().toDateString()
+    );
+
+  if (date === 'upcoming')
+    selectedTabTodos = TodosData.filter(
+      todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
+    );
+
+  selectedTodos =
+    selectedLabelTodos.length !== 0
+      ? findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id')
+      : selectedTabTodos;
+
+  tbody.textContent = '';
+  selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+};
+
 const selectTab = (e: Event): void | string => {
   const selectedTabBtn = e.target as HTMLButtonElement;
   const selectedTab = selectedTabBtn.closest('.tabs--list-item') as HTMLLIElement;
@@ -59,50 +90,20 @@ const selectTab = (e: Event): void | string => {
 
   /* set inbox by default if no tab selected */
   if (selectedTab.ariaSelected === 'true' && selectedTabBtn.dataset.tab !== 'inbox') {
-    selectedTab.ariaSelected = 'false';
-    inboxTab.ariaSelected = 'true';
-    tbody.textContent = '';
-    selectedTabTodos = TodosData;
-    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
-    selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    selectDefaultInboxTab(selectedTab);
     return;
   }
 
+  // Handle other tab selections
   tabsListItems.forEach(list => {
     list.ariaSelected = 'false';
     selectedTab.ariaSelected = 'true';
     tbody.textContent = '';
     selectedTabTodos = [];
     selectedTodos = [];
-    if (selectedTabBtn.dataset.tab === 'today') {
-      selectedTabTodos = TodosData.filter(
-        todo => new Date(todo.tag.dueDate).toDateString() === new Date().toDateString()
-      );
-      if (selectedLabelTodos.length !== 0) {
-        selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
-      } else {
-        selectedTodos = selectedTabTodos;
-      }
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      return;
-    }
 
-    if (selectedTabBtn.dataset.tab === 'upcoming') {
-      selectedTabTodos = TodosData.filter(
-        todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
-      );
-      if (selectedLabelTodos.length !== 0) {
-        selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
-      } else {
-        selectedTodos = selectedTabTodos;
-      }
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      return;
-    }
-    console.log(selectedTodos);
-    selectedTabTodos = TodosData;
-    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
-    selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming');
+    return;
   });
 };
 
