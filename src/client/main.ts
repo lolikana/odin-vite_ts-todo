@@ -30,7 +30,7 @@ export const modal = querySelector('#modal') as HTMLDivElement;
 main.append(createNavElement(nav));
 nav.append(createDivLabelsElement());
 
-const tabsList = querySelector('.tabs--list');
+const tabsList = querySelector('.tabs--list') as HTMLUListElement;
 const tabsListItems = querySelectorAll(
   '.tabs--list-item'
 ) as NodeListOf<HTMLUListElement>;
@@ -41,9 +41,9 @@ const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
-const selectedLabelTodos: Todo[] = [];
-let selectedTabTodos: Todo[] = [];
-const selectedTodos: Todo[] = [];
+let selectedLabelTodos: Todo[] = [];
+let selectedTabTodos: Todo[] = TodosData;
+let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
 /** Selected tab **/
@@ -63,7 +63,8 @@ const selectTab = (e: Event): void | string => {
     inboxTab.ariaSelected = 'true';
     tbody.textContent = '';
     selectedTabTodos = TodosData;
-    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+    selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
     return;
   }
 
@@ -71,12 +72,18 @@ const selectTab = (e: Event): void | string => {
     list.ariaSelected = 'false';
     selectedTab.ariaSelected = 'true';
     tbody.textContent = '';
-
+    selectedTabTodos = [];
+    selectedTodos = [];
     if (selectedTabBtn.dataset.tab === 'today') {
       selectedTabTodos = TodosData.filter(
         todo => new Date(todo.tag.dueDate).toDateString() === new Date().toDateString()
       );
-      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      if (selectedLabelTodos.length !== 0) {
+        selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+      } else {
+        selectedTodos = selectedTabTodos;
+      }
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
       return;
     }
 
@@ -84,23 +91,69 @@ const selectTab = (e: Event): void | string => {
       selectedTabTodos = TodosData.filter(
         todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
       );
+      if (selectedLabelTodos.length !== 0) {
+        selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+      } else {
+        selectedTodos = selectedTabTodos;
+      }
+      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+    console.log(selectedTodos);
+    selectedTabTodos = TodosData;
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+    selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  });
+};
+
+const selectLabel = (e: Event): void | string => {
+  const selectedLabelBtn = e.target as HTMLButtonElement;
+  const selectedLabel = selectedLabelBtn.closest('.labels--list-item') as HTMLLIElement;
+  const labelsListItems = querySelectorAll(
+    '.labels--list-item'
+  ) as NodeListOf<HTMLUListElement>;
+  if (
+    !selectedLabelBtn.classList.contains('labels--list-btn') ||
+    (selectedLabelBtn.dataset.tab === 'inbox' && selectedLabel.ariaSelected === 'true')
+  )
+    return;
+
+  if (selectedLabel.ariaSelected === 'true') {
+    selectedLabel.ariaSelected = 'false';
+    selectedLabelTodos = [];
+    tbody.textContent = '';
+
+    if (selectedTabTodos.length !== 0) {
       selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
       return;
     }
 
-    selectedTabTodos = TodosData;
-    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    return;
+  }
+
+  labelsListItems.forEach(label => {
+    label.ariaSelected = 'false';
+    selectedLabel.ariaSelected = 'true';
+    tbody.textContent = '';
+    selectedLabelTodos = [];
+    selectedTodos = [];
+    selectedLabelTodos = TodosData.filter(
+      todo => todo.tag.label === selectedLabelBtn.dataset.labelId
+    );
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
   });
+  selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  return;
 };
 
-tabsList?.addEventListener('click', (e: Event) => {
+tabsList.addEventListener('click', (e: Event) => {
   selectTab(e);
 });
 
-// labelsList.addEventListener('click', (e: Event) => {
-//   const labelsListItems = querySelectorAll('.labels--list-item');
-//   selectTab(e, labelsListItems);
-// });
+labelsList.addEventListener('click', (e: Event) => {
+  selectLabel(e);
+});
 
 /** Add label START **/
 addLabelBtn?.addEventListener('click', () => {
