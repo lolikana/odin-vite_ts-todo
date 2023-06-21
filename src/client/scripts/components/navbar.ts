@@ -23,9 +23,9 @@ export const createListElement = (
 
     if (text === 'inbox') {
       li.setAttribute('aria-selected', 'true');
-      li.classList.add('inbox-tab');
-      button.classList.add('inbox-btn');
     }
+    li.classList.add(`${text}-tab`);
+    button.classList.add(`${text}-btn`);
 
     button.classList.add('tabs--list-btn');
     button.setAttribute('data-tab', text);

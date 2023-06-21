@@ -2,6 +2,8 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
+import { log } from 'console';
+
 import { labelsData, noTodo, TodosData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
@@ -26,28 +28,33 @@ const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
 export const modal = querySelector('#modal') as HTMLDivElement;
 
-main.append(createNavElement(nav));
-nav.append(createDivLabelsElement());
+main?.append(createNavElement(nav));
+nav?.append(createDivLabelsElement());
 
 const tabsList = querySelector('.tabs--list') as HTMLUListElement;
-const tabsListItems = querySelectorAll(
-  '.tabs--list-item'
-) as NodeListOf<HTMLUListElement>;
-const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
+const tabsListItems = querySelectorAll('.tabs--list-item') as NodeListOf<HTMLLIElement>;
+const tabsListBtn = querySelectorAll(
+  '.tabs--list-btn[data-tab]'
+) as NodeListOf<HTMLButtonElement>;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
+const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
-let selectedLabelTodos: Todo[] = [];
-let selectedTabTodos: Todo[] = TodosData;
-let selectedTodos: Todo[] = TodosData;
+export let selectedLabelTodos: Todo[] = [];
+export let selectedTabTodos: Todo[] = TodosData;
+export let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
 /** Selected tab **/
-export const selectDefaultInboxTab = (selectedTab: HTMLLIElement): void => {
-  selectedTab.ariaSelected = 'false';
-  inboxTab.ariaSelected = 'true';
+export const selectDefaultInboxTab = (
+  selectedTab: HTMLLIElement,
+  inboxTab: HTMLLIElement,
+  tbody: HTMLElement
+): void => {
+  selectedTab.setAttribute('aria-selected', 'false');
+  inboxTab.setAttribute('aria-selected', 'true');
   tbody.textContent = '';
 
   selectedTabTodos = TodosData;
@@ -59,7 +66,10 @@ export const selectDefaultInboxTab = (selectedTab: HTMLLIElement): void => {
   }
 };
 
-export const selectDateTab = (date: 'today' | 'upcoming' | 'inbox'): void => {
+export const selectDateTab = (
+  date: 'today' | 'upcoming' | 'inbox',
+  tbody: HTMLElement
+): void => {
   if (date === 'inbox') selectedTabTodos = TodosData;
 
   if (date === 'today')
@@ -81,31 +91,45 @@ export const selectDateTab = (date: 'today' | 'upcoming' | 'inbox'): void => {
   selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
 };
 
-const selectTab = (e: Event): void | string => {
-  const selectedTabBtn = e.target as HTMLButtonElement;
-  const selectedTab = selectedTabBtn.closest('.tabs--list-item') as HTMLLIElement;
+tabsListBtn.forEach(btn =>
+  btn.addEventListener('click', () => {
+    selectTab(btn, tabsListItems, tbody);
+  })
+);
 
+export const selectTab = (
+  btn: HTMLButtonElement,
+  tabItems: NodeListOf<HTMLLIElement>,
+  tbody: HTMLElement
+): void | string => {
+  const selectedTabBtn = btn;
+  const selectedTab = selectedTabBtn.closest('.tabs--list-item') as HTMLLIElement;
   if (
-    !selectedTabBtn.classList.contains('tabs--list-btn') ||
-    (selectedTabBtn.dataset.tab === 'inbox' && selectedTab.ariaSelected === 'true')
+    selectedTab.ariaSelected !== null &&
+    selectedTabBtn.getAttribute('data-tab') === 'inbox' &&
+    selectedTab.getAttribute('aria-selected') === 'true'
   )
     return;
 
   /* set inbox by default if no tab selected */
-  if (selectedTab.ariaSelected === 'true' && selectedTabBtn.dataset.tab !== 'inbox') {
-    selectDefaultInboxTab(selectedTab);
+  if (
+    selectedTab.ariaSelected !== null &&
+    selectedTab.getAttribute('aria-selected') === 'true' &&
+    selectedTabBtn.getAttribute('data-tab') !== 'inbox'
+  ) {
+    selectDefaultInboxTab(selectedTab, tabItems[0], tbody);
     return;
   }
 
   // Handle other tab selections
-  tabsListItems.forEach(list => {
-    list.ariaSelected = 'false';
-    selectedTab.ariaSelected = 'true';
+  tabItems.forEach(list => {
+    list.setAttribute('aria-selected', 'false');
+    selectedTab.setAttribute('aria-selected', 'true');
     tbody.textContent = '';
     selectedTabTodos = [];
     selectedTodos = [];
 
-    selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming');
+    selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming', tbody);
     return;
   });
 };
@@ -137,8 +161,8 @@ const selectLabel = (e: Event): void | string => {
   }
 
   labelsListItems.forEach(label => {
-    label.ariaSelected = 'false';
-    selectedLabel.ariaSelected = 'true';
+    label.setAttribute('aria-selected', 'false');
+    selectedLabel.setAttribute('aria-selected', 'true');
     tbody.textContent = '';
     selectedLabelTodos = [];
     selectedTodos = [];
@@ -151,11 +175,7 @@ const selectLabel = (e: Event): void | string => {
   return;
 };
 
-tabsList.addEventListener('click', (e: Event) => {
-  selectTab(e);
-});
-
-labelsList.addEventListener('click', (e: Event) => {
+labelsList?.addEventListener('click', (e: Event) => {
   selectLabel(e);
 });
 
@@ -219,7 +239,7 @@ Label.prototype
 /* Todo START */
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
-addTodoBtn.addEventListener('click', (): void => {
+addTodoBtn?.addEventListener('click', (): void => {
   const { container, form } = createTodoForm('POST');
   modal.ariaHidden = 'false';
   modal.textContent = '';
