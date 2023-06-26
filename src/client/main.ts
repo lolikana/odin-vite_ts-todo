@@ -10,7 +10,6 @@ import {
   closeModal,
   countTypedCharacters,
   findMatchingTodos,
-  pushTabData,
   querySelector,
   querySelectorAll
 } from './scripts/helpers';
@@ -27,154 +26,164 @@ const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
 export const modal = querySelector('#modal') as HTMLDivElement;
 
-main.append(createNavElement(nav));
-nav.append(createDivLabelsElement());
+main?.append(createNavElement(nav));
+nav?.append(createDivLabelsElement());
 
-const tabsList = querySelector('.tabs--list');
-const tabsListItems = querySelectorAll(
-  '.tabs--list-item'
-) as NodeListOf<HTMLUListElement>;
-const inboxBtn = querySelector('.inbox-btn') as HTMLButtonElement;
-const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
+const tabsListItems = querySelectorAll('.tabs--list-item') as NodeListOf<HTMLLIElement>;
+const tabsListBtn = querySelectorAll(
+  '.tabs--list-btn[data-tab]'
+) as NodeListOf<HTMLButtonElement>;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
-let selectedLabelTodos: Todo[] = [];
-let selectedTabTodos: Todo[] = [];
-let selectedTodos: Todo[] = [];
+export let selectedLabelTodos: Todo[] = [];
+export let selectedTabTodos: Todo[] = TodosData;
+export let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
+const isNoTodo = (tbody: HTMLElement) => {
+  tbody.append(Todo.prototype.createElement(noTodo));
+};
+
 /** Selected tab **/
-const selectTab = (e: Event, listItems: NodeListOf<Element>): void | string => {
-  let selectedTab: HTMLLIElement;
+export const selectDefaultInboxTab = (
+  selectedTab: HTMLLIElement,
+  inboxTab: HTMLLIElement,
+  tbody: HTMLElement
+): void => {
+  selectedTab.setAttribute('aria-selected', 'false');
+  inboxTab.setAttribute('aria-selected', 'true');
+  tbody.textContent = '';
 
-  const target = e.target as HTMLElement;
-
-  if (
-    target === tabsList ||
-    target === labelsList ||
-    target.classList.contains('actions-btn')
-  )
-    return;
-
-  if (listItems === tabsListItems) {
-    selectedTab = target.closest('.tabs--list-item') as HTMLLIElement;
+  selectedTabTodos = TodosData;
+  if (selectedLabelTodos.length !== 0) {
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+    selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
   } else {
-    selectedTab = target.closest('.labels--list-item') as HTMLLIElement;
-  }
-
-  if (selectedTab === null) return;
-
-  const selectedBtn = selectedTab.querySelector('button') as HTMLButtonElement;
-
-  /* Select tab or label */
-  if (
-    selectedTab.ariaSelected === 'true' &&
-    selectedBtn.dataset.tab !== inboxBtn.dataset.tab
-  ) {
-    selectedTab.ariaSelected = 'false';
-    tbody.textContent = '';
-
-    if (selectedTab.classList.contains('labels--list-item')) {
-      selectedLabelTodos = [];
-    }
-
-    if (
-      selectedTab.classList.contains('labels--list-item') &&
-      selectedTabTodos.length !== 0
-    ) {
-      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-    }
-
-    if (
-      selectedTab.classList.contains('tabs--list-item') &&
-      selectedLabelTodos.length !== 0
-    ) {
-      selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-    }
-
-    /* set inbox by default if no tab selected */
-    if (!selectedTab.classList.contains('labels--list-item')) {
-      inboxTab.ariaSelected = 'true';
-
-      if (selectedLabelTodos.length === 0) {
-        tbody.textContent = '';
-        TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      }
-    }
-    return;
-  }
-
-  /* Reset aria-selected tabs and set selected one to true */
-  listItems.forEach(item => {
-    if (selectedTab.classList.contains('labels--list-item')) {
-      selectedLabelTodos = [];
-    }
-    item.ariaSelected = 'false';
-  });
-  selectedTab.ariaSelected = 'true';
-
-  if (
-    selectedTab.classList.contains('labels--list-item') &&
-    selectedTab.ariaSelected === 'true'
-  ) {
-    tbody.textContent = '';
-    selectedLabelTodos = [];
-    const selectedLabelId = selectedBtn.dataset.labelId as string;
-
-    TodosData.forEach(todo => {
-      if (todo.tag.label === selectedLabelId) {
-        selectedLabelTodos.push(todo);
-      }
-    });
-
-    if (selectedLabelTodos.length === 0) selectedLabelTodos.push(noTodo);
-
-    if (selectedTabTodos.length !== 0) {
-      selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'date');
-      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      return;
-    }
-
-    selectedLabelTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-  }
-
-  if (
-    selectedTab.classList.contains('tabs--list-item') &&
-    selectedTab.ariaSelected === 'true'
-  ) {
-    tbody.textContent = '';
-    selectedTabTodos = [];
-    const selectedTabBtnDataSet = selectedBtn.dataset.tab as
-      | 'today'
-      | 'upcoming'
-      | 'inbox';
-
-    pushTabData(selectedTabBtnDataSet).map(todo => selectedTabTodos.push(todo));
-
-    if (selectedLabelTodos.length !== 0) {
-      selectedTodos = findMatchingTodos(selectedTabTodos, selectedLabelTodos, 'id');
-
-      if (selectedTodos.length === 0) selectedTodos.push(noTodo);
-
-      selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
-      return;
-    }
-
-    selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    selectedTabTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
   }
 };
 
-tabsList?.addEventListener('click', (e: Event) => {
-  selectTab(e, tabsListItems);
-});
+export const selectDateTab = (
+  date: 'today' | 'upcoming' | 'inbox',
+  tbody: HTMLElement
+): void => {
+  if (date === 'inbox') selectedTabTodos = TodosData;
 
-labelsList.addEventListener('click', (e: Event) => {
-  const labelsListItems = querySelectorAll('.labels--list-item');
-  selectTab(e, labelsListItems);
+  if (date === 'today')
+    selectedTabTodos = TodosData.filter(
+      todo => new Date(todo.tag.dueDate).toDateString() === new Date().toDateString()
+    );
+
+  if (date === 'upcoming')
+    selectedTabTodos = TodosData.filter(
+      todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
+    );
+
+  selectedTodos =
+    selectedLabelTodos.length !== 0
+      ? findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id')
+      : selectedTabTodos;
+
+  tbody.textContent = '';
+
+  selectedTodos.length === 0
+    ? isNoTodo(tbody)
+    : selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+};
+
+export const selectTab = (
+  btn: HTMLButtonElement,
+  tabItems: NodeListOf<HTMLLIElement>,
+  tbody: HTMLElement
+): void | string => {
+  const selectedTabBtn = btn;
+  const selectedTab = selectedTabBtn.closest('.tabs--list-item') as HTMLLIElement;
+  if (
+    selectedTab.ariaSelected !== null &&
+    selectedTabBtn.getAttribute('data-tab') === 'inbox' &&
+    selectedTab.getAttribute('aria-selected') === 'true'
+  )
+    return;
+
+  /* set inbox by default if no tab selected */
+  if (
+    selectedTab.ariaSelected !== null &&
+    selectedTab.getAttribute('aria-selected') === 'true' &&
+    selectedTabBtn.getAttribute('data-tab') !== 'inbox'
+  ) {
+    selectDefaultInboxTab(selectedTab, tabItems[0], tbody);
+    return;
+  }
+
+  // Handle other tab selections
+  tabItems.forEach(list => {
+    list.setAttribute('aria-selected', 'false');
+    selectedTab.setAttribute('aria-selected', 'true');
+    tbody.textContent = '';
+    selectedTabTodos = [];
+    selectedTodos = [];
+
+    selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming', tbody);
+    return;
+  });
+};
+
+export const selectLabel = (
+  clickedLabelBtn: HTMLButtonElement,
+  tbody: HTMLElement
+): void | string => {
+  const selectedLabel = clickedLabelBtn.closest('.labels--list-item') as HTMLLIElement;
+  const labelsListItems = querySelectorAll(
+    '.labels--list-item'
+  ) as NodeListOf<HTMLUListElement>;
+
+  if (!clickedLabelBtn.classList.contains('labels--list-btn')) return;
+
+  if (selectedLabel.getAttribute('aria-selected') === 'true') {
+    selectedLabel.setAttribute('aria-selected', 'false');
+    selectedLabelTodos = [];
+    tbody.textContent = '';
+
+    if (selectedTabTodos.length !== 0) {
+      selectedTabTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+      return;
+    }
+
+    TodosData.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+    return;
+  }
+
+  labelsListItems.forEach(label => {
+    label.setAttribute('aria-selected', 'false');
+    selectedLabel.setAttribute('aria-selected', 'true');
+    tbody.textContent = '';
+    selectedLabelTodos = [];
+    selectedTodos = [];
+    selectedLabelTodos = TodosData.filter(
+      todo => todo.tag.label === clickedLabelBtn.dataset.labelId
+    );
+    selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
+  });
+
+  selectedTodos.length === 0
+    ? isNoTodo(tbody)
+    : selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+  return;
+};
+
+/** Click event selecting tab or label **/
+tabsListBtn.forEach(btn =>
+  btn.addEventListener('click', () => {
+    selectTab(btn, tabsListItems, tbody);
+  })
+);
+
+labelsList?.addEventListener('click', (e: Event) => {
+  const selectedLabelBtn = e.target as HTMLButtonElement;
+  selectLabel(selectedLabelBtn, tbody);
 });
 
 /** Add label START **/
@@ -237,7 +246,7 @@ Label.prototype
 /* Todo START */
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
-addTodoBtn.addEventListener('click', (): void => {
+addTodoBtn?.addEventListener('click', (): void => {
   const { container, form } = createTodoForm('POST');
   modal.ariaHidden = 'false';
   modal.textContent = '';

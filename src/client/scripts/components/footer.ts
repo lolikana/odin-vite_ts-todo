@@ -1,7 +1,12 @@
 const copyrightTime = document.querySelector('.copyright-time') as HTMLTimeElement;
 
-const year = new Date().getFullYear();
-const date = new Date().toISOString();
+export function setCopyright(element: HTMLTimeElement) {
+  const year = new Date().getFullYear();
+  const date = new Date().toISOString();
+  if (element) {
+    element.textContent = year.toString();
+    element.setAttribute('datetime', date);
+  }
+}
 
-copyrightTime.textContent = year.toString();
-copyrightTime.setAttribute('datetime', date);
+setCopyright(copyrightTime);

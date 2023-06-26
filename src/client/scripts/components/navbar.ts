@@ -1,6 +1,7 @@
+import { TLabel } from '@/libs/types';
+
 import { tabs } from '../../../libs/data';
 import { create, firstCapitalLetter } from '../helpers';
-import { Label } from '../models/label-class';
 import { createAddLabelBtn } from './ui/buttons';
 
 export const createListElement = (
@@ -23,9 +24,9 @@ export const createListElement = (
 
     if (text === 'inbox') {
       li.setAttribute('aria-selected', 'true');
-      li.classList.add('inbox-tab');
-      button.classList.add('inbox-btn');
     }
+    li.classList.add(`${text}-tab`);
+    button.classList.add(`${text}-btn`);
 
     button.classList.add('tabs--list-btn');
     button.setAttribute('data-tab', text);
@@ -93,8 +94,11 @@ export const createDivLabelsElement = () => {
   return divLabel;
 };
 
-export const createListLabelsElement = (ul: HTMLUListElement, labels: Label[] | null) => {
+export const createListLabelsElement = (
+  ul: HTMLUListElement,
+  labels: TLabel[] | null
+) => {
   labels?.map(label => {
-    ul.append(createListElement('labels', label.name, label._id!.toString()));
+    ul.append(createListElement('labels', label.name, label._id.toString()));
   });
 };
