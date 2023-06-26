@@ -2,8 +2,6 @@ import './style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { log } from 'console';
-
 import { labelsData, noTodo, TodosData } from '../libs/data';
 import { createDivLabelsElement, createNavElement } from './scripts/components';
 import { createLabelFormElement } from './scripts/components/label';
@@ -47,6 +45,10 @@ export let selectedTabTodos: Todo[] = TodosData;
 export let selectedTodos: Todo[] = TodosData;
 
 /* Navbar START */
+const isNoTodo = (tbody: HTMLElement) => {
+  tbody.append(Todo.prototype.createElement(noTodo));
+};
+
 /** Selected tab **/
 export const selectDefaultInboxTab = (
   selectedTab: HTMLLIElement,
@@ -88,14 +90,11 @@ export const selectDateTab = (
       : selectedTabTodos;
 
   tbody.textContent = '';
-  selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
-};
 
-tabsListBtn.forEach(btn =>
-  btn.addEventListener('click', () => {
-    selectTab(btn, tabsListItems, tbody);
-  })
-);
+  selectedTodos.length === 0
+    ? isNoTodo(tbody)
+    : selectedTodos.forEach(todo => tbody.append(Todo.prototype.createElement(todo)));
+};
 
 export const selectTab = (
   btn: HTMLButtonElement,
@@ -134,15 +133,18 @@ export const selectTab = (
   });
 };
 
-const selectLabel = (e: Event): void | string => {
-  const selectedLabelBtn = e.target as HTMLButtonElement;
-  const selectedLabel = selectedLabelBtn.closest('.labels--list-item') as HTMLLIElement;
+const selectLabel = (
+  clickedLabelBtn: HTMLButtonElement,
+  tbody: HTMLElement
+): void | string => {
+  const selectedLabel = clickedLabelBtn.closest('.labels--list-item') as HTMLLIElement;
   const labelsListItems = querySelectorAll(
     '.labels--list-item'
   ) as NodeListOf<HTMLUListElement>;
+
   if (
-    !selectedLabelBtn.classList.contains('labels--list-btn') ||
-    (selectedLabelBtn.dataset.tab === 'inbox' && selectedLabel.ariaSelected === 'true')
+    !clickedLabelBtn.classList.contains('labels--list-btn') ||
+    (clickedLabelBtn.dataset.tab === 'inbox' && selectedLabel.ariaSelected === 'true')
   )
     return;
 
@@ -167,16 +169,27 @@ const selectLabel = (e: Event): void | string => {
     selectedLabelTodos = [];
     selectedTodos = [];
     selectedLabelTodos = TodosData.filter(
-      todo => todo.tag.label === selectedLabelBtn.dataset.labelId
+      todo => todo.tag.label === clickedLabelBtn.dataset.labelId
     );
     selectedTodos = findMatchingTodos(selectedLabelTodos, selectedTabTodos, 'id');
   });
-  selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
+
+  selectedTodos.length === 0
+    ? isNoTodo(tbody)
+    : selectedTodos.map(todo => tbody.append(Todo.prototype.createElement(todo)));
   return;
 };
 
+/** Click event selecting tab or label **/
+tabsListBtn.forEach(btn =>
+  btn.addEventListener('click', () => {
+    selectTab(btn, tabsListItems, tbody);
+  })
+);
+
 labelsList?.addEventListener('click', (e: Event) => {
-  selectLabel(e);
+  const selectedLabelBtn = e.target as HTMLButtonElement;
+  selectLabel(selectedLabelBtn, tbody);
 });
 
 /** Add label START **/
