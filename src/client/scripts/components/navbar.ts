@@ -1,6 +1,7 @@
+import { TLabel } from '@/libs/types';
+
 import { tabs } from '../../../libs/data';
 import { create, firstCapitalLetter } from '../helpers';
-import { Label } from '../models/label-class';
 import { createAddLabelBtn } from './ui/buttons';
 
 export const createListElement = (
@@ -93,8 +94,11 @@ export const createDivLabelsElement = () => {
   return divLabel;
 };
 
-export const createListLabelsElement = (ul: HTMLUListElement, labels: Label[] | null) => {
+export const createListLabelsElement = (
+  ul: HTMLUListElement,
+  labels: TLabel[] | null
+) => {
   labels?.map(label => {
-    ul.append(createListElement('labels', label.name, label._id!.toString()));
+    ul.append(createListElement('labels', label.name, label._id.toString()));
   });
 };

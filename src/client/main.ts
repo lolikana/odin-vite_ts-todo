@@ -29,14 +29,12 @@ export const modal = querySelector('#modal') as HTMLDivElement;
 main?.append(createNavElement(nav));
 nav?.append(createDivLabelsElement());
 
-const tabsList = querySelector('.tabs--list') as HTMLUListElement;
 const tabsListItems = querySelectorAll('.tabs--list-item') as NodeListOf<HTMLLIElement>;
 const tabsListBtn = querySelectorAll(
   '.tabs--list-btn[data-tab]'
 ) as NodeListOf<HTMLButtonElement>;
 const labelsList = querySelector('.labels--list') as HTMLUListElement;
 const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
-const inboxTab = querySelector('.inbox-tab') as HTMLLIElement;
 
 export const tbody = querySelector('.section--table-body') as HTMLElement;
 
@@ -133,7 +131,7 @@ export const selectTab = (
   });
 };
 
-const selectLabel = (
+export const selectLabel = (
   clickedLabelBtn: HTMLButtonElement,
   tbody: HTMLElement
 ): void | string => {
@@ -142,14 +140,10 @@ const selectLabel = (
     '.labels--list-item'
   ) as NodeListOf<HTMLUListElement>;
 
-  if (
-    !clickedLabelBtn.classList.contains('labels--list-btn') ||
-    (clickedLabelBtn.dataset.tab === 'inbox' && selectedLabel.ariaSelected === 'true')
-  )
-    return;
+  if (!clickedLabelBtn.classList.contains('labels--list-btn')) return;
 
-  if (selectedLabel.ariaSelected === 'true') {
-    selectedLabel.ariaSelected = 'false';
+  if (selectedLabel.getAttribute('aria-selected') === 'true') {
+    selectedLabel.setAttribute('aria-selected', 'false');
     selectedLabelTodos = [];
     tbody.textContent = '';
 
