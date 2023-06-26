@@ -16,6 +16,10 @@ The project uses the following technologies:
 * Vitejs - a build tool and development server for modern web apps
 * Express - a web application framework for Node.js
 * MongoDB - a NoSQL document-oriented database
+* Vitest
+
+## Unit Testing
+Unit testing is implemented in this project using [Vitest](https://vitest.dev/), a Vite native testing framework. The tests cover some functionalities and ensure the reliability and correctness of the application.
 
 ## Features
 - [x] User can add new labels 
