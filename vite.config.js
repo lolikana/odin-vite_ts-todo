@@ -7,6 +7,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        login: path.resolve(__dirname, 'pages/login/index.html')
+      }
+    },
     sourcemap: 'inline',
     minify: 'esbuild',
     manifest: true,
@@ -17,11 +23,11 @@ export default defineConfig({
     alias: [
       {
         find: '@',
-        replacement: path.resolve(__dirname, './src')
+        replacement: path.resolve(__dirname, 'src')
       },
       {
         find: '@__tests__',
-        replacement: path.resolve(__dirname, './__tests__')
+        replacement: path.resolve(__dirname, '__tests__')
       }
     ]
   },
