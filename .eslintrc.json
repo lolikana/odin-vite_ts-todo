@@ -28,6 +28,7 @@
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
     "sort-imports": "off",
     "import/order": "off",
     "simple-import-sort/imports": "error",

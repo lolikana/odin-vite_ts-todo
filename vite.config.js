@@ -10,7 +10,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        login: path.resolve(__dirname, 'pages/login/index.html')
+        register: path.resolve(__dirname, 'pages/register/index.html')
       }
     },
     sourcemap: 'inline',

@@ -1,18 +1,32 @@
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 import express, { Router } from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
 import path from 'path';
 import ViteExpress from 'vite-express';
 
+import { UserModel } from './models/user';
+import { router as authRoutes } from './routes/auth-route';
 import { router as labelsRoutes } from './routes/labels-routes';
 import { router as todosRoutes } from './routes/todos-routes';
 import ExpressError from './utils/expressError';
 import { mongoConnection } from './utils/mongodb';
 
+declare module 'express-session' {
+  interface Session {
+    views: number;
+    cookie: Cookie;
+    username: string;
+  }
+}
+
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.VITE_PORT || 3001;
+const sessionSecret = process.env.VITE_SESSION_SECRET || 'findABetterSecretPlease';
 
 export const mongoDBUri: string = isProduction
   ? (process.env.VITE_MONGODB_URI as string)
@@ -28,7 +42,28 @@ app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (_, res) => res.send('Hello from express!'));
+const sessionConfig = {
+  name: '_todo',
+  secret: `${sessionSecret}`,
+  resave: false,
+  saveUninitialized: true
+  // cookie: {
+  //   HttpOnly: true,
+  //   secure: true,
+  //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+  //   maxAge: 1000 * 60 * 60 * 24 * 7
+  // }
+};
+
+app.set('trust proxy', 1); // trust first proxy
+app.use(session(sessionConfig));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
+
+passport.serializeUser(UserModel.serializeUser());
+passport.deserializeUser(UserModel.deserializeUser());
 
 app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,6 +76,7 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.use('/', authRoutes as Router);
 app.use('/api/labels', labelsRoutes as Router);
 app.use('/api/todos', todosRoutes as Router);
 
