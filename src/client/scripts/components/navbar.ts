@@ -1,8 +1,7 @@
-import { TLabel } from '@/libs/types';
-
-import { tabs } from '../../../libs/data';
-import { create, firstCapitalLetter } from '../helpers';
-import { createAddLabelBtn } from './ui/buttons';
+import { createAddLabelBtn } from '@components/ui/buttons';
+import { create, firstCapitalLetter } from '@helpers/index';
+import { tabs } from '@libs/data';
+import { TLabel } from '@libs/types';
 
 export const createListElement = (
   list: 'tabs' | 'labels',

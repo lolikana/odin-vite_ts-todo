@@ -9,3 +9,5 @@ router
   .route('/register')
   .get(auth.renderRegister)
   .post(catchAsync(auth.register) as RequestHandler);
+
+// router.route('/login').get(auth.renderLogin);

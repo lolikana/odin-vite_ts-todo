@@ -1,18 +1,19 @@
-import './style.scss';
+import './styles/style.scss';
 import './scripts/components/footer';
 import './scripts/burger';
 
-import { labelsData, noTodo, TodosData } from '../libs/data';
-import { createDivLabelsElement, createNavElement } from './scripts/components';
-import { createLabelFormElement } from './scripts/components/label';
-import { createTodoForm } from './scripts/components/todo/formTodo';
+import { createLabelFormElement } from '@components/label';
+import { createDivLabelsElement, createNavElement } from '@components/navbar';
+import { createTodoForm } from '@components/todo/formTodo';
 import {
   closeModal,
   countTypedCharacters,
   findMatchingTodos,
   querySelector,
   querySelectorAll
-} from './scripts/helpers';
+} from '@helpers/index';
+import { labelsData, noTodo, TodosData } from '@libs/data';
+
 import {
   deleteEmptyLabelsList,
   isDisabledEditBtns,
@@ -24,7 +25,7 @@ import { Todo, todoFormSubmit } from './scripts/models/todo-class';
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
-export const modal = querySelector('#modal') as HTMLDivElement;
+export const modal = document.getElementById('modal') as HTMLDivElement;
 
 main?.append(createNavElement(nav));
 nav?.append(createDivLabelsElement());
@@ -78,9 +79,7 @@ export const selectDateTab = (
     );
 
   if (date === 'upcoming')
-    selectedTabTodos = TodosData.filter(
-      todo => new Date(todo.tag.dueDate).toDateString() > new Date().toDateString()
-    );
+    selectedTabTodos = TodosData.filter(todo => new Date(todo.tag.dueDate) > new Date());
 
   selectedTodos =
     selectedLabelTodos.length !== 0
@@ -125,10 +124,9 @@ export const selectTab = (
     tbody.textContent = '';
     selectedTabTodos = [];
     selectedTodos = [];
-
-    selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming', tbody);
-    return;
   });
+  selectDateTab(selectedTabBtn.dataset.tab as 'inbox' | 'today' | 'upcoming', tbody);
+  return;
 };
 
 export const selectLabel = (

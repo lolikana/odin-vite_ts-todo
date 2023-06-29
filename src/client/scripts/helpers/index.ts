@@ -8,7 +8,7 @@ export const firstCapitalLetter = (text: string) => {
 
 export const querySelector = (el: string) => document.querySelector(el);
 export const querySelectorAll = (el: string) => document.querySelectorAll(el);
-export const create = (el: string) => document.createElement(el);
+export const create = (el: string): HTMLElement => document.createElement(el);
 
 export function closeModal(): void {
   const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;

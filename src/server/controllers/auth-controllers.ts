@@ -4,8 +4,10 @@ import path from 'path';
 
 import { UserModel } from '../models/user';
 
+console.log(path.join(__dirname));
+
 export const renderRegister = (_req: Request, res: Response): void => {
-  res.sendFile(path.join(__dirname, '../../../pages/register/index.html'));
+  res.sendFile(path.join(__dirname, '../../../register/index.html'));
 };
 
 export const register = async (
@@ -25,13 +27,17 @@ export const register = async (
       username: string;
       password: string;
     };
+    console.log(registeredUser);
     // req.login(registeredUser, (err: any) => {
     // if (err) return next(err);
-    console.log(registeredUser);
     res.redirect('/');
     // });
   } catch (err: any) {
     console.log(err.message);
     res.redirect('/register');
   }
+};
+
+export const renderLogin = (_req: Request, res: Response): void => {
+  res.sendFile(path.join(__dirname, '../../../login/index.html'));
 };
