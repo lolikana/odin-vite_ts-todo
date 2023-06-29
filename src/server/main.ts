@@ -19,6 +19,7 @@ declare module 'express-session' {
     views: number;
     cookie: Cookie;
     username: string;
+    returnTo?: string;
   }
 }
 

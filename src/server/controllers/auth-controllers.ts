@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { Document } from 'mongoose';
 import path from 'path';
 
@@ -10,11 +10,7 @@ export const renderRegister = (_req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, '../../../register/index.html'));
 };
 
-export const register = async (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-): Promise<void> => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, username, password } = req.body as {
       email: string;
@@ -40,4 +36,10 @@ export const register = async (
 
 export const renderLogin = (_req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, '../../../login/index.html'));
+};
+
+export const login = (req: Request, res: Response): void => {
+  const redirectUrl = req.session.returnTo !== undefined ? req.session.returnTo : '/';
+  delete req.session.returnTo;
+  res.redirect(redirectUrl);
 };
