@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        register: path.resolve(__dirname, 'pages/register/index.html')
+        register: path.resolve(__dirname, 'register/index.html'),
+        login: path.resolve(__dirname, 'login/index.html')
       }
     },
     sourcemap: 'inline',
@@ -24,6 +25,18 @@ export default defineConfig({
       {
         find: '@',
         replacement: path.resolve(__dirname, 'src')
+      },
+      {
+        find: '@components',
+        replacement: path.resolve(__dirname, 'src/client/scripts/components')
+      },
+      {
+        find: '@helpers',
+        replacement: path.resolve(__dirname, 'src/client/scripts/helpers')
+      },
+      {
+        find: '@libs',
+        replacement: path.resolve(__dirname, 'src/libs')
       },
       {
         find: '@__tests__',
