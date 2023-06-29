@@ -1,0 +1,117 @@
+.todo-form-container {
+  position: relative;
+  width: 70%;
+  max-width: 700px;
+  background-color: $__grey300;
+  padding: 3rem 2rem 2rem;
+  border-radius: 5px;
+}
+
+.todo-form {
+  container-type: inline-size;
+  container-name: todoForm;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  label {
+    font-weight: $__bold;
+    text-transform: uppercase;
+  }
+
+  textarea,
+  select,
+  input {
+    border-radius: 5px;
+    background-color: $__grey100;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions.top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .actions.text {
+    .action {
+      position: relative;
+    }
+    textarea {
+      width: 100%;
+      resize: none;
+    }
+
+    .count-container {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.5rem;
+    }
+  }
+
+  .actions.checks {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .action {
+		position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+}
+
+.button--close-modal {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+}
+
+.error-message {
+	position: absolute;
+	font-size: .75rem;
+	color: $__error;
+	bottom: -1.15rem;
+}
+
+@container todoForm (min-width: 500px) {
+  .todo-form {
+    .actions.top {
+      flex-direction: row;
+
+      .action {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      label {
+        text-align: end;
+      }
+
+      select,
+      input {
+        width: 9rem;
+      }
+    }
+
+    .actions.checks {
+      flex-direction: row;
+      justify-content: center;
+      gap: 7rem;
+    }
+		
+    button[type='submit'] {
+      margin: 0 auto;
+    }
+  }
+	.error-message {
+		right: 0.5rem;
+	}
+}

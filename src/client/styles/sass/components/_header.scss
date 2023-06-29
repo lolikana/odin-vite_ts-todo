@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
+.header--logo {
+  z-index: 1000;
+  padding: 1rem;
+  width: $__full__width;
+  height: 4rem;
+  @include box-shadow(null, 0px, 2px, 10px, 1px, rgba(0, 0, 0, 0.5));
+
+  a {
+    height: 100%;
+    @extend %display-flex;
+    @extend %align-items-center;
+    gap: 1rem;
+		text-decoration: none;
+  }
+
+  &-img {
+    width: fit-content;
+    height: 3rem;
+  }
+
+  &-title {
+    font-size: 2rem;
+  }
+}

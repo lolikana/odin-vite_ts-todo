@@ -1,0 +1,51 @@
+.table--body-fav .fav-label {
+  position: relative;
+  cursor: pointer;
+  width: 1.5rem;
+  @extend %flex-center;
+}
+
+.table--body-fav,
+.todo-form {
+  .fav-label .fav-input {
+    display: none;
+  }
+}
+
+.todo-form .fav-label {
+	position: relative;
+	width: fit-content;
+  display: flex;
+	
+	.fav-star {
+		right: -2.5rem;
+		top: -0.5rem;
+	}
+}
+
+.fav-star {
+	cursor: pointer;
+  position: absolute;
+  &::after {
+    content: '';
+    background-size: 2rem;
+    height: 2rem;
+    width: 2rem;
+    display: inline-block;
+  }
+}
+
+.fav-star.empty {
+  &::after {
+    background-image: url('/icons/star_FILL0_wght200_GRAD0_opsz48.svg');
+  }
+}
+
+.table--body-fav,
+.todo-form {
+  .fav-label .fav-input:checked ~ .fav-star.fill {
+    &::after {
+      background-image: url('/icons/star_FILL1_wght200_GRAD0_opsz48.svg');
+    }
+  }
+}
