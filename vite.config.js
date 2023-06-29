@@ -44,6 +44,22 @@ export default defineConfig({
       }
     ]
   },
+  plugins: [
+    {
+      name: 'rewrite-middleware',
+      configureServer(serve) {
+        serve.middlewares.use((req, _res, next) => {
+          if (req.url.startsWith('/register')) {
+            req.url = '/register/index.html';
+          }
+          if (req.url.startsWith('/login')) {
+            req.url = '/login/index.html';
+          }
+          next();
+        });
+      }
+    }
+  ],
   test: {
     globals: true,
     environment: 'jsdom',
