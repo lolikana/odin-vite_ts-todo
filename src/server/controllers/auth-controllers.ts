@@ -4,7 +4,7 @@ import path from 'path';
 
 import { UserModel } from '../models/user';
 
-const pages = '../../../pages/auth';
+const pages = '/auth';
 
 export const renderRegister = (_req: Request, res: Response): void => {
   res.sendFile(path.join(__dirname, `${pages}/register/index.html`));
@@ -29,7 +29,6 @@ export const register = async (
     };
     req.login(registeredUser, (err: any) => {
       if (err) return next(err);
-      res.json(registeredUser);
       res.redirect('/todos');
     });
   } catch (err: any) {

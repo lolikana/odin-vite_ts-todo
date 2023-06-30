@@ -27,7 +27,7 @@ declare module 'express-session' {
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
-export const port = process.env.VITE_PORT || '3009';
+export const port = !isProduction ? process.env.VITE_PORT : process.env.VITE_PROD_PORT;
 const sessionSecret = process.env.VITE_SESSION_SECRET || 'findABetterSecretPlease';
 
 export const mongoDBUri: string = isProduction
@@ -40,7 +40,7 @@ mongoConnection().catch(err => console.log(err));
 
 app.use(express.static(path.join(__dirname, '../../public')));
 app.use(express.static(path.join(__dirname, '../../dist')));
-app.use(express.static(path.join(__dirname, '../../auth')));
+app.use(express.static(path.join(__dirname, '../../pages')));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -89,7 +89,7 @@ app.use('/', authRoutes as Router);
 app.use(isLoggedIn);
 
 app.get('/todos', (_req, res) => {
-  res.sendFile(path.join(__dirname, `../../pages/todos/index.html`));
+  res.sendFile(`/todos/index.html`);
 }) as RequestHandler;
 
 app.get('/api/user', (_req, res) => {
@@ -102,6 +102,6 @@ app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));
 });
 
-ViteExpress.listen(app, +port, () => {
-  console.log(`Server started at http://localhost:${port}`);
+ViteExpress.listen(app, +port!, () => {
+  console.log(`Server started at http://localhost:${port!}`);
 });
