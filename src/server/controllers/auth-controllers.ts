@@ -30,7 +30,7 @@ export const register = async (
     req.login(registeredUser, (err: any) => {
       if (err) return next(err);
       res.json(registeredUser);
-      res.redirect('/');
+      res.redirect('/todos');
     });
   } catch (err: any) {
     console.log(err.message);
@@ -43,7 +43,7 @@ export const renderLogin = (_req: Request, res: Response): void => {
 };
 
 export const login = (_req: Request, res: Response): void => {
-  const redirectUrl = (res.locals.returnTo as string) || '/'; // update this line to use res.locals.returnTo now
+  const redirectUrl = '/todos'; // update this line to use res.locals.returnTo now
   res.redirect(redirectUrl);
 };
 

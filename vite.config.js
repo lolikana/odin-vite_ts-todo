@@ -10,6 +10,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
+        todos: path.resolve(__dirname, 'pages/todos/index.html'),
         register: path.resolve(__dirname, 'pages/auth/register/index.html'),
         login: path.resolve(__dirname, 'pages/auth/login/index.html')
       }
@@ -49,6 +50,9 @@ export default defineConfig({
       name: 'rewrite-middleware',
       configureServer(serve) {
         serve.middlewares.use((req, _res, next) => {
+          if (req.url.startsWith('/todos')) {
+            req.url = '/pages/todos/index.html';
+          }
           if (req.url.startsWith('/auth/register')) {
             req.url = '/pages/auth/register/index.html';
           }

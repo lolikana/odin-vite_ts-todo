@@ -1,5 +1,5 @@
 import renderIndexHTML from '@__tests__/renderIndexHTML';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { setCopyright } from './footer';
 

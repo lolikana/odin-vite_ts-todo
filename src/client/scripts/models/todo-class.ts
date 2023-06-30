@@ -3,7 +3,6 @@ import { Types } from 'mongoose';
 import { labelsData, TodosData } from '../../../libs/data';
 import { todoSchema } from '../../../libs/validations';
 import { createTodo, deleteTodo, fetchTodo, fetchTodos, updateTodo } from '../../api';
-import { modal, tbody } from '../../main';
 import { createTodoCard } from '../components/todo/card';
 import { createTodoForm } from '../components/todo/formTodo';
 import { createTodoItemElement } from '../components/todo/tableRow';
@@ -13,6 +12,8 @@ import {
   querySelector,
   querySelectorAll
 } from '../helpers';
+import { modal, tbody } from '../pages/todos-pages';
+// import { modal, tbody } from './../../main';
 
 export class Todo {
   readonly _id: Types.ObjectId;

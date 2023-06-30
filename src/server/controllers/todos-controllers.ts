@@ -4,6 +4,8 @@ import { Todo } from '../../client/scripts/models/todo-class';
 import { TodoModel } from '../models/todo';
 import ExpressError from '../utils/expressError';
 
+// const pages = '../../../pages/todos';
+
 export default {
   getAll: (async (_req, res, next) => {
     const todos = await TodoModel.find();

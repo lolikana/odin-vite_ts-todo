@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
-import express, { Router } from 'express';
+import express, { RequestHandler, Router } from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
@@ -88,7 +88,11 @@ app.use('/', authRoutes as Router);
 
 app.use(isLoggedIn);
 
-app.use('/current-user', (_req, res) => {
+app.get('/todos', (_req, res) => {
+  res.sendFile(path.join(__dirname, `../../pages/todos/index.html`));
+}) as RequestHandler;
+
+app.get('/api/user', (_req, res) => {
   res.json(res.locals.currentUser);
 });
 app.use('/api/labels', labelsRoutes as Router);

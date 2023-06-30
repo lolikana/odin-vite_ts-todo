@@ -1,6 +1,7 @@
 import { TodosData } from '../../../libs/data';
-import { modal } from '../../main';
+// import { modal } from '../../main';
 import { Todo } from '../models/todo-class';
+import { modal } from '../pages/todos-pages';
 
 export const firstCapitalLetter = (text: string) => {
   return text[0].toUpperCase() + text.toLowerCase().slice(1);

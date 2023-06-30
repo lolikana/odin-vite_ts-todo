@@ -7,12 +7,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { TLabel } from '@/libs/types';
 
-import { selectLabel, selectTab } from './main';
 import {
   createDivLabelsElement,
   createListLabelsElement,
   createNavElement
-} from './scripts/components';
+} from '../components';
+import { selectLabel, selectTab } from './todos-pages';
 
 const htmlDocContent = renderIndexHTML();
 
