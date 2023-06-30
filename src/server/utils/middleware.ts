@@ -8,7 +8,6 @@ export const storeReturnTo = (req: Request, res: Response, next: NextFunction): 
 };
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction): void => {
-  console.log(req.isAuthenticated());
   if (!req.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;
     return res.redirect('/auth/login');
