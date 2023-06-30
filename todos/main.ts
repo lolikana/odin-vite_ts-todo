@@ -1,7 +1,5 @@
-import './styles/style.scss';
-// import './scripts/pages/todos-pages';
-import './scripts/components/footer';
-// import './scripts/burger';
+import '/src/client/main.ts';
+import '/src/client/scripts/pages/todos-pages.ts';
 
 // import { createLabelFormElement } from '@components/label';
 // import { createDivLabelsElement, createNavElement } from '@components/navbar';
@@ -15,15 +13,15 @@ import './scripts/components/footer';
 // } from '@helpers/index';
 // import { labelsData, noTodo, TodosData } from '@libs/data';
 
+// import { fetchUser } from '@/client//api/user-api';
 // import {
 //   deleteEmptyLabelsList,
 //   isDisabledEditBtns,
 //   Label,
 //   labelFormSubmit,
 //   removeLabelInput
-// } from '../client/scripts/models/label-class';
-// import { Todo, todoFormSubmit } from '../client/scripts/models/todo-class';
-// import { fetchUser } from './api/user-api';
+// } from '@/client/scripts/models/label-class';
+// import { Todo, todoFormSubmit } from '@/client/scripts/models/todo-class';
 
 // fetchUser()
 //   .then(res => console.log(res))

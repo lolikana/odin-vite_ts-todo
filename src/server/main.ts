@@ -40,7 +40,6 @@ mongoConnection().catch(err => console.log(err));
 
 app.use(express.static(path.join(__dirname, '../../public')));
 app.use(express.static(path.join(__dirname, '../../dist')));
-app.use(express.static(path.join(__dirname, '../../pages')));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));

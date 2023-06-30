@@ -1,14 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { Document } from 'mongoose';
-import path from 'path';
 
+// import path from 'path';
 import { UserModel } from '../models/user';
-
-const pages = '/auth';
-
-export const renderRegister = (_req: Request, res: Response): void => {
-  res.sendFile(path.join(__dirname, `${pages}/register/index.html`));
-};
 
 export const register = async (
   req: Request,
@@ -35,10 +29,6 @@ export const register = async (
     console.log(err.message);
     res.redirect('/auth/register');
   }
-};
-
-export const renderLogin = (_req: Request, res: Response): void => {
-  res.sendFile(path.join(__dirname, `${pages}/login/index.html`));
 };
 
 export const login = (_req: Request, res: Response): void => {

@@ -7,23 +7,15 @@ import { storeReturnTo } from '../utils/middleware';
 
 export const router = Router();
 
-router
-  .route('/auth/register')
-  .get(auth.renderRegister)
-  .post(catchAsync(auth.register) as RequestHandler);
+router.route('/auth/register').post(catchAsync(auth.register) as RequestHandler);
 
-router
-  .route('/auth/login')
-  .get(auth.renderLogin)
-  .post(
-    // use the storeReturnTo middleware to save the returnTo value from session to res.locals
-    storeReturnTo,
-    // passport.authenticate logs the user in and clears req.session
-    passport.authenticate('local', {
-      failureRedirect: '/auth/login',
-      keepSessionInfo: true
-    }) as RequestHandler,
-    auth.login
-  );
+router.route('/auth/login').post(
+  storeReturnTo,
+  passport.authenticate('local', {
+    failureRedirect: '/auth/login',
+    keepSessionInfo: true
+  }) as RequestHandler,
+  auth.login
+);
 
 router.get('/logout', auth.logout);

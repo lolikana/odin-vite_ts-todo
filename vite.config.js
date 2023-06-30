@@ -4,15 +4,17 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 
+const outDir = 'dist';
+
 export default defineConfig({
   build: {
-    outDir: 'dist',
+    outDir,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        todos: path.resolve(__dirname, 'pages/todos/index.html'),
-        register: path.resolve(__dirname, 'pages/auth/register/index.html'),
-        login: path.resolve(__dirname, 'pages/auth/login/index.html')
+        todos: path.resolve(__dirname, 'todos/index.html'),
+        register: path.resolve(__dirname, 'auth/register/index.html'),
+        login: path.resolve(__dirname, 'auth/login/index.html')
       }
     },
     sourcemap: 'inline',
@@ -45,25 +47,25 @@ export default defineConfig({
       }
     ]
   },
-  plugins: [
-    {
-      name: 'rewrite-middleware',
-      configureServer(serve) {
-        serve.middlewares.use((req, _res, next) => {
-          if (req.url.startsWith('/todos')) {
-            req.url = '/pages/todos/index.html';
-          }
-          if (req.url.startsWith('/auth/register')) {
-            req.url = '/pages/auth/register/index.html';
-          }
-          if (req.url.startsWith('/auth/login')) {
-            req.url = '/pages/auth/login/index.html';
-          }
-          next();
-        });
-      }
-    }
-  ],
+  // plugins: [
+  //   {
+  //     name: 'rewrite-middleware',
+  //     configureServer(serve) {
+  //       serve.middlewares.use((req, _res, next) => {
+  //         if (req.url.startsWith('/todos')) {
+  //           req.url = '/todos/index.html';
+  //         }
+  //         if (req.url.startsWith('/auth/register')) {
+  //           req.url = '/auth/register/index.html';
+  //         }
+  //         if (req.url.startsWith('/auth/login')) {
+  //           req.url = '/auth/login/index.html';
+  //         }
+  //         next();
+  //       });
+  //     }
+  //   }
+  // ],
   test: {
     globals: true,
     environment: 'jsdom',
