@@ -6,7 +6,7 @@
     "vite": "vite",
     "dev": "nodemon src/server/main.ts -w src/server",
     "start": "NODE_ENV=production ts-node src/server/main.ts",
-    "build": "vite build --watch",
+    "build": "vite build",
     "preview": "vite build && NODE_ENV=production ts-node src/server/main.ts",
     "seeds": "ts-node src/server/seeds/index.ts",
     "lint": "eslint --fix -f table './**/*.ts'",
