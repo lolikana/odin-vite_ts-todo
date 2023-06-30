@@ -10,8 +10,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        register: path.resolve(__dirname, 'register/index.html'),
-        login: path.resolve(__dirname, 'login/index.html')
+        register: path.resolve(__dirname, 'auth/register/index.html'),
+        login: path.resolve(__dirname, 'auth/login/index.html')
       }
     },
     sourcemap: 'inline',
@@ -49,11 +49,11 @@ export default defineConfig({
       name: 'rewrite-middleware',
       configureServer(serve) {
         serve.middlewares.use((req, _res, next) => {
-          if (req.url.startsWith('/register')) {
-            req.url = '/register/index.html';
+          if (req.url.startsWith('/auth/register')) {
+            req.url = '/auth/register/index.html';
           }
-          if (req.url.startsWith('/login')) {
-            req.url = '/login/index.html';
+          if (req.url.startsWith('/auth/login')) {
+            req.url = '/auth/login/index.html';
           }
           next();
         });

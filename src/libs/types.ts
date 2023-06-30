@@ -16,3 +16,9 @@ export type TTodo = {
   };
   isFavorite: boolean;
 };
+
+export interface IUser {
+  _id?: Types.ObjectId;
+  email: string;
+  username: string;
+}

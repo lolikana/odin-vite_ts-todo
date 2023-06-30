@@ -29,7 +29,7 @@
         <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
       </div>
     </header>
-    <main class="main-login flex h-full flex-col items-center justify-center">
+    <main class="-top-2 h-full flex-col items-center justify-center">
       <section class="mb-0 ml-0 bg-gray-50 dark:bg-gray-900">
         <div
           class="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0"
@@ -41,11 +41,11 @@
               <h1
                 class="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl"
               >
-                Login
+                Create a new account
               </h1>
               <form
                 class="validated-form space-y-4 md:space-y-6"
-                action="/login"
+                action="/auth/register"
                 method="POST"
                 novalidate
               >
@@ -121,11 +121,11 @@
                   Sign up
                 </button>
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                  No account yet?
+                  Already have an account?
                   <a
-                    href="/login"
+                    href="/auth/login"
                     class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-                    >Sign up</a
+                    >Sign in</a
                   >
                 </p>
               </form>

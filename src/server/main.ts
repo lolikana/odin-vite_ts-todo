@@ -12,6 +12,7 @@ import { router as authRoutes } from './routes/auth-routes';
 import { router as labelsRoutes } from './routes/labels-routes';
 import { router as todosRoutes } from './routes/todos-routes';
 import ExpressError from './utils/expressError';
+import { isLoggedIn } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
 declare module 'express-session' {
@@ -26,7 +27,7 @@ declare module 'express-session' {
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
-export const port = isProduction ? process.env.VITE_PORT : process.env.VITE_DEV_PORT;
+export const port = process.env.VITE_PORT || '3009';
 const sessionSecret = process.env.VITE_SESSION_SECRET || 'findABetterSecretPlease';
 
 export const mongoDBUri: string = isProduction
@@ -39,6 +40,7 @@ mongoConnection().catch(err => console.log(err));
 
 app.use(express.static(path.join(__dirname, '../../public')));
 app.use(express.static(path.join(__dirname, '../../dist')));
+app.use(express.static(path.join(__dirname, '../../auth')));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -66,6 +68,11 @@ passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -77,19 +84,19 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.get('*', isLoggedIn);
 app.use('/', authRoutes as Router);
+
+app.use('/current-user', (_req, res) => {
+  res.json(res.locals.currentUser);
+});
 app.use('/api/labels', labelsRoutes as Router);
 app.use('/api/todos', todosRoutes as Router);
-
-app.get('/', (_req, res) => {
-  console.log(path.resolve(__dirname));
-  res.sendFile(path.resolve(__dirname, '../../index.html'));
-});
 
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));
 });
 
-ViteExpress.listen(app, +port!, () => {
-  console.log(`Server started at http://localhost:${port!}`);
+ViteExpress.listen(app, +port, () => {
+  console.log(`Server started at http://localhost:${port}`);
 });

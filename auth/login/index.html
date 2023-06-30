@@ -29,7 +29,7 @@
         <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
       </div>
     </header>
-    <main class="-top-2 h-full flex-col items-center justify-center">
+    <main class="main-login flex h-full flex-col items-center justify-center">
       <section class="mb-0 ml-0 bg-gray-50 dark:bg-gray-900">
         <div
           class="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0"
@@ -41,11 +41,11 @@
               <h1
                 class="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl"
               >
-                Create a new account
+                Login
               </h1>
               <form
                 class="validated-form space-y-4 md:space-y-6"
-                action="/register"
+                action="/auth/login"
                 method="POST"
                 novalidate
               >
@@ -65,29 +65,6 @@
                     id="username"
                     class="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
                     placeholder="username"
-                    required
-                  />
-                  <span
-                    class="error box-border w-full p-0 text-sm text-pink-600"
-                    aria-live="polite"
-                  ></span>
-                </div>
-                <div>
-                  <label
-                    for="email"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                    >Your email</label
-                  >
-                  <span
-                    class="error box-border w-full p-0 text-sm text-pink-600"
-                    aria-live="polite"
-                  ></span>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    class="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                    placeholder="name@company.com"
                     required
                   />
                   <span
@@ -121,11 +98,11 @@
                   Sign up
                 </button>
                 <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Already have an account?
+                  No account yet?
                   <a
-                    href="/login"
+                    href="/auth/login"
                     class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-                    >Sign in</a
+                    >Sign up</a
                   >
                 </p>
               </form>

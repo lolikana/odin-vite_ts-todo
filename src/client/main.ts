@@ -14,6 +14,7 @@ import {
 } from '@helpers/index';
 import { labelsData, noTodo, TodosData } from '@libs/data';
 
+import { fetchUser } from './api/user-api';
 import {
   deleteEmptyLabelsList,
   isDisabledEditBtns,
@@ -22,6 +23,10 @@ import {
   removeLabelInput
 } from './scripts/models/label-class';
 import { Todo, todoFormSubmit } from './scripts/models/todo-class';
+
+fetchUser()
+  .then(res => console.log(res))
+  .catch(err => console.log('catch: ', err));
 
 const main = document.getElementById('main') as HTMLElement;
 const nav = document.getElementById('nav') as HTMLElement;
