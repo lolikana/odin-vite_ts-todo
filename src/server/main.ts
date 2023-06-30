@@ -73,6 +73,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(isLoggedIn);
+
 app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -83,8 +85,6 @@ app.use((_req, res, next) => {
 
   next();
 });
-
-app.get('*', isLoggedIn);
 app.use('/', authRoutes as Router);
 
 app.use('/current-user', (_req, res) => {
