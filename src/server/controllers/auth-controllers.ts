@@ -4,8 +4,10 @@ import path from 'path';
 
 import { UserModel } from '../models/user';
 
+const pages = '../../../pages/auth';
+
 export const renderRegister = (_req: Request, res: Response): void => {
-  res.sendFile(path.join(__dirname, '../../../register/index.html'));
+  res.sendFile(path.join(__dirname, `${pages}/register/index.html`));
 };
 
 export const register = async (
@@ -37,10 +39,15 @@ export const register = async (
 };
 
 export const renderLogin = (_req: Request, res: Response): void => {
-  res.sendFile(path.join(__dirname, '../../../login/index.html'));
+  res.sendFile(path.join(__dirname, `${pages}/login/index.html`));
 };
 
 export const login = (_req: Request, res: Response): void => {
   const redirectUrl = (res.locals.returnTo as string) || '/'; // update this line to use res.locals.returnTo now
   res.redirect(redirectUrl);
+};
+
+export const logout = (req: Request, res: Response): void => {
+  req.logout((err: unknown) => err !== undefined && console.log(err));
+  res.redirect('/');
 };

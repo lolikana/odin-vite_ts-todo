@@ -1,0 +1,12 @@
+.link-logout a {
+  background-color: rgba(255, 25, 25, 0.7);
+  margin-right: 5rem;
+  padding: 0.25rem 1rem;
+	border-radius: 10px;
+	font-weight: $__bold;
+	
+	&:hover {
+		text-decoration: none;
+		background-color: rgba(255, 25, 25, 1);
+	}
+}

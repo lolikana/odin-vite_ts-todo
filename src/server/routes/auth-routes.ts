@@ -25,3 +25,5 @@ router
     }) as RequestHandler,
     auth.login
   );
+
+router.get('/logout', auth.logout);

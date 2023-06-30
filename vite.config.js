@@ -10,8 +10,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
-        register: path.resolve(__dirname, 'auth/register/index.html'),
-        login: path.resolve(__dirname, 'auth/login/index.html')
+        register: path.resolve(__dirname, 'pages/auth/register/index.html'),
+        login: path.resolve(__dirname, 'pages/auth/login/index.html')
       }
     },
     sourcemap: 'inline',
@@ -50,10 +50,10 @@ export default defineConfig({
       configureServer(serve) {
         serve.middlewares.use((req, _res, next) => {
           if (req.url.startsWith('/auth/register')) {
-            req.url = '/auth/register/index.html';
+            req.url = '/pages/auth/register/index.html';
           }
           if (req.url.startsWith('/auth/login')) {
-            req.url = '/auth/login/index.html';
+            req.url = '/pages/auth/login/index.html';
           }
           next();
         });
