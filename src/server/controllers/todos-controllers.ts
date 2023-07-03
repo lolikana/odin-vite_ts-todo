@@ -1,12 +1,18 @@
 import { RequestHandler } from 'express';
+import { Types } from 'mongoose';
+
+import { IUser } from '@/libs/types';
 
 import { Todo } from '../../client/scripts/models/todo-class';
 import { TodoModel } from '../models/todo';
 import ExpressError from '../utils/expressError';
 
+type TodoModelInstance = InstanceType<typeof TodoModel>;
+
 export default {
-  getAll: (async (_req, res, next) => {
-    const todos = await TodoModel.find();
+  getAll: (async (req, res, next): Promise<void> => {
+    const authorId = (req.user as IUser)._id;
+    const todos = await TodoModel.find({ author: { $in: authorId } });
 
     if (todos === null) {
       const error = new ExpressError('Fetching todos failed, please try again', 500);
@@ -19,7 +25,9 @@ export default {
 
   get: (async (req, res, next) => {
     const { todoId } = req.params;
-    const todo = await TodoModel.findById(todoId);
+    const authorId = (req.user as IUser)._id;
+
+    const todo = await TodoModel.find({ id: todoId }, { author: authorId });
     if (todo === null) {
       const error = new ExpressError('Fetching todos failed, please try again', 500);
       next(error);
@@ -36,7 +44,8 @@ export default {
       next(error);
     }
 
-    const newTodo = new TodoModel(todo);
+    const newTodo: TodoModelInstance = new TodoModel(todo);
+    newTodo.author = (req.user! as IUser)._id as Types.ObjectId;
     await newTodo.save();
     res.status(201).json(todo);
   }) as RequestHandler,

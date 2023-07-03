@@ -255,7 +255,8 @@ addTodoBtn?.addEventListener('click', (): void => {
     const enteredTodo = todoFormSubmit('POST');
     if (!enteredTodo) return;
 
-    await enteredTodo.create().then(() => enteredTodo.get(tbody));
+    await enteredTodo.create();
+
     modal.ariaHidden = 'true';
   });
 });

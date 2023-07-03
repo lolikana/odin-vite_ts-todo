@@ -3,9 +3,7 @@ import { createBtnCloseModal, firstCapitalLetter } from '../../helpers';
 
 export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   const todo =
-    method === 'PUT' &&
-    todoId &&
-    TodosData.filter(todo => todo._id?.toString() === todoId)[0];
+    method === 'PUT' && todoId && TodosData.filter(todo => todo.id === todoId)[0];
   // Create container
   const container = document.createElement('div');
   container.classList.add('todo-form-container');

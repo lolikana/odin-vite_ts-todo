@@ -34,7 +34,7 @@ export const createTodo = async (todo: Todo) => {
 export const updateTodo = async (existingTodo: Todo, enteredTodo: Todo) => {
   try {
     const res = await fetch(
-      `${!isProduction ? path : ''}/api/todos/${existingTodo._id.toString()}`,
+      `${!isProduction ? path : ''}/api/todos/${existingTodo.id!}`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 import { labelsData, TodosData } from '../../../libs/data';
 import { todoSchema } from '../../../libs/validations';
 import { createTodo, deleteTodo, fetchTodo, fetchTodos, updateTodo } from '../../api';
@@ -13,10 +11,8 @@ import {
   querySelectorAll
 } from '../helpers';
 import { modal, tbody } from '../pages/todos-pages';
-// import { modal, tbody } from './../../main';
 
 export class Todo {
-  readonly _id: Types.ObjectId;
   createdAt: Date;
   text: string;
   tag: {
@@ -25,9 +21,9 @@ export class Todo {
   };
   isDone: boolean;
   isFavorite: boolean;
+  readonly id?: string;
 
   constructor(
-    _id: Types.ObjectId,
     createdAt: Date,
     text: string,
     tag: {
@@ -35,14 +31,15 @@ export class Todo {
       dueDate: string;
     },
     isDone: boolean,
-    isFavorite: boolean
+    isFavorite: boolean,
+    id?: string
   ) {
-    this._id = _id;
     this.createdAt = createdAt;
     this.text = text;
     this.tag = tag;
     this.isDone = isDone;
     this.isFavorite = isFavorite;
+    this.id = id;
   }
 
   async getAll(tbody: HTMLElement) {
@@ -68,8 +65,8 @@ export class Todo {
       });
   }
 
-  async get(tbody: HTMLElement, id?: Types.ObjectId) {
-    await fetchTodo(!id ? this._id.toString() : id.toString())
+  async get(tbody: HTMLElement, id: string) {
+    await fetchTodo(id)
       .then((res: Todo) => {
         tbody.append(this.createElement(res));
         // Allow to click on edit btn right after create new label
@@ -92,7 +89,7 @@ export class Todo {
   }
 
   async update(todo: Todo) {
-    await updateTodo(todo, { ...this, _id: todo._id }).catch(err =>
+    await updateTodo(todo, { ...this, id: todo.id }).catch(err =>
       console.log('update: ', err)
     );
   }
@@ -155,17 +152,9 @@ export const todoFormSubmit = (method?: 'POST') => {
 
     todoForm.reset();
 
-    return new Todo(
-      new Types.ObjectId(),
-      data.createdAt,
-      data.text,
-      data.tag,
-      data.isDone,
-      data.isFavorite
-    );
+    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
   }
   const data = {
-    _id: new Types.ObjectId(),
     createdAt: validatationData.data.createdAt,
     text: validatationData.data.text,
     tag: {
@@ -178,14 +167,7 @@ export const todoFormSubmit = (method?: 'POST') => {
 
   todoForm.reset();
 
-  return new Todo(
-    data._id,
-    data.createdAt,
-    data.text,
-    data.tag,
-    data.isDone,
-    data.isFavorite
-  );
+  return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
 };
 
 const editDeleteTodo = (e: Event) => {
@@ -202,7 +184,7 @@ const editDeleteTodo = (e: Event) => {
 
   if (!isDeleteBtn && !isShowbtn && !isEditBtn && !isDoneInput && !isFavInput) return;
 
-  const getExistingTodo = TodosData.filter(todo => todo._id.toString() === getId)[0];
+  const getExistingTodo = TodosData.filter(todo => todo.id === getId)[0];
 
   if (getExistingTodo) {
     if (isDeleteBtn) {
@@ -212,13 +194,13 @@ const editDeleteTodo = (e: Event) => {
     }
 
     if (isShowbtn) {
-      const { createdAt, text, tag, isFavorite, isDone, _id } = getExistingTodo;
-      const shownTodo = new Todo(_id, createdAt, text, tag, isFavorite, isDone);
+      const { createdAt, text, tag, isFavorite, isDone } = getExistingTodo;
+      const shownTodo = new Todo(createdAt, text, tag, isFavorite, isDone);
       shownTodo.showCard();
     }
 
     if (isEditBtn) {
-      const { container, form } = createTodoForm('PUT', getExistingTodo._id.toString());
+      const { container, form } = createTodoForm('PUT', getExistingTodo.id);
       modal.ariaHidden = 'false';
       modal.textContent = '';
       modal.append(container);
@@ -234,9 +216,7 @@ const editDeleteTodo = (e: Event) => {
         await enteredTodo
           .update(getExistingTodo)
           .then(() => {
-            const todoIndex = TodosData.findIndex(
-              item => item._id === getExistingTodo._id
-            );
+            const todoIndex = TodosData.findIndex(item => item.id === getExistingTodo.id);
             TodosData[todoIndex].text = enteredTodo.text;
             TodosData[todoIndex].tag.label = enteredTodo.tag.label;
             TodosData[todoIndex].tag.dueDate = enteredTodo.tag.dueDate;
@@ -245,7 +225,7 @@ const editDeleteTodo = (e: Event) => {
           })
           .catch(err => console.log(err));
         (document.getElementById(getId) as HTMLTableRowElement).remove();
-        await enteredTodo.get(tbody, getExistingTodo._id);
+        await enteredTodo.get(tbody, getExistingTodo.id!);
 
         modal.ariaHidden = 'true';
       });
@@ -253,7 +233,6 @@ const editDeleteTodo = (e: Event) => {
 
     if (isDoneInput) {
       const data = {
-        _id: getExistingTodo._id,
         createdAt: getExistingTodo.createdAt,
         text: getExistingTodo.text,
         tag: {
@@ -261,12 +240,13 @@ const editDeleteTodo = (e: Event) => {
           label: getExistingTodo.tag.label
         },
         isFavorite: getExistingTodo.isFavorite,
-        isDone: (target as HTMLInputElement).checked
+        isDone: (target as HTMLInputElement).checked,
+        id: getExistingTodo.id
       } as Todo;
 
       updateTodo(getExistingTodo, data)
         .then(() => {
-          const todoIndex = TodosData.findIndex(item => item._id === getExistingTodo._id);
+          const todoIndex = TodosData.findIndex(item => item.id === getExistingTodo.id);
           TodosData[todoIndex].isDone = data.isDone;
         })
         .catch(err => console.log(err));
@@ -274,7 +254,6 @@ const editDeleteTodo = (e: Event) => {
 
     if (isFavInput) {
       const data = {
-        _id: getExistingTodo._id,
         createdAt: getExistingTodo.createdAt,
         text: getExistingTodo.text,
         tag: {
@@ -282,12 +261,13 @@ const editDeleteTodo = (e: Event) => {
           label: getExistingTodo.tag.label
         },
         isFavorite: (target as HTMLInputElement).checked,
-        isDone: getExistingTodo.isDone
+        isDone: getExistingTodo.isDone,
+        id: getExistingTodo.id
       } as Todo;
 
       updateTodo(getExistingTodo, data)
         .then(() => {
-          const todoIndex = TodosData.findIndex(item => item._id === getExistingTodo._id);
+          const todoIndex = TodosData.findIndex(item => item.id === getExistingTodo.id);
           TodosData[todoIndex].isFavorite = data.isFavorite;
         })
         .catch(err => console.log(err));

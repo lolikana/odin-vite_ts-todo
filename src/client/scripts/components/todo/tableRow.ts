@@ -3,8 +3,8 @@ import { firstCapitalLetter } from '../../helpers';
 import { Todo } from '../../models/todo-class';
 
 export function createTodoItemElement(todo: Todo) {
-  const { _id, text } = todo;
-  const id = _id.toString();
+  const { text } = todo;
+  const id = todo.id!;
   const isNoTodo = text === 'No todo found';
 
   const tr = document.createElement('tr');

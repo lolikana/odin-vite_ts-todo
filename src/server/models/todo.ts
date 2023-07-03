@@ -1,8 +1,10 @@
 import mongoose, { Types } from 'mongoose';
 
-import { Todo } from '../../client/scripts/models/todo-class';
-
-const TodoSchema = new mongoose.Schema<Todo>({
+const TodoSchema = new mongoose.Schema({
+  author: {
+    type: Types.ObjectId,
+    ref: 'User'
+  },
   createdAt: Date,
   isDone: Boolean,
   text: { type: String, required: [true, 'Cannot be empty'] },
@@ -16,4 +18,4 @@ const TodoSchema = new mongoose.Schema<Todo>({
   isFavorite: Boolean
 });
 
-export const TodoModel = mongoose.model<Todo>('Todo', TodoSchema);
+export const TodoModel = mongoose.model('Todo', TodoSchema);
