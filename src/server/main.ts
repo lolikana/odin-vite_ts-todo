@@ -15,15 +15,6 @@ import ExpressError from './utils/expressError';
 import { isLoggedIn } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
-declare module 'express-session' {
-  interface Session {
-    views: number;
-    cookie: Cookie;
-    username: string;
-    returnTo?: string;
-  }
-}
-
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
@@ -48,16 +39,16 @@ const sessionConfig = {
   name: '_todo',
   secret: `${sessionSecret}`,
   resave: false,
-  saveUninitialized: true
-  // cookie: {
-  //   HttpOnly: true,
-  //   secure: true,
-  //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-  //   maxAge: 1000 * 60 * 60 * 24 * 7
-  // }
+  saveUninitialized: true,
+  cookie: {
+    HttpOnly: true,
+    secure: true,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
 };
 
-// app.set('trust proxy', 1); // trust first proxy
+app.set('trust proxy', 1);
 app.use(session(sessionConfig));
 
 app.use(passport.initialize());
