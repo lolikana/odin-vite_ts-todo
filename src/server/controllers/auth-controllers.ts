@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Document } from 'mongoose';
 
-// import path from 'path';
 import { UserModel } from '../models/user';
 
 export const register = async (
@@ -36,7 +35,14 @@ export const login = (_req: Request, res: Response): void => {
   res.redirect(redirectUrl);
 };
 
-export const logout = (req: Request, res: Response): void => {
-  req.logout((err: unknown) => err !== undefined && console.log(err));
-  res.redirect('/');
+export const logout = (req: Request, res: Response, next: NextFunction): void => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+
+  // req.logout((err: unknown) => err !== undefined && console.log(err));
+  // res.redirect('/');
 };
