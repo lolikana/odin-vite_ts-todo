@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import { default as connectMongoDBSession } from 'connect-mongodb-session';
 import * as dotenv from 'dotenv';
 import express, { Router } from 'express';
 import session from 'express-session';
@@ -15,6 +16,7 @@ import ExpressError from './utils/expressError';
 import { isLoggedIn } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
+const MongoDBStore = connectMongoDBSession(session);
 declare module 'express-session' {
   interface Session {
     views: number;
@@ -43,6 +45,16 @@ app.use(express.static(path.join(__dirname, '../../dist')));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
+const store = new MongoDBStore({
+  uri: mongoDBUri,
+  collection: 'sessions',
+  expires: 1000 * 60 * 60 * 24 * 30 // 30 days in milliseconds
+});
+
+store.on('error', (err: unknown) => {
+  console.log('store error: ', err);
+});
+
 const sessionConfig = {
   name: '_todo',
   secret: `${sessionSecret}`,
@@ -50,7 +62,7 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     HttpOnly: true,
-    // secure: true,
+    secure: isProduction ? true : false,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
