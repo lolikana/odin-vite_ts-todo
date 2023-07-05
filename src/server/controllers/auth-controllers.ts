@@ -25,14 +25,22 @@ export const register = async (
       res.redirect('/todos');
     });
   } catch (err: any) {
-    console.log(err.message);
+    console.log('register: ', err.message);
     res.redirect('/auth/register');
   }
 };
 
-export const login = (_req: Request, res: Response): void => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   const redirectUrl = '/todos'; // update this line to use res.locals.returnTo now
-  res.redirect(redirectUrl);
+  const user = await UserModel.find({ username: req.body.username });
+
+  if (!user[0]) return;
+
+  req.session.user = user[0];
+  req.session.save(err => {
+    if (err) return console.log('session save: ', err);
+    res.redirect(redirectUrl);
+  });
 };
 
 export const logout = (req: Request, res: Response, next: NextFunction): void => {
@@ -40,9 +48,9 @@ export const logout = (req: Request, res: Response, next: NextFunction): void =>
     if (err) {
       return next(err);
     }
-    res.redirect('/');
+    req.session.destroy(err => {
+      if (err) return console.log('session destroy', err);
+      res.redirect('/');
+    });
   });
-
-  // req.logout((err: unknown) => err !== undefined && console.log(err));
-  // res.redirect('/');
 };

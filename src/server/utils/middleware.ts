@@ -8,9 +8,11 @@ export const storeReturnTo = (req: Request, res: Response, next: NextFunction): 
 };
 
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction): void => {
-  if (!req.isAuthenticated()) {
+  if (!req.session.user || !req.isAuthenticated()) {
+    req.session.isAuthenticated = req.isAuthenticated() || false;
     req.session.returnTo = req.originalUrl;
     return res.redirect('/auth/login');
   }
-  next();
+  req.session.isAuthenticated = req.isAuthenticated() || true;
+  return next();
 };

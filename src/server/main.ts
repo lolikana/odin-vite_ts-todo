@@ -17,14 +17,6 @@ import { isLoggedIn } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
 const MongoDBStore = connectMongoDBSession(session);
-declare module 'express-session' {
-  interface Session {
-    views: number;
-    cookie: Cookie;
-    username: string;
-    returnTo?: string;
-  }
-}
 
 dotenv.config();
 
@@ -56,19 +48,20 @@ store.on('error', (err: unknown) => {
 });
 
 const sessionConfig = {
+  store,
   name: '_todo',
   secret: `${sessionSecret}`,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     HttpOnly: true,
-    secure: isProduction ? true : false,
+    // secure: isProduction ? true : false,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 };
 
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 app.use(session(sessionConfig));
 
 app.use(passport.initialize());
@@ -79,6 +72,8 @@ passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
 app.use((req, res, next) => {
+  if (!req.session.user) return next();
+
   res.locals.currentUser = req.user;
   next();
 });
@@ -98,9 +93,10 @@ app.use('/', authRoutes as Router);
 
 app.use(isLoggedIn);
 
-app.use('/api/user', (_req, res) => {
-  res.json(res.locals.currentUser);
+app.use('/api/user', (req, res) => {
+  res.json(req.session.user);
 });
+
 app.use('/api/labels', labelsRoutes as Router);
 app.use('/api/todos', todosRoutes as Router);
 
