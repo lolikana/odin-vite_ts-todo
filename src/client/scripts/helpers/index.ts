@@ -1,5 +1,4 @@
 import { TodosData } from '../../../libs/data';
-// import { modal } from '../../main';
 import { Todo } from '../models/todo-class';
 import { modal } from '../pages/todos-pages';
 
@@ -14,6 +13,7 @@ export const create = (el: string): HTMLElement => document.createElement(el);
 export function closeModal(): void {
   const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;
   closeModalBtn.addEventListener('click', () => {
+    modal.textContent = '';
     modal.ariaHidden = 'true';
   });
 }
