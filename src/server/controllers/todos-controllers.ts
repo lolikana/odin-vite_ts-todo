@@ -45,7 +45,7 @@ export default {
     }
 
     const newTodo: TodoModelInstance = new TodoModel(todo);
-    newTodo.author = (req.user! as IUser)._id as Types.ObjectId;
+    newTodo.author = (req.user as IUser)._id as Types.ObjectId;
     await newTodo.save();
     res.status(201).json(todo);
   }) as RequestHandler,

@@ -95,7 +95,7 @@ app.use(authRoutes);
 app.use('/api/user', isLoggedIn, (req, res) => {
   res.json(req.session.user);
 });
-app.use('/todos', isLoggedIn);
+
 app.use(labelsRoutes);
 app.use(todosRoutes);
 

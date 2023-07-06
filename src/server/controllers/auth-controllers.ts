@@ -31,7 +31,6 @@ export const register = async (
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const redirectUrl = '/todos'; // update this line to use res.locals.returnTo now
   const user = await UserModel.find({ username: req.body.username });
 
   if (!user[0]) return;
@@ -39,7 +38,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   req.session.user = user[0];
   req.session.save(err => {
     if (err) return console.log('session save: ', err);
-    res.redirect(redirectUrl);
+    res.redirect('/todos');
   });
 };
 
