@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
+import { csrfSync } from 'csrf-sync';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
@@ -17,6 +18,12 @@ import { isLoggedIn, nocache } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
 const MongoDBStore = connectMongoDBSession(session);
+
+const { generateToken, csrfSynchronisedProtection } = csrfSync({
+  getTokenFromRequest: req => {
+    return req.body['CSRFToken'];
+  } // Used to retrieve the token submitted by the user in a form
+});
 
 dotenv.config();
 
@@ -72,8 +79,12 @@ passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
 
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
+app.use(csrfSynchronisedProtection);
 
 app.use((req, res, next) => {
+  res.locals.csrfToken = generateToken(req);
+  console.log('csrf: ', res.locals.csrfToken);
+
   if (!req.session.user) return next();
 
   res.locals.currentUser = req.user;
@@ -92,10 +103,13 @@ app.use((_req, res, next) => {
 });
 
 app.use(nocache);
+app.use('/api/crsf-token', (_req, res) => {
+  res.json({ CSRFToken: res.locals.csrfToken });
+});
 
 app.use(authRoutes);
 app.use('/api/user', isLoggedIn, (req, res) => {
-  res.json(req.session.user);
+  res.json({ user: req.session.user });
 });
 
 app.use(labelsRoutes);

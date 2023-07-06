@@ -19,6 +19,9 @@
         </a>
       </div>
       <div class="header--logout">
+        <form action="/logout" method="POST">
+          <input type="hidden" role="logout" name="CSRFToken" />
+        </form>
       </div>
       <div class="menu--toggler">
         <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
