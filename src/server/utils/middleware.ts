@@ -1,18 +1,25 @@
-import { NextFunction, Request, Response } from 'express';
+import { Handler } from 'express';
 
-export const storeReturnTo = (req: Request, res: Response, next: NextFunction): void => {
+export const storeReturnTo: Handler = (req, res, next): void => {
   if (req.session.returnTo) {
     res.locals.returnTo = req.session.returnTo;
   }
   next();
 };
 
-export const isLoggedIn = (req: Request, res: Response, next: NextFunction): void => {
+export const isLoggedIn: Handler = (req, res, next): void => {
   if (!req.session.user || !req.isAuthenticated()) {
-    req.session.isAuthenticated = req.isAuthenticated() || false;
+    req.session.isAuthenticated = false;
     req.session.returnTo = req.originalUrl;
     return res.redirect('/auth/login');
   }
-  req.session.isAuthenticated = req.isAuthenticated() || true;
+  req.session.isAuthenticated = true;
   return next();
+};
+
+export const nocache: Handler = (_req, res, next): void => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
 };

@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 import * as dotenv from 'dotenv';
-import express, { Router } from 'express';
+import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
@@ -13,7 +13,7 @@ import { router as authRoutes } from './routes/auth-routes';
 import { router as labelsRoutes } from './routes/labels-routes';
 import { router as todosRoutes } from './routes/todos-routes';
 import ExpressError from './utils/expressError';
-import { isLoggedIn } from './utils/middleware';
+import { isLoggedIn, nocache } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
 const MongoDBStore = connectMongoDBSession(session);
@@ -89,16 +89,15 @@ app.use((_req, res, next) => {
   next();
 });
 
-app.use('/', authRoutes as Router);
+app.use(nocache);
 
-app.use(isLoggedIn);
-
-app.use('/api/user', (req, res) => {
+app.use(authRoutes);
+app.use('/api/user', isLoggedIn, (req, res) => {
   res.json(req.session.user);
 });
-
-app.use('/api/labels', labelsRoutes as Router);
-app.use('/api/todos', todosRoutes as Router);
+app.use('/todos', isLoggedIn);
+app.use(labelsRoutes);
+app.use(todosRoutes);
 
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));

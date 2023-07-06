@@ -22,7 +22,7 @@ export const register = async (
     };
     req.login(registeredUser, (err: any) => {
       if (err) return next(err);
-      res.redirect('/todos');
+      res.redirect('/auth/login');
     });
   } catch (err: any) {
     console.log('register: ', err.message);

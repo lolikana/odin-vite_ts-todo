@@ -7,6 +7,8 @@ import { storeReturnTo } from '../utils/middleware';
 
 export const router = Router();
 
+router.route('/');
+
 router.route('/auth/register').post(catchAsync(auth.register) as RequestHandler);
 
 router.route('/auth/login').post(
