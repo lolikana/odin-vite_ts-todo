@@ -21,7 +21,9 @@ const MongoDBStore = connectMongoDBSession(session);
 dotenv.config();
 
 export const isProduction = process.env.NODE_ENV === 'production';
-export const port = !isProduction ? process.env.VITE_PORT : process.env.VITE_PROD_PORT;
+export const port = !isProduction
+  ? process.env.VITE_PORT || 3101
+  : process.env.VITE_PROD_PORT || 3100;
 const sessionSecret = process.env.VITE_SESSION_SECRET || 'findABetterSecretPlease';
 
 export const mongoDBUri: string = isProduction
@@ -103,6 +105,6 @@ app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));
 });
 
-ViteExpress.listen(app, +port!, () => {
-  console.log(`Server started at http://localhost:${port!}`);
+ViteExpress.listen(app, +port, () => {
+  console.log(`Server started at http://localhost:${port}`);
 });

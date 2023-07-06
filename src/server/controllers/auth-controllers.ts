@@ -20,12 +20,12 @@ export const register = async (
       username: string;
       password: string;
     };
-    req.login(registeredUser, (err: any) => {
+    req.login(registeredUser, (err: unknown) => {
       if (err) return next(err);
       res.redirect('/auth/login');
     });
-  } catch (err: any) {
-    console.log('register: ', err.message);
+  } catch (err: unknown) {
+    console.log('register: ', err);
     res.redirect('/auth/register');
   }
 };

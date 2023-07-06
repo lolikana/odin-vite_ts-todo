@@ -20,4 +20,4 @@ router.route('/auth/login').post(
   auth.login
 );
 
-router.get('/logout', auth.logout);
+router.post('/logout', auth.logout);
