@@ -101,18 +101,20 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.use(csrfSynchronisedProtection);
+
 app.use(nocache);
 app.use('/api/crsf-token', (_req, res) => {
   res.json({ CSRFToken: res.locals.csrfToken });
 });
 
-app.use(csrfSynchronisedProtection, authRoutes);
+app.use(authRoutes);
 app.use('/api/user', isLoggedIn, (req, res) => {
   res.json({ user: req.session.user });
 });
 
 app.use(labelsRoutes);
-app.use(csrfSynchronisedProtection, todosRoutes);
+app.use(todosRoutes);
 
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));

@@ -10,7 +10,8 @@ export const labelSchema = z.object({
     .max(10, { message: 'Must be 10 or fewer (min: 2)' })
     .nonempty({
       message: 'Cannot not be empty'
-    })
+    }),
+  CSRFToken: z.string()
 });
 
 export const todoSchema = z.object({

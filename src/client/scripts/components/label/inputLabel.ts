@@ -32,8 +32,13 @@ export const createLabelInputElement = (method: 'POST' | 'PUT', placeholder?: st
   cancelBtn.type = 'button';
   ValidBtn.classList.add('input-label-valid');
 
+  const inputsCsrfToken = document.createElement('input');
+  inputsCsrfToken.setAttribute('type', 'hidden');
+  inputsCsrfToken.setAttribute('role', 'addLabel');
+  inputsCsrfToken.setAttribute('name', 'CSRFToken');
+
   label.append(input, ValidBtn, cancelBtn);
-  form.append(label, pErrror);
+  form.append(inputsCsrfToken, label, pErrror);
 
   return form;
 };

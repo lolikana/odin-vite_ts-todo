@@ -12,14 +12,17 @@ import {
 import { createListElement, createListLabelsElement } from '../components';
 import { createLabelFormElement, deleteLabelInputElement } from '../components/label';
 import { firstCapitalLetter, querySelector, querySelectorAll } from '../helpers';
+import { setCsrfToken } from '../helpers/getCsrfToken';
 
 export class Label {
   name: string;
   labelId: string;
+  readonly CSRFToken?: string;
   readonly _id?: Types.ObjectId;
-  constructor(name: string, _id?: Types.ObjectId) {
+  constructor(name: string, CSRFToken?: string, _id?: Types.ObjectId) {
     this.name = name;
     this.labelId = name;
+    this.CSRFToken = CSRFToken;
     this._id = _id;
   }
 
@@ -42,6 +45,7 @@ export class Label {
       // Allow to click on edit btn right after create new label
       list.addEventListener('click', (e: Event) => {
         editDeleteLabel(e);
+        setCsrfToken().catch(err => console.log(err));
       });
     });
   }
@@ -54,6 +58,7 @@ export class Label {
         // Allow to click on edit btn right after create new label
         list.addEventListener('click', (e: Event) => {
           editDeleteLabel(e);
+          setCsrfToken().catch(err => console.log(err));
         });
       })
       .catch(err => {
@@ -88,18 +93,20 @@ export const labelFormSubmit = (
 
   if (method !== 'POST') {
     const data = {
-      name: validatationData.data.inputLabel
+      name: validatationData.data.inputLabel,
+      CSRFToken: validatationData.data.CSRFToken
     };
 
-    return new Label(data.name);
+    return new Label(data.name, data.CSRFToken);
   }
 
   const data = {
     name: validatationData.data.inputLabel,
+    CSRFToken: validatationData.data.CSRFToken,
     _id: new Types.ObjectId()
   };
 
-  return new Label(data.name, data._id);
+  return new Label(data.name, data.CSRFToken, data._id);
 };
 
 export const deleteEmptyLabelsList = (list: HTMLUListElement, content?: string) => {

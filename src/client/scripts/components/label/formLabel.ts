@@ -7,6 +7,7 @@ export const createLabelFormElement = (
   label?: string
 ) => {
   const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
+
   target.append(createLabelInputElement(method, label));
 
   addLabelBtn.ariaDisabled = 'true';

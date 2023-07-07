@@ -198,6 +198,7 @@ addLabelBtn?.addEventListener('click', () => {
     };
 
     const { form, pError, cancelLabelBtn } = createLabelFormElement('POST', labelsList);
+    setCsrfToken().catch(err => console.log(err));
 
     form.addEventListener('submit', async (e: SubmitEvent) => {
       e.preventDefault();
