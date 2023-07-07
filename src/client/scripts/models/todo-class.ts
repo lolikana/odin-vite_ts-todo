@@ -10,6 +10,7 @@ import {
   querySelector,
   querySelectorAll
 } from '../helpers';
+import { setCsrfToken } from '../helpers/getCsrfToken';
 import { modal, tbody } from '../pages/todos-pages';
 
 export class Todo {
@@ -21,6 +22,7 @@ export class Todo {
   };
   isDone: boolean;
   isFavorite: boolean;
+  readonly CSRFToken?: string;
   readonly id?: string;
 
   constructor(
@@ -32,6 +34,7 @@ export class Todo {
     },
     isDone: boolean,
     isFavorite: boolean,
+    CSRFToken?: string,
     id?: string
   ) {
     this.createdAt = createdAt;
@@ -39,6 +42,7 @@ export class Todo {
     this.tag = tag;
     this.isDone = isDone;
     this.isFavorite = isFavorite;
+    this.CSRFToken = CSRFToken;
     this.id = id;
   }
 
@@ -56,8 +60,8 @@ export class Todo {
         TodosData.map(todo => tbody.append(this.createElement(todo)));
 
         // Allow to click on edit btn right after create new label
-        tbody.addEventListener('click', (e: Event) => {
-          editDeleteTodo(e);
+        tbody.addEventListener('click', async (e: Event) => {
+          await editDeleteTodo(e);
         });
       })
       .catch(err => {
@@ -70,8 +74,8 @@ export class Todo {
       .then((res: Todo) => {
         tbody.append(this.createElement(res));
         // Allow to click on edit btn right after create new label
-        tbody.addEventListener('click', (e: Event) => {
-          editDeleteTodo(e);
+        tbody.addEventListener('click', async (e: Event) => {
+          await editDeleteTodo(e);
         });
       })
       .catch(err => {
@@ -147,12 +151,20 @@ export const todoFormSubmit = (method?: 'POST') => {
         dueDate: new Date(validatationData.data.dueDate).toDateString()
       },
       isFavorite: validatationData.data.isFavorite === 'on',
-      isDone: validatationData.data.isDone === 'on'
+      isDone: validatationData.data.isDone === 'on',
+      CSRFToken: validatationData.data.CSRFToken
     } as Todo;
 
     todoForm.reset();
 
-    return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
+    return new Todo(
+      data.createdAt,
+      data.text,
+      data.tag,
+      data.isDone,
+      data.isFavorite,
+      data.CSRFToken
+    );
   }
   const data = {
     createdAt: validatationData.data.createdAt,
@@ -162,15 +174,23 @@ export const todoFormSubmit = (method?: 'POST') => {
       dueDate: new Date(validatationData.data.dueDate).toDateString()
     },
     isFavorite: validatationData.data.isFavorite === 'on',
-    isDone: validatationData.data.isDone === 'on'
+    isDone: validatationData.data.isDone === 'on',
+    CSRFToken: validatationData.data.CSRFToken
   } as Todo;
 
   todoForm.reset();
 
-  return new Todo(data.createdAt, data.text, data.tag, data.isDone, data.isFavorite);
+  return new Todo(
+    data.createdAt,
+    data.text,
+    data.tag,
+    data.isDone,
+    data.isFavorite,
+    data.CSRFToken
+  );
 };
 
-const editDeleteTodo = (e: Event) => {
+const editDeleteTodo = async (e: Event) => {
   const target = e.target as HTMLButtonElement | HTMLInputElement;
   const getId = (target.closest('tr') as HTMLElement).getAttribute('id') as string;
 
@@ -205,6 +225,7 @@ const editDeleteTodo = (e: Event) => {
       modal.textContent = '';
       modal.append(container);
       countTypedCharacters();
+      await setCsrfToken();
       closeModal();
 
       form.addEventListener('submit', async (e: SubmitEvent) => {

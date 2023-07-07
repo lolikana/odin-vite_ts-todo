@@ -35,5 +35,6 @@ export const todoSchema = z.object({
       message: 'Cannot not be empty'
     }),
   isFavorite: z.string().optional(),
-  isDone: z.string().optional()
+  isDone: z.string().optional(),
+  CSRFToken: z.string()
 });

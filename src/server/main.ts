@@ -20,9 +20,10 @@ import { mongoConnection } from './utils/mongodb';
 const MongoDBStore = connectMongoDBSession(session);
 
 const { generateToken, csrfSynchronisedProtection } = csrfSync({
+  ignoredMethods: ['GET', 'HEAD', 'OPTIONS', 'DELETE'],
   getTokenFromRequest: req => {
     return req.body['CSRFToken'];
-  } // Used to retrieve the token submitted by the user in a form
+  } // Used to retrieve the token submitted by the user in a form,
 });
 
 dotenv.config();
@@ -79,11 +80,9 @@ passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
 
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
-app.use(csrfSynchronisedProtection);
 
 app.use((req, res, next) => {
   res.locals.csrfToken = generateToken(req);
-  console.log('csrf: ', res.locals.csrfToken);
 
   if (!req.session.user) return next();
 
@@ -107,13 +106,13 @@ app.use('/api/crsf-token', (_req, res) => {
   res.json({ CSRFToken: res.locals.csrfToken });
 });
 
-app.use(authRoutes);
+app.use(csrfSynchronisedProtection, authRoutes);
 app.use('/api/user', isLoggedIn, (req, res) => {
   res.json({ user: req.session.user });
 });
 
 app.use(labelsRoutes);
-app.use(todosRoutes);
+app.use(csrfSynchronisedProtection, todosRoutes);
 
 app.all('*', (_req, _res, next) => {
   next(new ExpressError('Page Not Found!!', 404));

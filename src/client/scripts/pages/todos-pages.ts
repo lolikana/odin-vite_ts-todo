@@ -12,6 +12,7 @@ import {
 } from '@helpers/index';
 import { labelsData, noTodo, TodosData } from '@libs/data';
 
+import { setCsrfToken } from '../helpers/getCsrfToken';
 import {
   deleteEmptyLabelsList,
   isDisabledEditBtns,
@@ -242,12 +243,13 @@ Label.prototype
 /* Todo START */
 const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
 
-addTodoBtn?.addEventListener('click', (): void => {
+addTodoBtn?.addEventListener('click', async (): Promise<void> => {
   const { container, form } = createTodoForm('POST');
   modal.ariaHidden = 'false';
   modal.textContent = '';
   modal.append(container);
   countTypedCharacters();
+  await setCsrfToken();
   closeModal();
 
   form.addEventListener('submit', async (e: SubmitEvent) => {

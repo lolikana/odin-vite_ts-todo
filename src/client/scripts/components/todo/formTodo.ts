@@ -1,5 +1,5 @@
 import { labelsData, TodosData } from '../../../../libs/data';
-import { createBtnCloseModal, firstCapitalLetter } from '../../helpers';
+import { createBtnCloseModal, firstCapitalLetter, formatDate } from '../../helpers';
 
 export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   const todo =
@@ -73,7 +73,9 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   dueDateInput.setAttribute('type', 'date');
   dueDateInput.setAttribute('name', 'dueDate');
   dueDateInput.setAttribute('id', 'todo-dueDate');
-  method === 'PUT' && todo && dueDateInput.setAttribute('value', todo.tag.dueDate);
+  method === 'PUT' && todo
+    ? dueDateInput.setAttribute('value', formatDate(new Date(todo.tag.dueDate)))
+    : dueDateInput.setAttribute('value', formatDate(new Date()));
   dueDateAction.append(dueDateInput, pErrorDueDate);
 
   // Create text actions
@@ -171,12 +173,17 @@ export function createTodoForm(method: 'POST' | 'PUT', todoId?: string) {
   doneLabel.textContent = 'isDone';
   doneAction.appendChild(doneLabel);
 
+  const inputsCsrfToken = document.createElement('input');
+  inputsCsrfToken.setAttribute('type', 'hidden');
+  inputsCsrfToken.setAttribute('role', 'addTodo');
+  inputsCsrfToken.setAttribute('name', 'CSRFToken');
+
   // Create submit button
   const submitButton = document.createElement('button');
   submitButton.setAttribute('type', 'submit');
   submitButton.classList.add('button--border', 'orange');
   submitButton.textContent = 'submit';
-  form.appendChild(submitButton);
+  form.append(inputsCsrfToken, submitButton);
 
   return { container, form };
 }
