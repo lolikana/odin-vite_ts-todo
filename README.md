@@ -31,6 +31,8 @@ Unit testing is implemented in this project using [Vitest](https://vitest.dev/),
 - [x] User can delete a task
 - [x] User can filter tasks by label or date
 
+- [x] Add Authentication - The app now has user authentication implemented using Express, express-session, and passport. Users can sign up, log in, and log out of the application.
+
 
 ## Getting Started
 ### Locally
@@ -82,6 +84,7 @@ VITE_MONGODB_URI='mongodb+srv://<username>:<password>@cluster0.5yj73eu.mongodb.n
 VITE_MONGODB_DB=<collection>
 
 VITE_PORT=<port>
+VITE_PROD_PORT=<port>
 VITE_PATH='http://localhost:'
 VITE_API_LABELS='/api/labels'
 VITE_API_TODOS='/api/todos'
