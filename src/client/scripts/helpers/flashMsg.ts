@@ -6,7 +6,6 @@ export const setFlashMsg = async () => {
   if (!flashMsg) return;
 
   const divFlash = document.getElementById('connect-flash') as HTMLDivElement;
-  console.log(flashMsg);
   const flashClass =
     flashMsg.type === 'error' ? 'user-message--error' : 'user-message--success';
 
