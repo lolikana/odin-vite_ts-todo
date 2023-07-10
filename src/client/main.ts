@@ -1,43 +1,14 @@
-import './style.css';
+import './styles/style.scss';
+import './scripts/components/footer';
 
-import { TLabel } from '../libs/types';
-import { setupCounter } from './counter';
-import typescriptLogo from './typescript.svg';
+import { setFlashMsg } from './scripts/helpers/flashMsg';
+import { setCsrfToken } from './scripts/helpers/getCsrfToken';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`;
+setCsrfToken().catch(err => console.log(err));
+setFlashMsg().catch(err => console.log(err));
 
-const isProduction = import.meta.env.MODE === 'production';
-const path = import.meta.env.VITE_PATH + import.meta.env.VITE_PORT;
-
-const fetchLabels = async (): Promise<{ fetchedLabels: TLabel[] }> => {
-  const res = await fetch(`${!isProduction ? path : ''}/api/labels`);
-  if (!res.ok) {
-    throw new Error('Failed to retrieve labels from server');
-  }
-
-  return res.json() as unknown as { fetchedLabels: TLabel[] };
-};
-
-fetchLabels()
-  .then(res => console.log(res.fetchedLabels))
-  .catch(err => {
-    console.log(err);
-  });
-
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+window.addEventListener('click', () => {
+  const flashMsg = document.getElementById('connect-flash') as HTMLDivElement;
+  flashMsg.setAttribute('aria-hidden', 'true');
+  flashMsg.textContent = '';
+});

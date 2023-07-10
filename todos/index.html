@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TOP - OOP Project (Vite & TS) - TODO</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header--logo">
+        <a href="/">
+          <img
+            src="/images/todoist-icon.svg"
+            alt="logo todoist"
+            class="header--logo-img"
+          />
+          <p class="header--logo-title">Todo List</p>
+        </a>
+      </div>
+      <div class="header--logout">
+        <form action="/logout" method="POST">
+          <input type="hidden" role="logout" name="CSRFToken" />
+        </form>
+      </div>
+      <div class="menu--toggler">
+        <button class="menu--toggler-burger" title="Button toggler burger menu"></button>
+      </div>
+    </header>
+    <main id="main" class="main">
+      <div id="connect-flash" class="user-message" aria-hidden="true"></div>
+      <div id="modal" aria-hidden="true"></div>
+      <nav id="nav" class="nav" data-visible="false"><!-- CREATE NAV --></nav>
+      <section id="app">
+        <h1 data-tab="inbox" class="section--title">Inbox</h1>
+        <table class="section--table">
+          <thead class="section--table-head">
+            <tr>
+              <th></th>
+              <th>Task</th>
+              <th class="table--head-actions">Actions</th>
+              <th class="table--head-fav"></th>
+            </tr>
+          </thead>
+          <tbody class="section--table-body">
+            <!-- CREATE TODO -->
+          </tbody>
+        </table>
+        <div class="task--add orange">
+          <button class="task--add-btn">Add Task</button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <p>
+        Copyright &copy; <time class="copyright-time"></time>
+        <a href="https://github.com/lolikana">lolikana</a>
+      </p>
+    </footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

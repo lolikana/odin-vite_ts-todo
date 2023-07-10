@@ -1,0 +1,29 @@
+.auth-links {
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  font-weight: $__bold;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.auth-links.logout {
+  background-color: rgba(255, 25, 25, 0.7);
+
+  &:hover {
+    background-color: rgba(255, 25, 25, 1);
+  }
+}
+
+.auth-links {
+  &.login,
+  &.register {
+    color: $__sub;
+		background-color: rgba(25, 86, 255, 0.8);
+		
+			&:hover {
+				background-color: rgba(25, 86, 255, 1);
+			}
+  }
+}

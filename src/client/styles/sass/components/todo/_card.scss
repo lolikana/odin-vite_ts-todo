@@ -1,0 +1,25 @@
+.modal--todo-card {
+  position: relative;
+  max-width: 80%;
+  background-color: $__sub;
+  padding: 3rem;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .todo--card-text {
+    font-size: 2rem;
+  }
+
+  .todo--card-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+		
+		p > span:first-child {
+			text-decoration: underline;
+		}
+  }
+}

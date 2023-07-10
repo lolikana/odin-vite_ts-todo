@@ -28,6 +28,7 @@
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
     "sort-imports": "off",
     "import/order": "off",
     "simple-import-sort/imports": "error",
@@ -36,6 +37,9 @@
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
     "require-await": "off",
-    "@typescript-eslint/require-await": "warn"
+    "@typescript-eslint/require-await": "warn",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off"
   }
 }
