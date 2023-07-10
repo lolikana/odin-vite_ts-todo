@@ -20,12 +20,16 @@ export const register = async (
       username: string;
       password: string;
     };
-    req.login(registeredUser, (err: unknown) => {
+    req.login(registeredUser, async (err: unknown) => {
       if (err) return next(err);
+      await user.save();
+      req.flash('success', 'Register Successfully, please login');
       res.redirect('/auth/login');
     });
   } catch (err: unknown) {
-    console.log('register: ', err);
+    if (err instanceof Error) {
+      req.flash('error', err.message);
+    }
     res.redirect('/auth/register');
   }
 };
@@ -46,7 +50,7 @@ export const login: RequestHandler = async (req, res, next): Promise<void> => {
       res.redirect('/todos');
     });
   } catch (err) {
-    console.log('Error when trying to login: ', err);
+    req.flash('error', 'Error when trying to login: ', err);
   }
 };
 
