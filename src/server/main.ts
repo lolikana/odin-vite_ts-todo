@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import flash from 'connect-flash';
 import { default as connectMongoDBSession } from 'connect-mongodb-session';
 import { csrfSync } from 'csrf-sync';
 import * as dotenv from 'dotenv';
@@ -14,7 +15,7 @@ import { router as authRoutes } from './routes/auth-routes';
 import { router as labelsRoutes } from './routes/labels-routes';
 import { router as todosRoutes } from './routes/todos-routes';
 import ExpressError from './utils/expressError';
-import { isLoggedIn, nocache } from './utils/middleware';
+import { nocache } from './utils/middleware';
 import { mongoConnection } from './utils/mongodb';
 
 const MongoDBStore = connectMongoDBSession(session);
@@ -76,16 +77,17 @@ app.use(session(sessionConfig));
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
+// passport.use(new LocalStrategy.Strategy(UserModel.authenticate()));
 
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
 app.use((req, res, next) => {
   res.locals.csrfToken = generateToken(req);
-
-  if (!req.session.user) return next();
-
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
   res.locals.currentUser = req.user;
   next();
 });
@@ -109,8 +111,16 @@ app.use('/api/crsf-token', (_req, res) => {
 });
 
 app.use(authRoutes);
-app.use('/api/user', isLoggedIn, (req, res) => {
-  res.json({ user: req.session.user });
+app.use('/api/user', (req, res) => {
+  res.json({
+    user: req.session.user,
+    flashMsg:
+      res.locals.error[0] || res.locals.success[0]
+        ? res.locals.error[0]
+          ? { type: 'error', msg: res.locals.error[0] }
+          : { type: 'success', msg: res.locals.success[0] }
+        : null
+  });
 });
 
 app.use(labelsRoutes);

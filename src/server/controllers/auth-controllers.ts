@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { Document } from 'mongoose';
 
 import { UserModel } from '../models/user';
@@ -30,16 +30,24 @@ export const register = async (
   }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
-  const user = await UserModel.find({ username: req.body.username });
+export const login: RequestHandler = async (req, res, next): Promise<void> => {
+  try {
+    const { username } = req.body;
+    const user = await UserModel.findOne({ username });
 
-  if (!user[0]) return;
-
-  req.session.user = user[0];
-  req.session.save(err => {
-    if (err) return console.log('session save: ', err);
-    res.redirect('/todos');
-  });
+    req.session.isAuthenticated = true;
+    req.session.user = user;
+    req.session.save(err => {
+      if (err) {
+        console.log('session not save: ', err);
+        next(err);
+      }
+      req.flash('success', 'Login Successfully');
+      res.redirect('/todos');
+    });
+  } catch (err) {
+    console.log('Error when trying to login: ', err);
+  }
 };
 
 export const logout = (req: Request, res: Response, next: NextFunction): void => {
