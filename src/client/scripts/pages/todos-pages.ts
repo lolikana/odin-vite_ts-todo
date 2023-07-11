@@ -3,13 +3,7 @@ import './../burger';
 import { createLabelFormElement } from '@components/label';
 import { createDivLabelsElement, createNavElement } from '@components/navbar';
 import { createTodoForm } from '@components/todo/formTodo';
-import {
-  closeModal,
-  countTypedCharacters,
-  findMatchingTodos,
-  querySelector,
-  querySelectorAll
-} from '@helpers/index';
+import { closeModal, countTypedCharacters, findMatchingTodos } from '@helpers/index';
 import { labelsData, noTodo, TodosData } from '@libs/data';
 
 import { setCsrfToken } from '../helpers/getCsrfToken';
@@ -29,14 +23,15 @@ export const modal = document.getElementById('modal') as HTMLDivElement;
 main?.append(createNavElement(nav));
 nav?.append(createDivLabelsElement());
 
-const tabsListItems = querySelectorAll('.tabs--list-item') as NodeListOf<HTMLLIElement>;
-const tabsListBtn = querySelectorAll(
+const tabsListItems: NodeListOf<HTMLLIElement> =
+  document.querySelectorAll('.tabs--list-item');
+const tabsListBtn: NodeListOf<HTMLButtonElement> = document.querySelectorAll(
   '.tabs--list-btn[data-tab]'
-) as NodeListOf<HTMLButtonElement>;
-const labelsList = querySelector('.labels--list') as HTMLUListElement;
-const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
+);
+const labelsList = document.querySelector('.labels--list') as HTMLUListElement;
+const addLabelBtn = document.querySelector('.label--add-btn') as HTMLButtonElement;
 
-export const tbody = querySelector('.section--table-body') as HTMLElement;
+export const tbody = document.querySelector('.section--table-body') as HTMLElement;
 
 export let selectedLabelTodos: Todo[] = [];
 export let selectedTabTodos: Todo[] = TodosData;
@@ -133,9 +128,7 @@ export const selectLabel = (
   tbody: HTMLElement
 ): void | string => {
   const selectedLabel = clickedLabelBtn.closest('.labels--list-item') as HTMLLIElement;
-  const labelsListItems = querySelectorAll(
-    '.labels--list-item'
-  ) as NodeListOf<HTMLUListElement>;
+  const labelsListItems = document.querySelectorAll('.labels--list-item');
 
   if (!clickedLabelBtn.classList.contains('labels--list-btn')) return;
 
@@ -172,9 +165,9 @@ export const selectLabel = (
 };
 
 /** Click event selecting tab or label **/
-tabsListBtn.forEach(btn =>
+tabsListBtn.forEach((btn: Element) =>
   btn.addEventListener('click', () => {
-    selectTab(btn, tabsListItems, tbody);
+    selectTab(btn as HTMLButtonElement, tabsListItems, tbody);
   })
 );
 
@@ -242,7 +235,7 @@ Label.prototype
 /* Navbar END */
 
 /* Todo START */
-const addTodoBtn = querySelector('.task--add-btn') as HTMLButtonElement;
+const addTodoBtn = document.querySelector('.task--add-btn') as HTMLButtonElement;
 
 addTodoBtn?.addEventListener('click', async (): Promise<void> => {
   const { container, form } = createTodoForm('POST');

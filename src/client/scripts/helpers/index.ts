@@ -6,12 +6,12 @@ export const firstCapitalLetter = (text: string) => {
   return text[0].toUpperCase() + text.toLowerCase().slice(1);
 };
 
-export const querySelector = (el: string) => document.querySelector(el);
-export const querySelectorAll = (el: string) => document.querySelectorAll(el);
 export const create = (el: string): HTMLElement => document.createElement(el);
 
 export function closeModal(): void {
-  const closeModalBtn = querySelector('.button--close-modal') as HTMLButtonElement;
+  const closeModalBtn = document.querySelector(
+    '.button--close-modal'
+  ) as HTMLButtonElement;
   closeModalBtn.addEventListener('click', () => {
     modal.textContent = '';
     modal.ariaHidden = 'true';
@@ -19,9 +19,9 @@ export function closeModal(): void {
 }
 
 export function countTypedCharacters(): void {
-  const textarea = querySelector('#todo-text') as HTMLTextAreaElement;
-  const countCharacters = querySelector('.count-characters') as HTMLSpanElement;
-  const maxCharacters = querySelector('.max-characters') as HTMLSpanElement;
+  const textarea = document.querySelector('#todo-text') as HTMLTextAreaElement;
+  const countCharacters = document.querySelector('.count-characters') as HTMLSpanElement;
+  const maxCharacters = document.querySelector('.max-characters') as HTMLSpanElement;
 
   maxCharacters.textContent = String(textarea.maxLength);
 

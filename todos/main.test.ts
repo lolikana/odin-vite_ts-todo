@@ -11,8 +11,8 @@ import {
   createDivLabelsElement,
   createListLabelsElement,
   createNavElement
-} from '../components';
-import { selectLabel, selectTab } from './todos-pages';
+} from '../src/client/scripts/components';
+import { selectLabel, selectTab } from '../src/client/scripts/pages/todos-pages';
 
 const htmlDocContent = renderIndexHTML();
 

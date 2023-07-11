@@ -1,11 +1,9 @@
-import { querySelector } from './helpers';
-
 /* Burger Menu */
 let menuOpen = false;
 
-const htmlSelect = querySelector('html') as HTMLHtmlElement;
-const nav = querySelector('nav') as HTMLElement;
-const menuBtn = querySelector('.menu--toggler') as HTMLDivElement;
+const htmlSelect = document.querySelector('html') as HTMLHtmlElement;
+const nav = document.querySelector('nav') as HTMLElement;
+const menuBtn = document.querySelector('.menu--toggler') as HTMLDivElement;
 
 function setPrimaryNav(set: string) {
   nav.setAttribute('data-visible', set);
