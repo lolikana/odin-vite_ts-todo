@@ -4,12 +4,7 @@ import { createTodo, deleteTodo, fetchTodo, fetchTodos, updateTodo } from '../..
 import { createTodoCard } from '../components/todo/card';
 import { createTodoForm } from '../components/todo/formTodo';
 import { createTodoItemElement } from '../components/todo/tableRow';
-import {
-  closeModal,
-  countTypedCharacters,
-  querySelector,
-  querySelectorAll
-} from '../helpers';
+import { closeModal, countTypedCharacters } from '../helpers';
 import { setCsrfToken } from '../helpers/getCsrfToken';
 import { modal, tbody } from '../pages/todos-pages';
 

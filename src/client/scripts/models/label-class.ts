@@ -11,7 +11,7 @@ import {
 } from '../../api';
 import { createListElement, createListLabelsElement } from '../components';
 import { createLabelFormElement, deleteLabelInputElement } from '../components/label';
-import { firstCapitalLetter, querySelector, querySelectorAll } from '../helpers';
+import { firstCapitalLetter } from '../helpers';
 import { setCsrfToken } from '../helpers/getCsrfToken';
 
 export class Label {
@@ -122,7 +122,7 @@ export const removeLabelInput = (btn: HTMLButtonElement) => {
 };
 
 export const isDisabledEditBtns = (boolean: boolean) => {
-  const editBtns = querySelectorAll('.btn-edit');
+  const editBtns = document.querySelectorAll('.btn-edit');
   if (boolean === true) editBtns.forEach(btn => (btn.ariaDisabled = 'true'));
   if (boolean === false) editBtns.forEach(btn => (btn.ariaDisabled = 'false'));
 };
@@ -134,13 +134,15 @@ const editDeleteLabel = (e: Event) => {
 
   if (target.ariaDisabled === 'true' || !label) return;
 
-  const labelsList = querySelector('.labels--list') as HTMLUListElement;
-  const addLabelBtn = querySelector('.label--add-btn') as HTMLButtonElement;
+  const labelsList = document.querySelector('.labels--list') as HTMLUListElement;
+  const addLabelBtn = document.querySelector('.label--add-btn') as HTMLButtonElement;
   const listItem = target.closest('.labels--list-item') as HTMLLIElement;
   const listItemContainer = listItem.firstChild as HTMLDivElement;
   const listItemBtn = listItemContainer.firstChild as HTMLButtonElement;
-  const editBtn = querySelector(`.btn-edit[data-label='${label}']`) as HTMLButtonElement;
-  const deleteBtn = querySelector(
+  const editBtn = document.querySelector(
+    `.btn-edit[data-label='${label}']`
+  ) as HTMLButtonElement;
+  const deleteBtn = document.querySelector(
     `.btn-delete[data-label='${label}']`
   ) as HTMLButtonElement;
 
