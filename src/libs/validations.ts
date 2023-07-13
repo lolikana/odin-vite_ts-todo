@@ -39,3 +39,43 @@ export const todoSchema = z.object({
   isDone: z.string().optional(),
   CSRFToken: z.string()
 });
+
+const passwordError = {
+  message:
+    'Your password should have at least 4 characters and contain alphanumeric characters'
+};
+
+const passwordValidation = (value: string) => {
+  const minLength = 4;
+  const hasNumber = /\d/.test(value);
+  return value.length >= minLength && hasNumber;
+};
+
+export const singupSchema = z
+  .object({
+    username: z.string().min(1, { message: 'An username is required' }),
+    email: z
+      .string()
+      .min(1, { message: 'An email is required' })
+      .email({ message: 'Invalid email address' })
+      .refine(value => {
+        if (value === 'test@test.com') return false;
+        return true;
+      }, 'You cannot use this email'),
+    password: z
+      .string({ required_error: 'You need to enter a password' })
+      .refine(passwordValidation, passwordError),
+    confirmPassword: z.string({
+      required_error: 'You need to enter a confirm password'
+    })
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Password do not match'
+  });
+
+export const loginSchema = z.object({
+  username: z.string().min(1, { message: 'An username is required' }),
+  password: z
+    .string({ required_error: 'You need to enter a password' })
+    .refine(passwordValidation, passwordError)
+});

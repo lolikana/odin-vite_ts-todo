@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { Document } from 'mongoose';
 
+import { loginSchema, singupSchema } from '../../libs/validations';
 import { UserModel } from '../models/user';
 
 export const register = async (
@@ -14,12 +15,31 @@ export const register = async (
       username: string;
       password: string;
     };
+
+    const isExistUsername = await UserModel.findOne({ username });
+    if (isExistUsername) {
+      req.flash('error', 'User with this username already exist');
+      return res.redirect('/auth/register');
+    }
+    const isExistEmail = await UserModel.findOne({ email });
+    if (isExistEmail) {
+      req.flash('error', 'User with this email already exist');
+      return res.redirect('/auth/register');
+    }
+
+    const resultValidation = singupSchema.safeParse(req.body);
+    if (!resultValidation.success) {
+      req.flash('error', resultValidation.error.issues[0].message);
+      return res.status(422).redirect('/auth/register');
+    }
+
     const user = (await new UserModel({ email, username })) as Document;
     const registeredUser = (await UserModel.register(user, password)) as {
       email: string;
       username: string;
       password: string;
     };
+
     req.login(registeredUser, async (err: unknown) => {
       if (err) return next(err);
       await user.save();
