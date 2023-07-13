@@ -72,10 +72,3 @@ export const singupSchema = z
   .refine(data => data.password === data.confirmPassword, {
     message: 'Password do not match'
   });
-
-export const loginSchema = z.object({
-  username: z.string().min(1, { message: 'An username is required' }),
-  password: z
-    .string({ required_error: 'You need to enter a password' })
-    .refine(passwordValidation, passwordError)
-});

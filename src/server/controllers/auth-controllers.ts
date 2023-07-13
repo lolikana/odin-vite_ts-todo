@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { Document } from 'mongoose';
 
-import { loginSchema, singupSchema } from '../../libs/validations';
+import { singupSchema } from '../../libs/validations';
 import { UserModel } from '../models/user';
 
 export const register = async (
@@ -29,7 +29,7 @@ export const register = async (
 
     const resultValidation = singupSchema.safeParse(req.body);
     if (!resultValidation.success) {
-      req.flash('error', resultValidation.error.issues[0].message);
+      req.flash('error', resultValidation.error.issues[0].message[0]);
       return res.status(422).redirect('/auth/register');
     }
 
